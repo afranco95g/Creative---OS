@@ -17,41 +17,41 @@ const modules = [
     title: 'Agenda',
     description:
       'Publica eventos, talleres, exhibiciones, conciertos, encuentros y actividades culturales.',
-    href: '/admin/events',
-    status: 'Próximamente',
-    available: false,
+    href: '/gestion-agenda',
+    status: 'Activo',
+    available: true,
   },
   {
     title: 'Convocatorias',
     description:
       'Organiza becas, residencias, estímulos, oportunidades laborales y llamados abiertos.',
-    href: '/admin/opportunities',
-    status: 'Próximamente',
-    available: false,
+    href: '/gestion-financiacion',
+    status: 'Activo',
+    available: true,
   },
   {
     title: 'Artistas',
     description:
       'Gestiona los perfiles de artistas y selecciona al artista destacado de la semana.',
-    href: '/admin/artists',
-    status: 'Próximamente',
-    available: false,
+    href: '/revision-actores',
+    status: 'Activo',
+    available: true,
   },
   {
     title: 'Proyectos',
     description:
       'Gestiona proyectos culturales y selecciona el proyecto destacado de la portada.',
-    href: '/admin/projects',
-    status: 'Próximamente',
-    available: false,
+    href: '/revision-editorial',
+    status: 'Activo',
+    available: true,
   },
   {
     title: 'Espacios',
     description:
       'Registra talleres, estudios, galerías, residencias, laboratorios y espacios culturales.',
-    href: '/admin/spaces',
-    status: 'Próximamente',
-    available: false,
+    href: '/revision-ecosistema',
+    status: 'Activo',
+    available: true,
   },
 ];
 
@@ -150,7 +150,7 @@ export default async function AdminPage() {
                     href={module.href}
                     className="font-bold text-[#D9FF00] transition hover:text-white"
                   >
-                    Administrar historias →
+                    Abrir módulo →
                   </Link>
                 ) : (
                   <span className="text-sm text-[#555555]">
