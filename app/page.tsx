@@ -1,99 +1,875 @@
-'use client';
-import { useMemo, useState } from 'react';
-import { Send, MessageCircle, ClipboardList, BookOpen, FileText, Activity, Plus, Download, Sparkles, CheckCircle2, AlertCircle, Target, Users, CalendarDays, Handshake, WalletCards } from 'lucide-react';
+import Link from 'next/link';
+import {
+  HomeAgendaSection,
+} from '../components/public/HomeAgendaSection';
+import {
+  getPublicActorHref,
+  listPublishedEcosystemActors,
+} from '../services/public/publicEcosystem';
 
-type View = 'chat' | 'proyecto' | 'bitacora' | 'documentos' | 'ipp';
+import {
+  listPublishedProjects,
+} from '../services/public/publicProjects';
 
-type Project = {
-  name: string;
-  generalObjective: string;
-  specificObjectives: string[];
-  context: string;
-  community: string;
-  activities: string[];
-  resources: string[];
-  budget: string;
-  alliances: string[];
-  nextSteps: string[];
-};
+import type {
+  PublicActorType,
+  PublicEcosystemActor,
+} from '../services/public/publicEcosystem';
 
-const initialProject: Project = {
-  name: 'Charlie Gelato',
-  generalObjective: 'Crear una heladería artesanal que funcione también como espacio cultural, conectando producto, comunidad y experiencias creativas en Bogotá.',
-  specificObjectives: [
-    'Diseñar una primera línea de experiencias culturales alrededor del gelato y la creatividad.',
-    'Validar el producto mediante talleres, activaciones y espacios aliados.',
-    'Crear una comunidad inicial interesada en cultura, diseño, gastronomía y encuentros presenciales.',
-    'Construir una propuesta comercial para marcas, espacios y posibles aliados.'
-  ],
-  context: 'Bogotá tiene una red creciente de espacios creativos independientes que buscan programación, comunidad y sostenibilidad. Charlie Gelato puede entrar como producto y experiencia cultural sin depender inicialmente de un local propio.',
-  community: 'Personas entre 18 y 35 años interesadas en cultura, arte, diseño, gastronomía y experiencias de barrio.',
-  activities: ['Taller de serigrafía + gelato', 'Degustación en espacio aliado', 'Pop-up cultural', 'Registro de comunidad', 'Contenido editorial con periodistas aliados'],
-  resources: ['Producto inicial', 'Espacios aliados', 'Periodistas culturales', 'Productores ejecutivos', 'Base de datos de asistentes'],
-  budget: '$45.000.000 COP estimado para primera fase',
-  alliances: ['Taller Ujalata', 'Espacios creativos independientes', 'Periodistas culturales'],
-  nextSteps: ['Definir propuesta de valor', 'Armar presupuesto inicial', 'Diseñar primera activación', 'Crear one pager para aliados']
-};
+import type {
+  PublicProjectSummary,
+} from '../services/public/publicProjects';
 
-const initialLog = [
-  { title: 'Definimos el propósito del proyecto', time: 'Hoy, 11:23 AM', text: 'Charlie Gelato puede ser más que una heladería: una excusa para activar cultura, comunidad y experiencias presenciales.', tag: 'Propósito' },
-  { title: 'Identificamos comunidad objetivo', time: 'Hoy, 11:45 AM', text: 'Personas jóvenes interesadas en arte, diseño, gastronomía, experiencias auténticas y espacios de encuentro.', tag: 'Comunidad' },
-  { title: 'Detectamos oportunidades clave', time: 'Hoy, 12:10 PM', text: 'Activaciones con talleres, espacios aliados, contenido editorial y producto incluido dentro de la experiencia.', tag: 'Oportunidad' }
+const upcomingActivities = [
+  {
+    day: '24',
+    month: 'JUL',
+    title:
+      'Laboratorio de creación audiovisual',
+    type:
+      'Taller',
+    location:
+      'Taller 108 · Bogotá',
+  },
+  {
+    day: '27',
+    month: 'JUL',
+    title:
+      'Sesión abierta de dibujo',
+    type:
+      'Actividad',
+    location:
+      'Taller La Tata · Bogotá',
+  },
+  {
+    day: '02',
+    month: 'AGO',
+    title:
+      'Encuentro de productores independientes',
+    type:
+      'Encuentro',
+    location:
+      'Estación 2600 · Bogotá',
+  },
 ];
 
-function Sidebar({ view, setView }: { view: View; setView: (v: View) => void }) {
-  const items = [
-    ['chat', MessageCircle, 'Chat'], ['proyecto', ClipboardList, 'Proyecto'], ['bitacora', BookOpen, 'Bitácora'], ['documentos', FileText, 'Documentos'], ['ipp', Activity, 'IPP']
-  ] as const;
-  return <aside className="w-full md:w-64 md:min-h-screen border-r border-white/10 bg-black/80 p-5 flex md:flex-col gap-4 md:gap-6 sticky top-0 z-20 overflow-x-auto">
-    <div className="hidden md:block"><div className="text-3xl font-black leading-none tracking-tight">CREATIVE<br/>OS</div><p className="text-xs text-white/60 mt-3">Sistema operativo conversacional para proyectos creativos.</p></div>
-    <nav className="flex md:flex-col gap-2 w-full">
-      {items.map(([id, Icon, label]) => <button key={id} onClick={() => setView(id)} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition whitespace-nowrap ${view===id?'bg-acid text-black shadow-glow':'glass hover:bg-white/10'}`}><Icon size={17}/>{label}</button>)}
-    </nav>
-    <div className="hidden md:block mt-auto text-xs text-white/50 border-t border-white/10 pt-5"><b className="text-white">Sprint 1</b><br/>Chat + Proyecto + Bitácora + Documentos + IPP</div>
-  </aside>
+const stories = [
+  {
+    category:
+      'Música',
+    title:
+      'Nuevas escenas que están transformando el circuito independiente',
+    description:
+      'Artistas, espacios y productores construyen nuevas formas de circular la música.',
+  },
+  {
+    category:
+      'Arte',
+    title:
+      'Los talleres colectivos como infraestructura cultural',
+    description:
+      'Más que lugares de trabajo, los talleres se convierten en espacios de colaboración.',
+  },
+  {
+    category:
+      'Ciudad',
+    title:
+      'Una agenda cultural construida desde los territorios',
+    description:
+      'Conoce los proyectos y actividades que están activando distintos barrios.',
+  },
+];
+
+const actorTypeLabels:
+  Record<PublicActorType, string> = {
+    person:
+      'Persona',
+
+    space:
+      'Espacio',
+
+    funder:
+      'Financiador',
+  };
+
+export const dynamic =
+  'force-dynamic';
+
+export default async function HomePage() {
+  const {
+    projects,
+    actors,
+  } = await loadHomeData();
+
+  const people =
+    actors.filter(
+      (actor) =>
+        actor.actorType ===
+        'person'
+    );
+
+  const spaces =
+    actors.filter(
+      (actor) =>
+        actor.actorType ===
+        'space'
+    );
+
+  const funders =
+    actors.filter(
+      (actor) =>
+        actor.actorType ===
+        'funder'
+    );
+
+  const featuredProject =
+    projects[0] ?? null;
+
+  const featuredPerson =
+    people.find(
+      (person) =>
+        person.featured
+    ) ??
+    people[0] ??
+    null;
+
+  const ecosystemPreview = [
+    ...people.slice(0, 2),
+    ...spaces.slice(0, 2),
+    ...funders.slice(0, 2),
+  ];
+
+  return (
+    <main className="min-h-screen bg-neutral-950 text-white">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-neutral-950/90 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-5 px-6 py-5">
+          <Link
+            href="/"
+            className="shrink-0 text-lg font-black tracking-[-0.04em]"
+          >
+            CULTURA ESTÁ
+          </Link>
+
+          <nav className="hidden items-center gap-7 text-sm text-neutral-300 lg:flex">
+            <a
+              href="#historias"
+              className="transition hover:text-white"
+            >
+              Historias
+            </a>
+
+            <a
+              href="#agenda"
+              className="transition hover:text-white"
+            >
+              Agenda
+            </a>
+
+            <a
+              href="#ecosistema"
+              className="transition hover:text-white"
+            >
+              Ecosistema
+            </a>
+
+            <Link
+              href="/proyectos"
+              className="transition hover:text-white"
+            >
+              Proyectos
+            </Link>
+          </nav>
+
+          <div className="flex items-center gap-3">
+            <Link
+              href="/mi-ecosistema"
+              className="hidden rounded-full border border-white/20 px-5 py-2 text-sm font-medium transition hover:bg-white hover:text-black xl:inline-flex"
+            >
+              Mi Ecosistema
+            </Link>
+
+            <Link
+              href="/studio"
+              className="hidden rounded-full border border-white/20 px-5 py-2 text-sm font-medium transition hover:bg-white hover:text-black sm:inline-flex"
+            >
+              Entrar al Studio
+            </Link>
+
+            <Link
+              href="/studio?new=1"
+              className="rounded-full bg-[#D9FF00] px-5 py-2 text-sm font-bold text-black transition hover:bg-white"
+            >
+              Crear un proyecto
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <section className="border-b border-white/10">
+        <div className="mx-auto grid min-h-[76vh] max-w-7xl items-end gap-10 px-6 py-16 lg:grid-cols-[1.3fr_0.7fr] lg:py-24">
+          <div>
+            <p className="mb-6 text-sm font-semibold uppercase tracking-[0.24em] text-neutral-400">
+              Cultura, ciudad y ecosistemas creativos
+            </p>
+
+            <h1 className="max-w-5xl text-5xl font-black leading-[0.92] tracking-[-0.06em] sm:text-7xl lg:text-8xl">
+              La cultura no está escondida.
+
+              <span className="block text-neutral-500">
+                Está sucediendo.
+              </span>
+            </h1>
+
+            <p className="mt-8 max-w-2xl text-lg leading-8 text-neutral-300">
+              Un medio para descubrir artistas, proyectos,
+              espacios, talleres, eventos y procesos que
+              están construyendo el ecosistema cultural.
+            </p>
+
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Link
+                href="/proyectos"
+                className="rounded-full bg-white px-6 py-3 text-sm font-bold text-black transition hover:bg-[#D9FF00]"
+              >
+                Explorar proyectos
+              </Link>
+
+              <Link
+                href="/ecosistema"
+                className="rounded-full border border-white/20 px-6 py-3 text-sm font-semibold transition hover:border-white"
+              >
+                Conocer el ecosistema
+              </Link>
+            </div>
+          </div>
+
+          <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-7">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500">
+              Esta semana
+            </p>
+
+            <h2 className="mt-4 text-3xl font-bold tracking-tight">
+              La ciudad como estudio creativo
+            </h2>
+
+            <p className="mt-4 leading-7 text-neutral-400">
+              Visitamos espacios independientes donde artistas,
+              productores y comunidades desarrollan nuevas
+              formas de trabajar juntos.
+            </p>
+
+            <a
+              href="#historias"
+              className="mt-8 inline-flex text-sm font-semibold underline decoration-neutral-600 underline-offset-8"
+            >
+              Leer historia
+            </a>
+          </article>
+        </div>
+      </section>
+
+      <section
+        id="historias"
+        className="mx-auto max-w-7xl px-6 py-20"
+      >
+        <div className="mb-10 flex items-end justify-between gap-6">
+          <div>
+            <p className="text-sm uppercase tracking-[0.22em] text-neutral-500">
+              Medio
+            </p>
+
+            <h2 className="mt-3 text-4xl font-bold tracking-tight">
+              Historias recientes
+            </h2>
+          </div>
+
+          <span className="hidden text-sm text-neutral-500 sm:block">
+            Relatos del ecosistema →
+          </span>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-3">
+          {stories.map(
+            (
+              story,
+              index
+            ) => (
+              <article
+                key={story.title}
+                className="group flex min-h-96 flex-col justify-end rounded-3xl border border-white/10 bg-gradient-to-b from-neutral-800 to-neutral-950 p-7"
+              >
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-400">
+                  {story.category}
+                </span>
+
+                <h3 className="mt-4 text-2xl font-bold leading-tight tracking-tight">
+                  {story.title}
+                </h3>
+
+                <p className="mt-4 leading-7 text-neutral-400">
+                  {story.description}
+                </p>
+
+                <span className="mt-8 text-sm font-medium text-neutral-300 transition group-hover:translate-x-1">
+                  Leer historia{' '}
+                  {index + 1} →
+                </span>
+              </article>
+            )
+          )}
+        </div>
+      </section>
+
+      <HomeAgendaSection />
+
+      <section
+        id="ecosistema"
+        className="mx-auto max-w-7xl px-6 py-20"
+      >
+        <div className="flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-sm uppercase tracking-[0.22em] text-[#D9FF00]">
+              Personas y conexiones
+            </p>
+
+            <h2 className="mt-3 max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl">
+              El ecosistema que hace posible la cultura
+            </h2>
+
+            <p className="mt-5 max-w-3xl leading-7 text-neutral-400">
+              Personas, espacios, marcas y organizaciones
+              conectadas a proyectos y procesos creativos
+              publicados por Cultura Está.
+            </p>
+          </div>
+
+          <Link
+            href="/ecosistema"
+            className="self-start rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-[#D9FF00] hover:text-[#D9FF00]"
+          >
+            Explorar todo el ecosistema
+          </Link>
+        </div>
+
+        <div className="mt-10 grid max-w-3xl grid-cols-3 gap-3">
+          <HomeMetric
+            value={String(
+              people.length
+            )}
+            label="Personas"
+          />
+
+          <HomeMetric
+            value={String(
+              spaces.length
+            )}
+            label="Espacios"
+          />
+
+          <HomeMetric
+            value={String(
+              funders.length
+            )}
+            label="Financiadores"
+          />
+        </div>
+
+        {ecosystemPreview.length === 0 ? (
+          <div className="mt-10 rounded-3xl border border-dashed border-white/15 bg-white/[0.02] p-9">
+            <h3 className="text-2xl font-bold">
+              El directorio público está comenzando
+            </h3>
+
+            <p className="mt-4 max-w-3xl leading-7 text-neutral-400">
+              Los perfiles aparecerán aquí después de ser
+              revisados y publicados por el administrador del
+              ecosistema.
+            </p>
+
+            <Link
+              href="/ecosistema"
+              className="mt-7 inline-flex rounded-full border border-white/15 px-5 py-3 text-sm font-semibold"
+            >
+              Ver directorio público
+            </Link>
+          </div>
+        ) : (
+          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {ecosystemPreview.map(
+              (actor) => (
+                <HomeActorCard
+                  key={`${actor.actorType}-${actor.actorId}`}
+                  actor={actor}
+                />
+              )
+            )}
+          </div>
+        )}
+      </section>
+
+      <section
+        id="artista"
+        className="mx-auto grid max-w-7xl gap-8 px-6 py-20 lg:grid-cols-2"
+      >
+        {featuredPerson?.imageUrl ? (
+          <img
+            src={
+              featuredPerson.imageUrl
+            }
+            alt={
+              featuredPerson.name
+            }
+            className="min-h-[520px] w-full rounded-3xl object-cover"
+          />
+        ) : (
+          <div className="flex min-h-[520px] items-end rounded-3xl bg-gradient-to-br from-neutral-700 via-neutral-900 to-black p-9">
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#D9FF00]">
+              Cultura Está · Persona
+            </p>
+          </div>
+        )}
+
+        <div className="flex flex-col justify-center rounded-3xl border border-white/10 p-8 lg:p-12">
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-neutral-500">
+            Artista de la semana
+          </p>
+
+          {featuredPerson ? (
+            <>
+              <h2 className="mt-5 text-5xl font-black tracking-[-0.05em]">
+                {featuredPerson.name}
+              </h2>
+
+              <p className="mt-5 text-lg font-semibold leading-8 text-[#D9FF00]">
+                {
+                  featuredPerson.headline
+                }
+              </p>
+
+              <p className="mt-6 max-w-xl text-lg leading-8 text-neutral-400">
+                {featuredPerson.description ||
+                  'Una voz activa dentro del ecosistema cultural y creativo de Cultura Está.'}
+              </p>
+
+              <Link
+                href={getPublicActorHref(
+                  featuredPerson
+                )}
+                className="mt-9 self-start rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-[#D9FF00]"
+              >
+                Conocer el perfil
+              </Link>
+            </>
+          ) : (
+            <>
+              <h2 className="mt-5 text-5xl font-black tracking-[-0.05em]">
+                Una práctica construida entre imagen,
+                territorio y memoria
+              </h2>
+
+              <p className="mt-6 max-w-xl text-lg leading-8 text-neutral-400">
+                Cada semana destacamos una voz del ecosistema:
+                su proceso, sus preguntas, su trayectoria y
+                las comunidades con las que trabaja.
+              </p>
+
+              <Link
+                href="/ecosistema"
+                className="mt-9 self-start rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-[#D9FF00]"
+              >
+                Explorar personas
+              </Link>
+            </>
+          )}
+        </div>
+      </section>
+
+      <section
+        id="proyecto"
+        className="mx-auto max-w-7xl px-6 pb-24"
+      >
+        {featuredProject ? (
+          <FeaturedProject
+            project={
+              featuredProject
+            }
+          />
+        ) : (
+          <article className="grid overflow-hidden rounded-3xl border border-white/10 bg-white text-black lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="p-8 sm:p-12 lg:p-16">
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-neutral-500">
+                Proyecto de la semana
+              </p>
+
+              <h2 className="mt-5 max-w-3xl text-5xl font-black tracking-[-0.05em]">
+                Los proyectos del ecosistema aparecerán aquí
+              </h2>
+
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-neutral-600">
+                Los proyectos deben ser desarrollados con
+                Creative OS, aceptados por el ecosistema y
+                aprobados editorialmente por Cultura Está.
+              </p>
+
+              <div className="mt-9 flex flex-wrap gap-3">
+                <Link
+                  href="/proyectos"
+                  className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white"
+                >
+                  Ver proyectos
+                </Link>
+
+                <Link
+                  href="/studio?new=1"
+                  className="rounded-full border border-black/20 px-6 py-3 text-sm font-semibold text-black"
+                >
+                  Crear un proyecto
+                </Link>
+              </div>
+            </div>
+
+            <div className="min-h-96 bg-gradient-to-br from-neutral-300 via-neutral-500 to-neutral-900" />
+          </article>
+        )}
+      </section>
+
+      <section className="border-t border-white/10 bg-white/[0.025]">
+        <div className="mx-auto grid max-w-7xl gap-8 px-6 py-20 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#D9FF00]">
+              Creative OS
+            </p>
+
+            <h2 className="mt-4 max-w-4xl text-4xl font-black tracking-[-0.045em] sm:text-5xl">
+              Lo que descubres también puede convertirse en
+              un proyecto.
+            </h2>
+
+            <p className="mt-5 max-w-3xl text-lg leading-8 text-neutral-400">
+              Convierte una inspiración, necesidad u
+              oportunidad en una estructura de producción
+              conectada con personas, espacios y
+              financiadores del ecosistema.
+            </p>
+          </div>
+
+          <Link
+            href="/studio?new=1"
+            className="self-start rounded-full bg-[#D9FF00] px-7 py-4 text-sm font-bold text-black transition hover:bg-white lg:self-center"
+          >
+            Construir un proyecto
+          </Link>
+        </div>
+      </section>
+
+      <footer className="border-t border-white/10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-bold">
+              Cultura Está
+            </p>
+
+            <p className="mt-2 text-sm text-neutral-500">
+              Un medio conectado a un ecosistema creativo.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-5 text-sm text-neutral-400">
+            <Link
+              href="/proyectos"
+              className="transition hover:text-white"
+            >
+              Proyectos
+            </Link>
+
+            <Link
+              href="/ecosistema"
+              className="transition hover:text-white"
+            >
+              Ecosistema
+            </Link>
+
+            <Link
+              href="/mi-ecosistema"
+              className="transition hover:text-white"
+            >
+              Mi Ecosistema
+            </Link>
+
+            <Link
+              href="/studio"
+              className="transition hover:text-white"
+            >
+              Acceder al Studio →
+            </Link>
+          </div>
+        </div>
+      </footer>
+    </main>
+  );
 }
 
-function Chat({ project, setProject, log, setLog }: any) {
-  const [input, setInput] = useState('');
-  const [messages, setMessages] = useState([
-    { role: 'ai', text: '¿Qué quieres construir hoy? Cuéntame tu idea como si estuvieras hablando con un productor ejecutivo.' },
-    { role: 'user', text: 'Quiero abrir Charlie Gelato, una heladería artesanal que también sea un espacio cultural en Bogotá.' },
-    { role: 'ai', text: 'Me encanta. Voy a ayudarte a convertir esa conversación en proyecto. Para empezar: ¿cuál es el propósito principal y a qué comunidad quieres llegar?' }
+function FeaturedProject({
+  project,
+}: {
+  project:
+    PublicProjectSummary;
+}) {
+  return (
+    <article className="grid overflow-hidden rounded-3xl border border-white/10 bg-white text-black lg:grid-cols-[1.1fr_0.9fr]">
+      <div className="p-8 sm:p-12 lg:p-16">
+        <p className="text-sm font-semibold uppercase tracking-[0.22em] text-neutral-500">
+          Proyecto de la semana
+        </p>
+
+        <h2 className="mt-5 max-w-3xl text-5xl font-black tracking-[-0.05em]">
+          {project.headline}
+        </h2>
+
+        <p className="mt-6 max-w-2xl text-lg leading-8 text-neutral-600">
+          {project.summary ||
+            project.description}
+        </p>
+
+        <div className="mt-7 flex flex-wrap gap-2">
+          {project.city ? (
+            <span className="rounded-full border border-black/10 px-4 py-2 text-xs font-semibold">
+              {project.city}
+            </span>
+          ) : null}
+
+          {project.disciplines
+            .slice(0, 4)
+            .map(
+              (discipline) => (
+                <span
+                  key={
+                    discipline
+                  }
+                  className="rounded-full border border-black/10 px-4 py-2 text-xs font-semibold"
+                >
+                  {discipline}
+                </span>
+              )
+            )}
+        </div>
+
+        <Link
+          href={`/proyectos/${project.slug}`}
+          className="mt-9 inline-flex rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#D9FF00] hover:text-black"
+        >
+          Ver proyecto
+        </Link>
+      </div>
+
+      {project.coverImageUrl ? (
+        <img
+          src={
+            project.coverImageUrl
+          }
+          alt={
+            project.headline
+          }
+          className="min-h-96 h-full w-full object-cover"
+        />
+      ) : (
+        <div className="min-h-96 bg-gradient-to-br from-neutral-300 via-neutral-500 to-neutral-900" />
+      )}
+    </article>
+  );
+}
+
+function HomeActorCard({
+  actor,
+}: {
+  actor:
+    PublicEcosystemActor;
+}) {
+  const initials =
+    actor.name
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(
+        (part) =>
+          part.charAt(0)
+      )
+      .join('')
+      .toUpperCase();
+
+  const location =
+    [
+      actor.city,
+      actor.department,
+      actor.country,
+    ]
+      .filter(Boolean)
+      .join(', ');
+
+  return (
+    <Link
+      href={getPublicActorHref(
+        actor
+      )}
+      className="group flex min-h-[360px] flex-col rounded-3xl border border-white/10 bg-white/[0.025] p-7 transition hover:-translate-y-1 hover:border-[#D9FF00]"
+    >
+      <div className="flex items-start justify-between gap-4">
+        {actor.imageUrl ? (
+          <img
+            src={
+              actor.imageUrl
+            }
+            alt={
+              actor.name
+            }
+            className="h-16 w-16 rounded-full object-cover"
+          />
+        ) : (
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#D9FF00] text-lg font-black text-black">
+            {initials || 'CE'}
+          </div>
+        )}
+
+        <span className="rounded-full border border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] text-neutral-500">
+          {
+            actorTypeLabels[
+              actor.actorType
+            ]
+          }
+        </span>
+      </div>
+
+      <h3 className="mt-7 text-2xl font-bold tracking-tight">
+        {actor.name}
+      </h3>
+
+      <p className="mt-3 text-sm font-semibold text-[#D9FF00]">
+        {actor.headline}
+      </p>
+
+      <p className="mt-5 line-clamp-3 text-sm leading-7 text-neutral-400">
+        {actor.description ||
+          'Perfil del ecosistema cultural y creativo.'}
+      </p>
+
+      {actor.labels.length > 0 ? (
+        <div className="mt-6 flex flex-wrap gap-2">
+          {actor.labels
+            .slice(0, 3)
+            .map(
+              (label) => (
+                <span
+                  key={label}
+                  className="rounded-full border border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.1em] text-neutral-500"
+                >
+                  {formatLabel(
+                    label
+                  )}
+                </span>
+              )
+            )}
+        </div>
+      ) : null}
+
+      <div className="mt-auto pt-7">
+        <p className="text-xs text-neutral-600">
+          {location ||
+            'Ubicación sin definir'}
+        </p>
+
+        <p className="mt-5 text-sm font-semibold transition group-hover:text-[#D9FF00]">
+          Conocer perfil →
+        </p>
+      </div>
+    </Link>
+  );
+}
+
+function HomeMetric({
+  value,
+  label,
+}: {
+  value:
+    string;
+
+  label:
+    string;
+}) {
+  return (
+    <article className="rounded-2xl border border-white/10 bg-white/[0.025] p-5">
+      <p className="text-3xl font-black text-[#D9FF00]">
+        {value}
+      </p>
+
+      <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-neutral-500">
+        {label}
+      </p>
+    </article>
+  );
+}
+
+async function loadHomeData(): Promise<{
+  projects:
+    PublicProjectSummary[];
+
+  actors:
+    PublicEcosystemActor[];
+}> {
+  const [
+    projectsResult,
+    actorsResult,
+  ] = await Promise.allSettled([
+    listPublishedProjects(),
+    listPublishedEcosystemActors(),
   ]);
-  function send(){
-    if(!input.trim()) return;
-    const text = input.trim();
-    setMessages([...messages,{role:'user',text},{role:'ai',text:'Perfecto. Lo estoy incorporando a la Bitácora Viva y lo traduzco en próximos pasos, objetivos y oportunidades del proyecto.'}]);
-    setLog([{title:'Nueva conversación incorporada',time:'Ahora',text,tag:'Conversación'},...log]);
-    setProject({...project, nextSteps: ['Revisar lo conversado y convertirlo en objetivo específico', ...project.nextSteps]});
-    setInput('');
+
+  if (
+    projectsResult.status ===
+    'rejected'
+  ) {
+    console.error(
+      'No fue posible cargar proyectos en la portada:',
+      projectsResult.reason
+    );
   }
-  return <main className="flex-1 p-5 md:p-10 noise">
-    <section className="max-w-5xl mx-auto"><div className="flex justify-between items-start gap-4"><div><p className="text-acid font-black uppercase text-xs tracking-[.25em]">Productor Ejecutivo IA</p><h1 className="text-4xl md:text-6xl font-black mt-2">¿Qué quieres construir hoy?</h1><p className="text-white/70 mt-4 max-w-2xl">Habla. Creative OS organiza tu pensamiento en objetivos, contexto, bitácora, documentos y próximos pasos.</p></div><button className="glass px-4 py-3 rounded-xl text-sm font-bold hidden sm:block">Ver tutorial</button></div>
-    <div className="mt-10 space-y-4">{messages.map((m,i)=><div key={i} className={`max-w-2xl p-5 rounded-2xl ${m.role==='user'?'ml-auto bg-white/10':'bg-white text-black'}`}><p className="text-sm leading-relaxed">{m.text}</p></div>)}</div>
-    <div className="mt-8 glass rounded-2xl p-3 flex gap-3"><input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==='Enter')send()}} placeholder="Escribe tu respuesta aquí..." className="flex-1 bg-transparent outline-none px-3 text-white placeholder:text-white/40"/><button onClick={send} className="bg-acid text-black p-3 rounded-xl"><Send size={18}/></button></div>
-    <div className="mt-5 flex flex-wrap gap-3 text-xs">{['¿Cuál es el contexto?','¿A quién le hablas?','¿Qué problema resuelves?','¿Qué entregable final imaginas?'].map(q=><button key={q} onClick={()=>setInput(q)} className="glass rounded-xl px-4 py-3 hover:bg-white/10">{q}</button>)}</div>
-    </section></main>
+
+  if (
+    actorsResult.status ===
+    'rejected'
+  ) {
+    console.error(
+      'No fue posible cargar actores en la portada:',
+      actorsResult.reason
+    );
+  }
+
+  return {
+    projects:
+      projectsResult.status ===
+      'fulfilled'
+        ? projectsResult.value
+        : [],
+
+    actors:
+      actorsResult.status ===
+      'fulfilled'
+        ? actorsResult.value
+        : [],
+  };
 }
 
-function ProjectView({ project }: { project: Project }){
-  const cards = [
-    ['Objetivo General', project.generalObjective, Target], ['Objetivos Específicos', project.specificObjectives.join('\n'), CheckCircle2], ['Contexto', project.context, ClipboardList], ['Comunidad', project.community, Users], ['Actividades', project.activities.join('\n'), CalendarDays], ['Recursos', project.resources.join('\n'), WalletCards], ['Alianzas', project.alliances.join('\n'), Handshake], ['Presupuesto', project.budget, WalletCards]
-  ] as const;
-  return <main className="flex-1 p-5 md:p-10 noise"><div className="max-w-6xl mx-auto"><div className="flex justify-between gap-4 items-start"><div><p className="text-white/50 text-sm">Mi proyecto</p><h1 className="text-5xl font-black">{project.name}</h1></div><button className="bg-acid text-black px-5 py-3 rounded-xl font-black flex gap-2 items-center"><Download size={16}/> Exportar PDF</button></div><div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 mt-10">{cards.map(([title,body,Icon])=><article key={title} className="glass p-6 rounded-2xl min-h-48"><Icon className="text-acid"/><h3 className="font-black uppercase text-sm mt-4">{title}</h3><p className="text-white/70 mt-3 text-sm whitespace-pre-line leading-relaxed">{body}</p><button className="text-acid text-sm mt-4 font-bold">Ver más →</button></article>)}</div></div></main>
-}
-
-function LogView({ log }: any){ return <main className="flex-1 p-5 md:p-10 noise"><div className="max-w-4xl mx-auto"><div className="flex justify-between"><div><p className="text-acid font-black uppercase text-xs tracking-[.25em]">Memoria viva</p><h1 className="text-5xl font-black">Bitácora Viva</h1></div><button className="bg-acid text-black px-4 py-3 rounded-xl font-black flex items-center gap-2"><Plus size={16}/> Nueva entrada</button></div><div className="mt-10 border-l-2 border-acid/60 pl-6 space-y-5">{log.map((item:any,i:number)=><article key={i} className="glass p-5 rounded-2xl relative"><span className="absolute -left-[34px] top-6 w-4 h-4 rounded-full bg-acid"></span><div className="flex justify-between gap-4"><h3 className="font-black">{item.title}</h3><span className="text-xs text-white/40">{item.time}</span></div><p className="text-white/70 text-sm mt-2">{item.text}</p><span className="inline-block mt-3 text-[10px] uppercase tracking-widest bg-acid/20 text-acid px-3 py-1 rounded-full">{item.tag}</span></article>)}</div></div></main> }
-
-function Documents(){ const docs=['One Pager','Propuesta','Presupuesto','Cronograma','Presentación','Carta de intención']; return <main className="flex-1 p-5 md:p-10 noise"><div className="max-w-5xl mx-auto"><p className="text-acid font-black uppercase text-xs tracking-[.25em]">Documentos automáticos</p><h1 className="text-5xl font-black">Generar documento</h1><p className="text-white/60 mt-4">Sprint 1 simula la generación. Sprint 2 conectará IA para crear documentos reales.</p><div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">{docs.map((d,i)=><button key={d} className={`glass p-6 rounded-2xl text-left hover:border-acid ${i===0?'border-acid':''}`}><FileText className="text-acid"/><h3 className="font-black mt-5">{d}</h3><p className="text-sm text-white/60 mt-2">Documento listo para presentar, gestionar o postular.</p></button>)}</div><div className="glass rounded-2xl p-4 mt-8"><label className="text-sm text-white/50">Nombre del documento</label><input defaultValue="One Pager - Charlie Gelato" className="w-full bg-black/40 border border-white/10 rounded-xl p-4 mt-2 outline-none"/><button className="w-full bg-acid text-black font-black rounded-xl py-4 mt-4">Generar documento →</button></div></div></main> }
-
-function IPP(){ return <main className="flex-1 p-5 md:p-10 noise"><div className="max-w-5xl mx-auto"><p className="text-acid font-black uppercase text-xs tracking-[.25em]">Índice de Potencial del Proyecto</p><h1 className="text-5xl font-black">IPP</h1><div className="grid lg:grid-cols-2 gap-8 mt-10"><div className="glass rounded-3xl p-8 flex flex-col items-center justify-center"><div className="w-56 h-56 rounded-full border-[18px] border-white/10 border-t-acid flex items-center justify-center"><div className="text-center"><div className="text-7xl font-black">72</div><div className="text-white/50">/100</div></div></div><h2 className="text-acid font-black text-2xl mt-6">Potencial alto</h2><p className="text-white/60 text-center mt-2">Hay buen camino, pero falta fortalecer presupuesto, alianzas y cronograma.</p></div><div className="space-y-5"><section className="glass rounded-2xl p-6"><h3 className="font-black">Fortalezas</h3>{['Propósito claro','Comunidad definida','Contexto identificado','Propuesta de valor sólida'].map(x=><p key={x} className="flex gap-2 mt-3 text-sm"><CheckCircle2 className="text-acid" size={16}/>{x}</p>)}</section><section className="glass rounded-2xl p-6"><h3 className="font-black">Áreas a fortalecer</h3>{['Presupuesto detallado','Alianzas estratégicas','Cronograma de implementación'].map(x=><p key={x} className="flex gap-2 mt-3 text-sm"><AlertCircle className="text-yellow-400" size={16}/>{x}</p>)}</section></div></div></div></main> }
-
-export default function Page(){
-  const [view,setView]=useState<View>('chat');
-  const [project,setProject]=useState<Project>(initialProject);
-  const [log,setLog]=useState(initialLog);
-  const content = useMemo(()=>({chat:<Chat project={project} setProject={setProject} log={log} setLog={setLog}/>,proyecto:<ProjectView project={project}/>,bitacora:<LogView log={log}/>,documentos:<Documents/>,ipp:<IPP/>}[view]),[view,project,log]);
-  return <div className="min-h-screen flex flex-col md:flex-row"><Sidebar view={view} setView={setView}/>{content}</div>
+function formatLabel(
+  value:
+    string
+): string {
+  return value
+    .replaceAll(
+      '_',
+      ' '
+    )
+    .replace(
+      /\b\w/g,
+      (character) =>
+        character.toUpperCase()
+    );
 }
