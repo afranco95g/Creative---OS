@@ -65,6 +65,22 @@ export function createInitialProjectGraph(): ProjectGraph {
     team: [],
     documents: [],
     eventLog: [],
+    tools: {
+      budgetLines: [],
+      scheduleItems: [],
+      grant: {
+        opportunityId: '',
+        opportunityName: '',
+        objective: '',
+        requirements: [],
+        requiredDocuments: [],
+        requiresBudget: true,
+        requiresTimeline: true,
+        attachments: [],
+        evaluationCriteria: [],
+        answers: {},
+      },
+    },
     modules: {
       identity: createModule(
         'identity',

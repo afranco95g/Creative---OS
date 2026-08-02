@@ -162,6 +162,9 @@ export interface WorkspaceProject {
     | 'business'
     | 'other';
 
+  lifecycleStatus: 'active' | 'archived';
+  archivedAt: string | null;
+
   graph:
     ProjectGraph;
 

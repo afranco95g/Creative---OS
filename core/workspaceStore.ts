@@ -456,6 +456,10 @@ class WorkspaceStore {
 
       category,
 
+      lifecycleStatus: 'active',
+
+      archivedAt: null,
+
       graph: {
         ...initialGraph,
 
@@ -618,6 +622,31 @@ class WorkspaceStore {
               .activeProjectId,
     };
 
+    this.emit();
+  }
+
+  archiveProject(projectId: string) {
+    this.setProjectLifecycle(projectId, 'archived');
+  }
+
+  restoreProject(projectId: string) {
+    this.setProjectLifecycle(projectId, 'active');
+  }
+
+  private setProjectLifecycle(projectId: string, lifecycleStatus: 'active' | 'archived') {
+    if (!this.state.projects.some((project) => project.id === projectId)) return;
+    this.state = {
+      ...this.state,
+      projects: this.state.projects.map((project) => project.id === projectId ? {
+        ...project,
+        lifecycleStatus,
+        archivedAt: lifecycleStatus === 'archived' ? now() : null,
+        updatedAt: now(),
+      } : project),
+      activeProjectId: lifecycleStatus === 'archived' && this.state.activeProjectId === projectId
+        ? null
+        : this.state.activeProjectId,
+    };
     this.emit();
   }
 

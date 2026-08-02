@@ -11,9 +11,7 @@ import {
   useSyncExternalStore,
 } from 'react';
 
-import {
-  DocumentsPanel,
-} from '@/components/DocumentsPanel';
+import { ProjectToolsPanel } from '@/components/ProjectToolsPanel';
 
 import {
   ProducerChat,
@@ -264,9 +262,7 @@ export default function ProjectPage() {
 
           {activeView ===
             'documents' && (
-            <DocumentsPanel
-              graph={graph}
-            />
+            <ProjectToolsPanel graph={graph} onChange={(nextGraph) => projectStore.replaceGraph(nextGraph)} />
           )}
 
           {activeView ===

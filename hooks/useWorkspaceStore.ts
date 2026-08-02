@@ -81,6 +81,10 @@ export function useWorkspaceActions() {
     workspaceStore.resetWorkspace();
   }, []);
 
+  const archiveProject = useCallback((projectId: string) => workspaceStore.archiveProject(projectId), []);
+  const restoreProject = useCallback((projectId: string) => workspaceStore.restoreProject(projectId), []);
+  const deleteProject = useCallback((projectId: string) => workspaceStore.deleteProject(projectId), []);
+
   return {
     createUser,
     createProject,
@@ -88,5 +92,8 @@ export function useWorkspaceActions() {
     updateProjectState,
     clearActiveProject,
     resetWorkspace,
+    archiveProject,
+    restoreProject,
+    deleteProject,
   };
 }

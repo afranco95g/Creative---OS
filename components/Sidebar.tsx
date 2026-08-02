@@ -41,7 +41,7 @@ const NAV_ITEMS: Array<{
   },
   {
     id: 'documents',
-    label: 'Documentos',
+    label: 'Herramientas',
   },
   {
     id: 'diagnosis',

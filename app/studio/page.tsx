@@ -23,6 +23,7 @@ import {
 import type {
   WorkspaceProject,
 } from '@/types/workspace';
+import { deleteArchivedCloudProject, setCloudProjectArchived } from '@/services/projects/projectCloudService';
 
 type StudioView =
   | 'workspace'
@@ -172,6 +173,9 @@ export default function StudioPage() {
       onOpenProject={
         handleOpenProject
       }
+      onArchiveProject={(projectId) => { workspaceStore.archiveProject(projectId); void setCloudProjectArchived(projectId, true).catch(() => undefined); }}
+      onRestoreProject={(projectId) => { workspaceStore.restoreProject(projectId); void setCloudProjectArchived(projectId, false).catch(() => undefined); }}
+      onDeleteProject={(projectId) => { void deleteArchivedCloudProject(projectId).then(() => workspaceStore.deleteProject(projectId)); }}
     />
   );
 }

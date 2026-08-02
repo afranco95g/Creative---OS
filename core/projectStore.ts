@@ -130,6 +130,11 @@ class ProjectStore {
     this.emit();
   }
 
+  replaceGraph(graph: ProjectGraph) {
+    this.state = { ...this.state, graph };
+    this.emit();
+  }
+
   private createSnapshot(): ProjectStoreSnapshot {
     return {
       graph: this.state.graph,

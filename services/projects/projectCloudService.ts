@@ -254,8 +254,11 @@ export async function syncLocalProjectsToCloud(
       graph: project.graph,
       messages: project.messages,
       workflow_status:
-        existingById.get(project.id)?.workflow_status ??
-        'private',
+        project.lifecycleStatus === 'archived'
+          ? 'archived'
+          : existingById.get(project.id)?.workflow_status === 'archived'
+            ? 'private'
+            : existingById.get(project.id)?.workflow_status ?? 'private',
       client_updated_at: project.updatedAt,
       created_at: project.createdAt,
     }));
@@ -302,6 +305,8 @@ export function cloudProjectToWorkspaceProject(
     category: isProjectCategory(project.category)
       ? project.category
       : 'other',
+    lifecycleStatus: project.workflowStatus === 'archived' ? 'archived' : 'active',
+    archivedAt: project.workflowStatus === 'archived' ? project.remoteUpdatedAt : null,
     graph: project.graph,
     messages: project.messages,
     createdAt: project.createdAt,
@@ -329,6 +334,18 @@ export async function submitProjectToMedia(
         'No fue posible postular el proyecto al medio.'
     );
   }
+}
+
+export async function setCloudProjectArchived(projectId: string, archived: boolean): Promise<void> {
+  const user = await getAuthenticatedUser();
+  const { error } = await getDatabaseClient().from('projects').update({ workflow_status: archived ? 'archived' : 'private' }).eq('id', projectId).eq('owner_id', user.id);
+  if (error) throw new Error(error.message || 'No fue posible cambiar el estado del proyecto.');
+}
+
+export async function deleteArchivedCloudProject(projectId: string): Promise<void> {
+  const user = await getAuthenticatedUser();
+  const { error } = await getDatabaseClient().from('projects').delete().eq('id', projectId).eq('owner_id', user.id).eq('workflow_status', 'archived');
+  if (error) throw new Error(error.message || 'No fue posible eliminar definitivamente el proyecto.');
 }
 
 export async function loadEditorialReviewQueue():

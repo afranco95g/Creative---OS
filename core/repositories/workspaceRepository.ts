@@ -320,8 +320,28 @@ function migrateProject(
       candidate.category ??
       'other',
 
-    graph:
-      candidate.graph,
+    lifecycleStatus:
+      candidate.lifecycleStatus === 'archived'
+        ? 'archived'
+        : 'active',
+
+    archivedAt:
+      typeof candidate.archivedAt === 'string'
+        ? candidate.archivedAt
+        : null,
+
+    graph: {
+      ...candidate.graph,
+      tools: candidate.graph.tools ?? {
+        budgetLines: [],
+        scheduleItems: [],
+        grant: {
+          opportunityId: '', opportunityName: '', objective: '', requirements: [],
+          requiredDocuments: [], requiresBudget: true, requiresTimeline: true,
+          attachments: [], evaluationCriteria: [], answers: {},
+        },
+      },
+    },
 
     messages:
       Array.isArray(

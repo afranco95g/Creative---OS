@@ -76,6 +76,7 @@ export interface ProjectGraph {
   team: TeamMember[];
   documents: CompiledDocument[];
   eventLog: ProjectEvent[];
+  tools: ProjectTools;
   createdAt: string;
   updatedAt: string;
 }
@@ -207,4 +208,59 @@ export interface IPPDimension {
   score: number;
   explanation: string;
   recommendation: string;
+}
+
+export type BudgetLineStatus = 'proposed' | 'approved' | 'committed' | 'paid';
+
+export interface ProjectBudgetLine {
+  id: ID;
+  category: string;
+  concept: string;
+  quantity: number;
+  unit: string;
+  unitValue: number;
+  vatRate: number;
+  withholdingRate: number;
+  otherTaxes: number;
+  status: BudgetLineStatus;
+  responsible: string;
+  provider: string;
+  estimatedDate: string;
+  actualDate: string;
+  source: 'manual' | 'creative-os';
+}
+
+export type ScheduleItemStatus = 'planned' | 'in_progress' | 'done' | 'blocked';
+
+export interface ProjectScheduleItem {
+  id: ID;
+  name: string;
+  description: string;
+  startsAt: string;
+  endsAt: string;
+  responsible: string;
+  status: ScheduleItemStatus;
+  budgetLineId: ID | null;
+  documentIds: string[];
+  tasks: string[];
+  milestone: boolean;
+}
+
+export interface GrantWorkspace {
+  opportunityId: string;
+  opportunityName: string;
+  objective: string;
+  requirements: string[];
+  requiredDocuments: string[];
+  requiresBudget: boolean;
+  requiresTimeline: boolean;
+  attachments: string[];
+  evaluationCriteria: string[];
+  answers: Record<string, string>;
+}
+
+export interface ProjectTools {
+  budgetLines: ProjectBudgetLine[];
+  scheduleItems: ProjectScheduleItem[];
+  grant: GrantWorkspace;
 }
