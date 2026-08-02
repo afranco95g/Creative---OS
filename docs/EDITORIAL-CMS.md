@@ -2,10 +2,10 @@
 
 ## Activacion
 
-1. Ejecutar `database/023_editorial_cms.sql` en el SQL Editor de Supabase.
+1. Ejecutar `database/023_editorial_cms.sql` y después `database/024_editorial_media_hardening.sql` en el SQL Editor de Supabase.
 2. Configurar `NEXT_PUBLIC_SITE_URL` con la URL canonica de produccion.
 3. Asignar `journalist` a quienes redactan y `media_admin` a quienes publican y administran portada.
-4. Confirmar que el bucket publico `editorial-media` existe y acepta JPG, PNG y WebP hasta 10 MB.
+4. Confirmar que el bucket público `editorial-media` acepta JPG, PNG y WebP hasta 10 MB, y MP4 o WebM hasta 100 MB.
 
 ## Crear otra cuenta periodista
 

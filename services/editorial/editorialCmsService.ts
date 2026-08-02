@@ -45,9 +45,10 @@ export async function deleteHomepageSection(id: string) { const { error } = awai
 export async function createHomepageDraft(id:string):Promise<string>{const{data,error}=await db().rpc('create_homepage_section_draft',{source_section_id:id});if(error)throw new Error(error.message);return data;}
 export async function publishHomepageDraft(id:string):Promise<string>{const{data,error}=await db().rpc('publish_homepage_section_draft',{draft_section_id:id});if(error)throw new Error(error.message);return data;}
 export async function createEditorialDraftFromProject(projectId:string):Promise<string>{const{data,error}=await db().rpc('create_editorial_draft_from_project',{target_project_id:projectId});if(error)throw new Error(error.message);return data;}
-export async function uploadEditorialImage(file: File, metadata: { altText: string; credit: string; description: string }): Promise<EditorialMediaAsset> {
-  if (!['image/jpeg','image/png','image/webp'].includes(file.type)) throw new Error('Usa una imagen JPG, PNG o WebP.');
-  if (file.size > 10 * 1024 * 1024) throw new Error('La imagen supera el máximo de 10 MB.');
+export async function uploadEditorialMedia(file: File, metadata: { altText: string; credit: string; description: string }): Promise<EditorialMediaAsset> {
+  if (!['image/jpeg','image/png','image/webp','video/mp4','video/webm'].includes(file.type)) throw new Error('Usa JPG, PNG, WebP, MP4 o WebM.');
+  const maxSize = file.type.startsWith('video/') ? 100 : 10;
+  if (file.size > maxSize * 1024 * 1024) throw new Error(`El archivo supera el máximo de ${maxSize} MB.`);
   const { data: { user } } = await supabase.auth.getUser(); if (!user) throw new Error('Debes iniciar sesión.');
   const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg'; const path = `${user.id}/${crypto.randomUUID()}.${extension}`;
   const { error: uploadError } = await supabase.storage.from('editorial-media').upload(path, file, { contentType: file.type });
@@ -56,6 +57,7 @@ export async function uploadEditorialImage(file: File, metadata: { altText: stri
   const { data, error } = await db().from('editorial_media_assets').insert({ storage_path: path, public_url: urlData.publicUrl, file_name: file.name, mime_type: file.type, size_bytes: file.size, alt_text: metadata.altText.trim(), credit: metadata.credit.trim(), description: metadata.description.trim() }).select('*').single();
   if (error) throw new Error(error.message); return mapMedia(data);
 }
+export const uploadEditorialImage = uploadEditorialMedia;
 export async function listEditorialMedia(): Promise<EditorialMediaAsset[]> { const { data, error } = await db().from('editorial_media_assets').select('*').order('created_at', { ascending: false }); if (error) throw new Error(error.message); return (data ?? []).map(mapMedia); }
 export function normalizeSlug(value: string) { return value.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
 function mapPost(r: any): EditorialPost { return { id:r.id,slug:r.slug,postType:r.post_type as EditorialPostType,title:r.title,excerpt:r.excerpt,bodyBlocks:(r.body_blocks??[]) as EditorialBodyBlock[],coverImageUrl:r.cover_image_url??'',coverImageAlt:r.cover_image_alt??'',coverCaption:r.cover_caption??'',credits:r.credits??'',byline:r.byline??'',category:r.category??'',tags:r.tags??[],location:r.location??'',relatedProjectId:r.related_project_id,status:r.status as EditorialPostStatus,seoTitle:r.seo_title??'',seoDescription:r.seo_description??'',shareTitle:r.share_title??'',shareDescription:r.share_description??'',shareImageUrl:r.share_image_url??'',isSponsored:Boolean(r.is_sponsored),sponsorLabel:r.sponsor_label??'',sponsorshipDisclosure:r.sponsorship_disclosure??'',publishAt:r.publish_at??'',publishedAt:r.published_at,createdAt:r.created_at,updatedAt:r.updated_at }; }
