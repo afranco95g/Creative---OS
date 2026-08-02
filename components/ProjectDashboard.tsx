@@ -4,6 +4,7 @@ import { ProjectGraph } from '../types/project';
 import { mapProjectToAreas } from '../engines/universalProjectMapper';
 import { buildAreaNarrative } from '../engines/executiveNarrativeEngine';
 import { EcosystemSignalConsent } from './projects/EcosystemSignalConsent';
+import { BudgetSuggestion } from './projects/BudgetSuggestion';
 
 interface ProjectDashboardProps {
   graph: ProjectGraph;
@@ -104,6 +105,7 @@ export function ProjectDashboard({ graph, projectId }: ProjectDashboardProps) {
       </div>
 
       <EcosystemSignalConsent projectId={projectId} />
+      <BudgetSuggestion projectId={projectId} budgetContent={graph.modules.budget.content} />
     </section>
   );
 }

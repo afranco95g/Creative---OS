@@ -1190,6 +1190,13 @@ function BrandPlatform({
         title="Próxima etapa: plataforma comercial de marca"
         description="Aquí conectaremos productos, experiencias compatibles, activaciones, distribución dentro de tickets, resultados y reportes."
       />
+
+      <Link
+        href="/productos/gestionar"
+        className="inline-flex bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
+      >
+        Gestionar productos
+      </Link>
     </section>
   );
 }

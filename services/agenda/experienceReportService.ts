@@ -113,7 +113,7 @@ export async function loadExperienceReportWorkspace(
     data,
     error,
   } = await database.rpc(
-    'get_experience_report_workspace',
+    'get_experience_report_workspace_secure',
     {
       target_experience_id:
         experienceId,

@@ -168,7 +168,7 @@ export async function loadManageableExperiences():
     data,
     error,
   } = await database.rpc(
-    'list_manageable_experiences'
+    'list_manageable_experiences_secure'
   );
 
   if (error) {

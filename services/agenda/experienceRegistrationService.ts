@@ -234,7 +234,7 @@ export async function loadExperienceAttendees(
     data,
     error,
   } = await database.rpc(
-    'list_experience_attendees',
+    'list_experience_attendees_secure',
     {
       target_experience_id:
         experienceId,

@@ -386,7 +386,7 @@ export async function loadFundingOpportunityApplications(
     data,
     error,
   } = await database.rpc(
-    'list_funding_opportunity_applications',
+    'list_funding_opportunity_applications_secure',
     {
       target_opportunity_id:
         opportunityId,

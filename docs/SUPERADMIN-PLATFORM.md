@@ -84,6 +84,8 @@ Ejecutar en Supabase SQL Editor, en este orden:
 1. `database/026_superadmin_foundation.sql`
 2. `database/027_financial_operations_foundation.sql`
 3. `database/028_media_admin_boundary.sql`
+4. `database/029_secure_operational_rpc.sql`
+5. `database/030_master_operations.sql`
 
 Despues desplegar el commit correspondiente en Vercel.
 
@@ -97,16 +99,21 @@ Despues desplegar el commit correspondiente en Vercel.
 6. Crear senales consentidas desde la RPC `share_ecosystem_signal` y verificar el umbral.
 7. Abrir `/admin/configuracion/reglas-tributarias`, crear un borrador con fuente oficial y
    comprobar que no queda activo automaticamente.
-8. Ejecutar `npm.cmd run typecheck`, `npm.cmd run lint -- --quiet` y `npm.cmd run build`.
+8. Abrir `/admin/calendario` y comprobar sus vistas mes, semana, lista y trimestre.
+9. Abrir `/admin/ticketing`, crear un tipo, registrar venta, devolucion y cortesia, y verificar
+   que nunca se supere la capacidad.
+10. Abrir `/admin/productos`, revisar un producto propuesto y comprobar su historial.
+11. Abrir `/admin/presupuesto`, agregar lineas, cambiar estados, calcular un escenario y exportar CSV.
+12. Abrir `/admin/reportes`, cambiar el periodo y descargar el reporte consolidado.
+13. Ejecutar `npm.cmd run typecheck`, `npm.cmd run lint -- --quiet` y `npm.cmd run build`.
 
 ## Limites pendientes
 
 - La pasarela de pago, devoluciones monetarias y conciliacion bancaria no estan integradas.
 - No se cargan tarifas tributarias sin validacion profesional.
-- La exportacion XLSX/PDF y el calendario maestro multivista requieren una fase adicional.
-- La interfaz de presupuesto y ticketing sobre las tablas 027 requiere completarse antes de
-  declarar esos modulos listos para beta.
-- Las RPC historicas pueden seguir devolviendo metadatos no editoriales si se invocan fuera de
-  la interfaz. La migracion 028 bloquea su escritura mediante triggers y restringe RLS; una
-  siguiente limpieza debe reemplazar las funciones antiguas para reducir tambien esa superficie
-  de lectura tecnica.
+- Las exportaciones operativas se entregan en CSV. XLSX y PDF requieren incorporar y mantener
+  generadores especificos; no se simulan cambiando solamente la extension del archivo.
+- Ticketing registra inventario operativo, ventas, devoluciones y cortesias. La pasarela de pago,
+  la devolucion monetaria y la conciliacion bancaria siguen siendo integraciones externas.
+- Los modulos financieros quedan listos para beta operativa, no para contabilidad oficial ni
+  recaudo financiero en produccion sin las integraciones y validaciones profesionales indicadas.

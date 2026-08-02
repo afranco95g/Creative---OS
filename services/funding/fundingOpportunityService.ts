@@ -121,7 +121,7 @@ export async function loadManageableFundingOpportunities():
     data,
     error,
   } = await database.rpc(
-    'list_manageable_funding_opportunities'
+    'list_manageable_funding_opportunities_secure'
   );
 
   if (error) {
