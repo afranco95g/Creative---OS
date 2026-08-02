@@ -26,6 +26,13 @@ function LoginContent() {
   const searchParams =
     useSearchParams();
 
+  const requestedRedirect = searchParams.get('redirect');
+  const safeRedirect =
+    requestedRedirect?.startsWith('/') &&
+    !requestedRedirect.startsWith('//')
+      ? requestedRedirect
+      : '/studio';
+
   const [
     email,
     setEmail,
@@ -74,19 +81,6 @@ function LoginContent() {
 
       return;
     }
-
-    const requestedRedirect =
-      searchParams.get('redirect');
-
-    const safeRedirect =
-      requestedRedirect?.startsWith(
-        '/'
-      ) &&
-      !requestedRedirect.startsWith(
-        '//'
-      )
-        ? requestedRedirect
-        : '/studio';
 
     router.replace(
       safeRedirect
@@ -196,7 +190,7 @@ function LoginContent() {
             </p>
 
             <Link
-              href="/registro"
+              href={`/registro?redirect=${encodeURIComponent(safeRedirect)}`}
               className="mt-3 inline-flex font-semibold text-white transition hover:text-[#D9FF00]"
             >
               Crear una cuenta →

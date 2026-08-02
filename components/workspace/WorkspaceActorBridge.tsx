@@ -57,6 +57,7 @@ export function WorkspaceActorBridge({
 }: WorkspaceActorBridgeProps) {
   useEffect(() => {
     const actors: WorkspaceActor[] = [];
+    let connected = false;
 
     if (person) {
       actors.push({
@@ -134,9 +135,18 @@ export function WorkspaceActorBridge({
       });
     });
 
-    workspaceStore.setAvailableActors(
-      actors
-    );
+    function connectActors() {
+      if (connected || !workspaceStore.getSnapshot().user) {
+        return;
+      }
+
+      connected = true;
+      workspaceStore.setAvailableActors(actors);
+    }
+
+    connectActors();
+
+    return workspaceStore.subscribe(connectActors);
   }, [person, spaces, funders]);
 
   return null;

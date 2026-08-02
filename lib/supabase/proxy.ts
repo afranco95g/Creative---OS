@@ -35,9 +35,17 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
 
   const userId = data?.claims?.sub;
-  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin');
+  const protectedPrefixes = [
+    '/admin',
+    '/studio',
+    '/workspace',
+    '/mi-ecosistema',
+  ];
+  const isProtectedRoute = protectedPrefixes.some((prefix) =>
+    request.nextUrl.pathname.startsWith(prefix)
+  );
 
-  if (isAdminRoute && !userId) {
+  if (isProtectedRoute && !userId) {
     const loginUrl = request.nextUrl.clone();
 
     loginUrl.pathname = '/login';

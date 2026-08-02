@@ -38,6 +38,8 @@ export default function StudioPage() {
     'workspace'
   );
 
+  const [creationError, setCreationError] = useState('');
+
   const workspaceState =
     useSyncExternalStore(
       (listener) =>
@@ -85,20 +87,25 @@ export default function StudioPage() {
     category:
       WorkspaceProject['category']
   ) {
-    const project =
-      workspaceStore.createProject(
+    setCreationError('');
+
+    try {
+      const project = workspaceStore.createProject(
         title,
         description,
         category
       );
 
-    workspaceStore.selectProject(
-      project.id
-    );
+      workspaceStore.selectProject(project.id);
 
-    router.push(
-      `/studio/projects/${project.id}`
-    );
+      router.push(`/studio/projects/${project.id}`);
+    } catch (error) {
+      setCreationError(
+        error instanceof Error
+          ? error.message
+          : 'No fue posible crear la Mesa de Producción.'
+      );
+    }
   }
 
   function handleOpenProject(
@@ -137,6 +144,7 @@ export default function StudioPage() {
   ) {
     return (
       <CreateProjectScreen
+        errorMessage={creationError}
         onCancel={
           handleCloseCreateProject
         }

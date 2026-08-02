@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import {
   useRouter,
+  useSearchParams,
 } from 'next/navigation';
 
 import {
+  Suspense,
   type FormEvent,
   useMemo,
   useState,
@@ -100,9 +102,16 @@ const PATH_OPTIONS: PathOption[] = [
   },
 ];
 
-export default function RegisterPage() {
+function RegisterContent() {
   const router =
     useRouter();
+  const searchParams = useSearchParams();
+  const requestedRedirect = searchParams.get('redirect');
+  const safeRedirect =
+    requestedRedirect?.startsWith('/') &&
+    !requestedRedirect.startsWith('//')
+      ? requestedRedirect
+      : '/mi-ecosistema';
 
   const [
     selectedPath,
@@ -262,7 +271,7 @@ export default function RegisterPage() {
 
     if (data.session) {
       router.replace(
-        '/mi-ecosistema'
+        safeRedirect
       );
 
       router.refresh();
@@ -295,7 +304,7 @@ export default function RegisterPage() {
 
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              href="/login"
+              href={`/login?redirect=${encodeURIComponent(safeRedirect)}`}
               className="rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black"
             >
               Ir a iniciar sesión
@@ -595,7 +604,7 @@ export default function RegisterPage() {
         <p className="mt-8 text-center text-sm text-[#777777]">
           ¿Ya tienes una cuenta?{' '}
           <Link
-            href="/login"
+            href={`/login?redirect=${encodeURIComponent(safeRedirect)}`}
             className="font-semibold text-white hover:text-[#D9FF00]"
           >
             Inicia sesión
@@ -603,6 +612,14 @@ export default function RegisterPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterContent />
+    </Suspense>
   );
 }
 

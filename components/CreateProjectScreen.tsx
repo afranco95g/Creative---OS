@@ -4,6 +4,7 @@ import { FormEvent, useState } from 'react';
 import { WorkspaceProject } from '../types/workspace';
 
 interface CreateProjectScreenProps {
+  errorMessage?: string;
   onCancel: () => void;
   onCreate: (
     title: string,
@@ -55,6 +56,7 @@ const PROJECT_CATEGORIES: {
 ];
 
 export function CreateProjectScreen({
+  errorMessage,
   onCancel,
   onCreate,
 }: CreateProjectScreenProps) {
@@ -183,6 +185,12 @@ export function CreateProjectScreen({
                 Crear Mesa de Producción
               </button>
             </div>
+
+            {errorMessage ? (
+              <p className="mt-4 rounded-2xl border border-red-400/25 bg-red-400/10 px-5 py-4 text-sm text-red-200">
+                {errorMessage}
+              </p>
+            ) : null}
           </form>
         )}
       </section>
