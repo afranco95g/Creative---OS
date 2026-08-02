@@ -58,7 +58,7 @@ export const workspaceSections: WorkspaceSection[] = [
     eyebrow: 'El medio',
     title: 'Editorial',
     description:
-      'Herramientas exclusivas para los periodistas y responsables editoriales de Cultura Está.',
+      'Herramientas exclusivas para los periodistas y responsables editoriales de Cultura Esta.',
     modules: [
       {
         id: 'stories',
@@ -202,7 +202,7 @@ export const workspaceSections: WorkspaceSection[] = [
     eyebrow: 'Operación',
     title: 'Administración',
     description:
-      'Configuración, usuarios, permisos y operación interna de Cultura Está.',
+      'Configuración, usuarios, permisos y operación interna de Cultura Esta.',
     modules: [
       {
         id: 'users',

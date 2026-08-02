@@ -18,7 +18,7 @@ export function PublicHeader({
         <div className="flex items-center gap-12">
 
           <button className="text-2xl font-bold tracking-tight">
-            Cultura Está
+            Cultura Esta
           </button>
 
           <nav className="hidden gap-8 text-sm text-[#B8B8B8] md:flex">

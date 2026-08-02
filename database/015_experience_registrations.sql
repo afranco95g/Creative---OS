@@ -1,5 +1,5 @@
 -- ============================================================
--- CULTURA ESTÁ
+-- CULTURA ESTA
 -- Migración 015
 -- Inscripciones, asistentes y entradas digitales
 -- ============================================================

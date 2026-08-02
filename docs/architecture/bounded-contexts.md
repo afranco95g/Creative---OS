@@ -1,4 +1,4 @@
-# Cultura Está
+# Cultura Esta
 ## Bounded Contexts v1
 
 Los Bounded Contexts dividen la plataforma en dominios independientes que comparten un mismo lenguaje.
@@ -41,7 +41,7 @@ Entidades:
 - spaces
 - relationships
 
-Es el corazón de Cultura Está.
+Es el corazón de Cultura Esta.
 
 Todo lo demás consume información desde aquí.
 

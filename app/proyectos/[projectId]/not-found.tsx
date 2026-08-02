@@ -5,7 +5,7 @@ export default function PublicProjectNotFound() {
     <main className="flex min-h-screen items-center justify-center bg-[#050505] px-6 text-white">
       <section className="w-full max-w-2xl rounded-[32px] border border-white/10 bg-[#0A0A0A] p-8 md:p-10">
         <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#D9FF00]">
-          Cultura Está
+          Cultura Esta
         </p>
 
         <h1 className="mt-6 text-4xl font-bold tracking-[-0.04em]">

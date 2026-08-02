@@ -1,5 +1,5 @@
 -- ============================================================
--- CULTURA ESTÁ
+-- CULTURA ESTA
 -- Migración 012
 -- Almacenamiento de imágenes de experiencias
 -- ============================================================

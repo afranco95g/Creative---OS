@@ -1,5 +1,5 @@
 -- ============================================================
--- CULTURA ESTÁ
+-- CULTURA ESTA
 -- Migración 018
 -- Postulación de proyectos a oportunidades de financiación
 -- ============================================================

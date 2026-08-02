@@ -43,7 +43,7 @@ export const stories: Story[] = [
     excerpt:
       'Un recorrido por artistas, talleres y espacios independientes que están redefiniendo uno de los distritos creativos más importantes de Bogotá.',
 
-    author: 'Cultura Está',
+    author: 'Cultura Esta',
 
     cover: '/images/san-felipe.jpg',
 

@@ -68,7 +68,7 @@ export default async function PublicTicketPage({
             href="/"
             className="text-xl font-black tracking-[-0.04em]"
           >
-            CULTURA ESTÁ
+            CULTURA ESTA
           </Link>
 
           <p className="mt-8 text-xs font-bold uppercase tracking-[0.26em] text-[#D9FF00]">

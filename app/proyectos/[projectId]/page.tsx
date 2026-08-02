@@ -106,7 +106,7 @@ export default async function PublicProjectPage({
             href="/"
             className="text-xl font-black tracking-[-0.04em]"
           >
-            CULTURA ESTÁ
+            CULTURA ESTA
           </Link>
 
           <div className="flex flex-wrap gap-3">

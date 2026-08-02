@@ -1,5 +1,5 @@
 -- ============================================================
--- CULTURA ESTÁ
+-- CULTURA ESTA
 -- Migración 002: personas del ecosistema cultural
 -- ============================================================
 
@@ -7,7 +7,7 @@
 create table if not exists public.people (
   id uuid primary key default gen_random_uuid(),
 
-  -- Cuenta asociada dentro de Cultura Está.
+  -- Cuenta asociada dentro de Cultura Esta.
   -- Puede ser null porque una persona puede existir en el
   -- ecosistema sin tener todavía una cuenta de usuario.
   profile_id uuid unique

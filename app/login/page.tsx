@@ -96,12 +96,12 @@ function LoginContent() {
           href="/"
           className="text-sm text-[#888888] transition hover:text-white"
         >
-          ← Volver a Cultura Está
+          ← Volver a Cultura Esta
         </Link>
 
         <div className="mt-8 rounded-[32px] border border-white/10 bg-[#0A0A0A] p-8 shadow-2xl md:p-10">
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#D9FF00]">
-            Cultura Está
+            Cultura Esta
           </p>
 
           <h1 className="mt-5 text-4xl font-bold leading-tight">
@@ -110,7 +110,7 @@ function LoginContent() {
 
           <p className="mt-4 leading-relaxed text-[#8A8A8A]">
             Accede a tus proyectos, perfiles, espacios,
-            organizaciones y conexiones dentro de Cultura Está.
+            organizaciones y conexiones dentro de Cultura Esta.
           </p>
 
           <form

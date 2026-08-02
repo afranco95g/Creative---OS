@@ -5,7 +5,7 @@ import { ShareButtons } from './ShareButtons';
 export function EditorialArticle({ post, canonicalUrl }: { post: EditorialPost; canonicalUrl: string }) {
   return <main className="min-h-screen bg-[#050505] text-white"><article>
     <header className="mx-auto max-w-5xl px-6 pb-12 pt-10">
-      <Link href="/" className="text-sm text-neutral-500">← Cultura Está</Link>
+      <Link href="/" className="text-sm text-neutral-500">← Cultura Esta</Link>
       <p className="mt-12 text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">{post.category || post.postType}</p>
       {post.isSponsored ? <p className="mt-4 inline-flex border border-[#D9FF00]/40 px-3 py-1 text-xs">{post.sponsorLabel || 'Contenido patrocinado'}</p> : null}
       <h1 className="mt-5 text-5xl font-bold leading-[0.98] sm:text-7xl">{post.title}</h1>

@@ -40,7 +40,7 @@ export function WorkspaceHome({
               </Link>
 
               <span className="text-xs text-[#555555]">
-                Cultura Está
+                Cultura Esta
               </span>
             </div>
 
@@ -218,7 +218,7 @@ export function WorkspaceHome({
             <p className="mt-3 text-sm leading-relaxed text-[#A6A6A6]">
               Explora artistas, procesos, espacios, eventos,
               talleres, clases y manifestaciones culturales
-              destacadas por Cultura Está.
+              destacadas por Cultura Esta.
             </p>
 
             <p className="mt-6 text-sm font-semibold text-[#D9FF00] transition group-hover:translate-x-1">

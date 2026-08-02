@@ -110,7 +110,7 @@ export default async function PublicExperiencePage({
             href="/"
             className="text-xl font-black tracking-[-0.04em]"
           >
-            CULTURA ESTÁ
+            CULTURA ESTA
           </Link>
 
           <div className="flex flex-wrap gap-3">
@@ -354,7 +354,7 @@ export default async function PublicExperiencePage({
 
               <section className="mt-16 rounded-[30px] border border-[#D9FF00]/20 bg-[#D9FF00]/5 p-7 md:p-9">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">
-                  Cultura Está
+                  Cultura Esta
                 </p>
 
                 <h2 className="mt-5 text-3xl font-bold tracking-[-0.035em]">

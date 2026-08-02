@@ -30,7 +30,7 @@ export default async function PublicProjectsPage() {
             href="/"
             className="text-xl font-black tracking-[-0.04em]"
           >
-            CULTURA ESTÁ
+            CULTURA ESTA
           </Link>
 
           <div className="flex flex-wrap gap-3">
@@ -64,7 +64,7 @@ export default async function PublicProjectsPage() {
           <p className="mt-8 max-w-3xl text-lg leading-8 text-[#A6A6A6]">
             Procesos construidos con Creative OS, aceptados
             por el ecosistema y desarrollados editorialmente
-            por Cultura Está.
+            por Cultura Esta.
           </p>
         </div>
       </section>
@@ -131,7 +131,7 @@ export default async function PublicProjectsPage() {
                     ) : (
                       <div className="flex aspect-[16/10] items-end bg-[#111111] p-7">
                         <p className="max-w-xs text-xs font-bold uppercase tracking-[0.24em] text-[#D9FF00]">
-                          Cultura Está · Proyecto
+                          Cultura Esta · Proyecto
                         </p>
                       </div>
                     )}

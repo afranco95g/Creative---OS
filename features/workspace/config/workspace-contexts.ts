@@ -27,7 +27,7 @@ export const workspaceContexts:
 
     {
       id: 'cultura-esta',
-      name: 'Cultura Está',
+      name: 'Cultura Esta',
       type: 'media',
       description:
         'Gestión editorial, agenda cultural, artistas, proyectos y publicaciones del medio.',

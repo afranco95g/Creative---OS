@@ -1,4 +1,4 @@
-# Cultura Está
+# Cultura Esta
 ## Relationship Model v1
 
 Las relaciones son entidades de primera clase.
@@ -145,7 +145,7 @@ fundador
 
 ↓
 
-Cultura Está
+Cultura Esta
 
 desde
 

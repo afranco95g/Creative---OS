@@ -91,7 +91,7 @@ const workflowDescriptions:
       'El medio solicitó ajustes antes de una nueva postulación.',
 
     published:
-      'El proyecto fue aprobado y está habilitado para aparecer en Cultura Está.',
+      'El proyecto fue aprobado y está habilitado para aparecer en Cultura Esta.',
 
     archived:
       'El proyecto está archivado.',

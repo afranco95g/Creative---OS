@@ -4,7 +4,7 @@ export function AboutSection() {
       <div className="mx-auto max-w-7xl px-10 py-32">
 
         <p className="text-sm font-bold tracking-[0.35em] uppercase text-[#D9FF00]">
-          ¿QUÉ ES CULTURA ESTÁ?
+          ¿QUÉ ES CULTURA ESTA?
         </p>
 
         <h2 className="mt-8 max-w-5xl text-6xl font-bold leading-tight text-white">
@@ -13,7 +13,7 @@ export function AboutSection() {
         </h2>
 
         <p className="mt-10 max-w-4xl text-2xl leading-relaxed text-[#9A9A9A]">
-          Cultura Está no es solamente un medio,
+          Cultura Esta no es solamente un medio,
           una comunidad o una plataforma.
 
           Es una infraestructura que conecta

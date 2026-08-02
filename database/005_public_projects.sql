@@ -1,5 +1,5 @@
 -- ============================================================
--- CULTURA ESTÁ
+-- CULTURA ESTA
 -- Migración 005
 -- Consulta pública segura de proyectos publicados
 -- ============================================================

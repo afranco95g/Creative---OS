@@ -231,7 +231,7 @@ export function ProjectEditorialForm({
             </Link>
 
             <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-[#D9FF00]">
-              Cultura Está · Medio
+              Cultura Esta · Medio
             </p>
 
             <h1 className="mt-3 max-w-4xl text-4xl font-bold tracking-[-0.04em] sm:text-6xl">

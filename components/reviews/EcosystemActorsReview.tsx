@@ -223,7 +223,7 @@ export function EcosystemActorsReview() {
             <p className="mt-5 max-w-3xl text-base leading-8 text-[#999999]">
               Revisa las personas, espacios y financiadores antes
               de hacer sus perfiles visibles dentro del ecosistema
-              público de Cultura Está.
+              público de Cultura Esta.
             </p>
           </div>
 

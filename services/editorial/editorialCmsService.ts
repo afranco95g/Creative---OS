@@ -19,7 +19,7 @@ export async function saveEditorialPost(input: Partial<EditorialPost> & { id?: s
   const payload = {
     slug: input.slug || normalizeSlug(input.title), post_type: input.postType ?? 'article', title: input.title.trim(), excerpt: input.excerpt?.trim() ?? '',
     body_blocks: input.bodyBlocks ?? [], cover_image_url: input.coverImageUrl || null, cover_image_alt: input.coverImageAlt || null,
-    cover_caption: input.coverCaption || null, credits: input.credits ?? '', byline: input.byline ?? 'Cultura Está', category: input.category ?? '', tags: input.tags ?? [],
+    cover_caption: input.coverCaption || null, credits: input.credits ?? '', byline: input.byline ?? 'Cultura Esta', category: input.category ?? '', tags: input.tags ?? [],
     location: input.location || null, related_project_id: input.relatedProjectId || null, status: input.status ?? 'draft', seo_title: input.seoTitle || null,
     seo_description: input.seoDescription || null, share_title: input.shareTitle || null, share_description: input.shareDescription || null,
     share_image_url: input.shareImageUrl || null, is_sponsored: input.isSponsored ?? false, sponsor_label: input.sponsorLabel || null,

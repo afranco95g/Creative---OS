@@ -154,7 +154,7 @@ export default async function HomePage() {
             href="/"
             className="shrink-0 text-lg font-black tracking-[-0.04em]"
           >
-            CULTURA ESTÁ
+            CULTURA ESTA
           </Link>
 
           <nav className="hidden items-center gap-7 text-sm text-neutral-300 lg:flex">
@@ -348,7 +348,7 @@ export default async function HomePage() {
             <p className="mt-5 max-w-3xl leading-7 text-neutral-400">
               Personas, espacios, marcas y organizaciones
               conectadas a proyectos y procesos creativos
-              publicados por Cultura Está.
+              publicados por Cultura Esta.
             </p>
           </div>
 
@@ -433,7 +433,7 @@ export default async function HomePage() {
         ) : (
           <div className="flex min-h-[520px] items-end rounded-3xl bg-gradient-to-br from-neutral-700 via-neutral-900 to-black p-9">
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#D9FF00]">
-              Cultura Está · Persona
+              Cultura Esta · Persona
             </p>
           </div>
         )}
@@ -457,7 +457,7 @@ export default async function HomePage() {
 
               <p className="mt-6 max-w-xl text-lg leading-8 text-neutral-400">
                 {featuredPerson.description ||
-                  'Una voz activa dentro del ecosistema cultural y creativo de Cultura Está.'}
+                  'Una voz activa dentro del ecosistema cultural y creativo de Cultura Esta.'}
               </p>
 
               <Link
@@ -517,7 +517,7 @@ export default async function HomePage() {
               <p className="mt-6 max-w-2xl text-lg leading-8 text-neutral-600">
                 Los proyectos deben ser desarrollados con
                 Creative OS, aceptados por el ecosistema y
-                aprobados editorialmente por Cultura Está.
+                aprobados editorialmente por Cultura Esta.
               </p>
 
               <div className="mt-9 flex flex-wrap gap-3">
@@ -575,7 +575,7 @@ export default async function HomePage() {
         <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-bold">
-              Cultura Está
+              Cultura Esta
             </p>
 
             <p className="mt-2 text-sm text-neutral-500">

@@ -1,7 +1,7 @@
-# Cultura Está
+# Cultura Esta
 ## Entity Relationship Diagram v1
 
-Este documento traduce el modelo conceptual de Cultura Está a una primera arquitectura técnica.
+Este documento traduce el modelo conceptual de Cultura Esta a una primera arquitectura técnica.
 
 No representa todavía todas las columnas de la base de datos.
 
@@ -11,7 +11,7 @@ Define las tablas principales, sus responsabilidades y sus conexiones.
 
 # Decisión de arquitectura
 
-Cultura Está utilizará:
+Cultura Esta utilizará:
 
 1. Tablas específicas para cada tipo de entidad.
 2. Identificadores universales para relacionarlas.
@@ -133,7 +133,7 @@ erDiagram
 
 ## profiles
 
-Representa una cuenta con acceso a Cultura Está.
+Representa una cuenta con acceso a Cultura Esta.
 
 Responsabilidades:
 
@@ -220,7 +220,7 @@ Ejemplos:
 
 ## stories
 
-Representa contenido editorial producido por Cultura Está.
+Representa contenido editorial producido por Cultura Esta.
 
 Ejemplos:
 
@@ -480,6 +480,6 @@ Las tablas específicas describen qué es cada cosa.
 
 La tabla `relationships` describe cómo se conecta todo.
 
-Cultura Está no reemplaza la realidad con una estructura genérica.
+Cultura Esta no reemplaza la realidad con una estructura genérica.
 
 La organiza sin perder sus diferencias.

@@ -1,7 +1,7 @@
-# Cultura Está
+# Cultura Esta
 ## Core Data Model v1
 
-> Este documento define el lenguaje con el que Cultura Está entiende el ecosistema cultural colombiano.
+> Este documento define el lenguaje con el que Cultura Esta entiende el ecosistema cultural colombiano.
 
 No describe pantallas.
 
@@ -13,7 +13,7 @@ Describe la realidad.
 
 # Principios
 
-Todo lo que existe dentro de Cultura Está es una Entidad.
+Todo lo que existe dentro de Cultura Esta es una Entidad.
 
 Una entidad puede relacionarse con otras entidades.
 

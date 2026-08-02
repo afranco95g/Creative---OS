@@ -1,5 +1,5 @@
 -- ============================================================
--- CULTURA ESTÁ
+-- CULTURA ESTA
 -- Migración 016
 -- Reportes de resultados e impacto de experiencias
 -- ============================================================

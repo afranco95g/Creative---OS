@@ -146,7 +146,7 @@ export default async function PublicActorPage({
             href="/"
             className="text-xl font-black tracking-[-0.04em]"
           >
-            CULTURA ESTÁ
+            CULTURA ESTA
           </Link>
 
           <div className="flex flex-wrap gap-3">
@@ -262,7 +262,7 @@ export default async function PublicActorPage({
 
             <p className="mt-7 whitespace-pre-line text-lg leading-9 text-[#B0B0B0]">
               {actor.description ||
-                'Este perfil hace parte del ecosistema cultural y creativo de Cultura Está.'}
+                'Este perfil hace parte del ecosistema cultural y creativo de Cultura Esta.'}
             </p>
 
             <section className="mt-16 border-t border-white/10 pt-12">

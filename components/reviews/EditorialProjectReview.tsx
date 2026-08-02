@@ -224,7 +224,7 @@ export function EditorialProjectReview() {
             <p className="mt-5 max-w-3xl text-base leading-7 text-[#999999]">
               Revisa las nuevas postulaciones y continúa
               administrando los proyectos que ya fueron publicados
-              por Cultura Está.
+              por Cultura Esta.
             </p>
           </div>
 
@@ -594,7 +594,7 @@ function PublishedProjectsSection({
 
                 <p className="mt-3 line-clamp-3 text-sm leading-7 text-[#888888]">
                   {project.description ||
-                    'Proyecto publicado por Cultura Está.'}
+                    'Proyecto publicado por Cultura Esta.'}
                 </p>
 
                 {project.publishedAt ? (

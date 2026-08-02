@@ -1,5 +1,5 @@
 -- ============================================================
--- CULTURA ESTÁ
+-- CULTURA ESTA
 -- Migración 003
 -- Usuarios, actores y permisos del ecosistema
 -- ============================================================

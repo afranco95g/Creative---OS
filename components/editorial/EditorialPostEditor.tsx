@@ -6,7 +6,7 @@ import type { EditorialBodyBlock, EditorialPost, EditorialPostStatus, EditorialP
 import { MediaAssetPicker } from './MediaAssetPicker';
 
 const TYPES: EditorialPostType[]=['news','article','interview','profile','chronicle','review','guide','agenda','featured_project','featured_space','featured_artist','call','opinion','sponsored','other'];
-const empty: Partial<EditorialPost>={postType:'article',title:'',slug:'',excerpt:'',bodyBlocks:[],coverImageUrl:'',coverImageAlt:'',coverCaption:'',credits:'',byline:'Cultura Está',category:'',tags:[],location:'',status:'draft',seoTitle:'',seoDescription:'',shareTitle:'',shareDescription:'',shareImageUrl:'',isSponsored:false,sponsorLabel:'',sponsorshipDisclosure:'',publishAt:''};
+const empty: Partial<EditorialPost>={postType:'article',title:'',slug:'',excerpt:'',bodyBlocks:[],coverImageUrl:'',coverImageAlt:'',coverCaption:'',credits:'',byline:'Cultura Esta',category:'',tags:[],location:'',status:'draft',seoTitle:'',seoDescription:'',shareTitle:'',shareDescription:'',shareImageUrl:'',isSponsored:false,sponsorLabel:'',sponsorshipDisclosure:'',publishAt:''};
 
 export function EditorialPostEditor({postId,canPublish}:{postId?:string;canPublish:boolean}){
  const router=useRouter(); const [post,setPost]=useState<Partial<EditorialPost>>(empty); const [saving,setSaving]=useState(false); const [message,setMessage]=useState(''); const [error,setError]=useState('');

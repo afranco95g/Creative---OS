@@ -1,5 +1,5 @@
 -- ============================================================
--- CULTURA ESTÁ
+-- CULTURA ESTA
 -- Migración 004
 -- Proyectos de Creative OS y flujo de publicación
 -- ============================================================

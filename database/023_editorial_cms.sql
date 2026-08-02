@@ -14,7 +14,7 @@ create table if not exists public.editorial_posts (
   cover_image_alt text,
   cover_caption text,
   credits text not null default '',
-  byline text not null default 'Cultura Está',
+  byline text not null default 'Cultura Esta',
   category text not null default '',
   tags text[] not null default '{}',
   location text,

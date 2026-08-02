@@ -5,7 +5,7 @@ export default function AccessDeniedPage() {
     <main className="flex min-h-screen items-center justify-center bg-[#050505] px-6 py-16 text-white">
       <section className="w-full max-w-xl text-center">
         <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#D9FF00]">
-          Cultura Está
+          Cultura Esta
         </p>
 
         <div className="mt-8 rounded-[32px] border border-white/10 bg-[#0A0A0A] p-8 md:p-12">
@@ -20,7 +20,7 @@ export default function AccessDeniedPage() {
           <p className="mx-auto mt-5 max-w-md leading-relaxed text-[#8A8A8A]">
             Tu cuenta está activa, pero todavía no tiene los permisos
             necesarios para ingresar al Workspace editorial y administrativo
-            de Cultura Está.
+            de Cultura Esta.
           </p>
 
           <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">

@@ -16,7 +16,7 @@ export default async function EcosystemDashboardPage() {
       <PageHeader
         eyebrow="Workspace"
         title="Ecosistema"
-        description="Administra las personas, organizaciones, proyectos, espacios y eventos conectados con Cultura Está."
+        description="Administra las personas, organizaciones, proyectos, espacios y eventos conectados con Cultura Esta."
       />
 
       <section

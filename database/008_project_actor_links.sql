@@ -1,5 +1,5 @@
 -- ============================================================
--- CULTURA ESTÁ
+-- CULTURA ESTA
 -- Migración 008
 -- Relaciones entre proyectos y actores del ecosistema
 -- ============================================================

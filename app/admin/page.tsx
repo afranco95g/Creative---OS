@@ -91,7 +91,7 @@ export default async function AdminPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-6 md:px-8">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#D9FF00]">
-              Cultura Está
+              Cultura Esta
             </p>
 
             <p className="mt-2 text-xl font-semibold">
@@ -119,7 +119,7 @@ export default async function AdminPage() {
           </p>
 
           <h1 className="mt-7 text-5xl font-bold leading-[0.98] md:text-6xl">
-            Todo lo que publica y activa Cultura Está.
+            Todo lo que publica y activa Cultura Esta.
           </h1>
 
           <p className="mt-7 max-w-2xl text-lg leading-relaxed text-[#9A9A9A]">
