@@ -16,6 +16,7 @@ import {
 import {
   loadPublishedEditorialProjects,
 } from '../../services/editorial/publishedEditorialProjectsService';
+import { createEditorialDraftFromProject } from '../../services/editorial/editorialCmsService';
 
 import type {
   ReviewProjectSummary,
@@ -188,6 +189,18 @@ export function EditorialProjectReview() {
     }
   }
 
+  async function handleCreateStory(projectId: string) {
+    setActiveProjectId(projectId);
+    setErrorMessage('');
+    try {
+      const postId = await createEditorialDraftFromProject(projectId);
+      window.location.href = `/admin/stories/${postId}`;
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error));
+      setActiveProjectId(null);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[#050505] px-6 py-10 text-white sm:px-8 lg:px-12">
       <div className="mx-auto max-w-6xl">
@@ -253,9 +266,10 @@ export function EditorialProjectReview() {
               onStartReview={
                 handleStartReview
               }
-              onDecision={
-                handleDecision
-              }
+          onDecision={
+            handleDecision
+          }
+          onCreateStory={handleCreateStory}
             />
 
             <PublishedProjectsSection
@@ -277,6 +291,7 @@ function PendingProjectsSection({
   activeProjectId,
   onStartReview,
   onDecision,
+  onCreateStory,
 }: {
   projects:
     ReviewProjectSummary[];
@@ -304,6 +319,7 @@ function PendingProjectsSection({
       projectId: string,
       approved: boolean
     ) => Promise<void>;
+  onCreateStory: (projectId: string) => Promise<void>;
 }) {
   return (
     <section className="mt-12">
@@ -390,6 +406,14 @@ function PendingProjectsSection({
                     ) : null}
 
                     <div className="mt-6 flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={() => void onCreateStory(project.id)}
+                        disabled={activeProjectId === project.id}
+                        className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
+                      >
+                        Crear borrador editorial
+                      </button>
                       <Link
                         href={`/revision-editorial/${project.id}`}
                         className="rounded-full bg-white px-5 py-3 text-sm font-bold text-black transition hover:bg-[#D9FF00]"

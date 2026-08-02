@@ -1,0 +1,3 @@
+import type { MetadataRoute } from 'next';import { listPublicEditorialPosts } from '@/services/public/publicEditorial';
+const siteUrl=process.env.NEXT_PUBLIC_SITE_URL||'https://creative-os-beta-cyan.vercel.app';
+export default async function sitemap():Promise<MetadataRoute.Sitemap>{const posts=await listPublicEditorialPosts(1000);return[{url:siteUrl,changeFrequency:'daily',priority:1},{url:`${siteUrl}/proyectos`,changeFrequency:'daily',priority:.8},{url:`${siteUrl}/agenda`,changeFrequency:'daily',priority:.8},{url:`${siteUrl}/ecosistema`,changeFrequency:'weekly',priority:.7},...posts.map(p=>({url:`${siteUrl}/medio/${p.slug}`,lastModified:new Date(p.updatedAt),changeFrequency:'weekly' as const,priority:.8}))]}

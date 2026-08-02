@@ -14,6 +14,20 @@ const modules = [
     available: true,
   },
   {
+    title: 'Portada',
+    description: 'Agrega, ordena, oculta y publica bloques aprobados para la portada del medio.',
+    href: '/admin/homepage',
+    status: 'Activo',
+    available: true,
+  },
+  {
+    title: 'Multimedia',
+    description: 'Sube y reutiliza imágenes editoriales con texto alternativo, créditos y metadatos.',
+    href: '/admin/media',
+    status: 'Activo',
+    available: true,
+  },
+  {
     title: 'Agenda',
     description:
       'Publica eventos, talleres, exhibiciones, conciertos, encuentros y actividades culturales.',

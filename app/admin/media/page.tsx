@@ -1,0 +1,2 @@
+import { redirect } from 'next/navigation';import { EditorialCmsNav } from '@/components/editorial/EditorialCmsNav';import { MediaLibrary } from '@/components/editorial/MediaLibrary';import { canAccessWorkspace } from '@/services/auth/workspace';
+export default async function MediaPage(){const a=await canAccessWorkspace();if(!a.authenticated)redirect('/login?redirect=/admin/media');if(!a.authorized)redirect('/acceso-denegado');return <><EditorialCmsNav/><MediaLibrary/></>}

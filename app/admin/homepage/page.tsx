@@ -1,0 +1,2 @@
+import { redirect } from 'next/navigation';import { EditorialCmsNav } from '@/components/editorial/EditorialCmsNav';import { HomepageManager } from '@/components/editorial/HomepageManager';import { canAccessWorkspace } from '@/services/auth/workspace';
+export default async function HomepageAdmin(){const a=await canAccessWorkspace();if(!a.authenticated)redirect('/login?redirect=/admin/homepage');if(!a.capabilities?.canPublishEditorial)redirect('/acceso-denegado');return <><EditorialCmsNav/><HomepageManager/></>}

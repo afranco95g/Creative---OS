@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 
 import {
   notFound,
@@ -11,6 +12,7 @@ import {
 import type {
   PublicProjectActor,
 } from '../../../services/public/publicProjects';
+import { ShareButtons } from '../../../components/public/ShareButtons';
 
 const categoryLabels:
   Record<string, string> = {
@@ -43,6 +45,20 @@ interface PublicProjectPageProps {
 
 export const dynamic =
   'force-dynamic';
+
+export async function generateMetadata({ params }: PublicProjectPageProps): Promise<Metadata> {
+  const { projectId } = await params;
+  const project = await getPublishedProject(projectId);
+  if (!project) return { robots: { index: false, follow: false } };
+  const url = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://creative-os-beta-cyan.vercel.app'}/proyectos/${project.id}`;
+  return {
+    title: project.headline,
+    description: project.summary,
+    alternates: { canonical: url },
+    openGraph: { title: project.headline, description: project.summary, url, images: project.coverImageUrl ? [project.coverImageUrl] : [] },
+    twitter: { card: 'summary_large_image', title: project.headline, description: project.summary, images: project.coverImageUrl ? [project.coverImageUrl] : [] },
+  };
+}
 
 export default async function PublicProjectPage({
   params,
@@ -150,6 +166,13 @@ export default async function PublicProjectPage({
             <p className="mt-10 max-w-4xl text-xl leading-9 text-[#B0B0B0]">
               {project.summary}
             </p>
+
+            <div className="mt-8 [&_a]:border [&_a]:border-white/15 [&_a]:px-4 [&_a]:py-2 [&_button]:border [&_button]:border-white/15 [&_button]:px-4 [&_button]:py-2">
+              <ShareButtons
+                title={project.headline}
+                url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://creative-os-beta-cyan.vercel.app'}/proyectos/${project.id}`}
+              />
+            </div>
 
             {project.disciplines.length >
             0 ? (

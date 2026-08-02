@@ -2,6 +2,7 @@ import Link from 'next/link';
 import {
   HomeAgendaSection,
 } from '../components/public/HomeAgendaSection';
+import { HomepageEditorialSections } from '../components/public/HomepageEditorialSections';
 import {
   getPublicActorHref,
   listPublishedEcosystemActors,
@@ -19,6 +20,7 @@ import type {
 import type {
   PublicProjectSummary,
 } from '../services/public/publicProjects';
+import { listPublicHomepageSections } from '../services/public/publicEditorial';
 
 const upcomingActivities = [
   {
@@ -100,6 +102,11 @@ export default async function HomePage() {
     projects,
     actors,
   } = await loadHomeData();
+  const editorialSections = await listPublicHomepageSections();
+  const hasEditorialHero = editorialSections.some((section) => section.blockType === 'hero');
+  const hasEditorialStories = editorialSections.some((section) =>
+    section.blockType === 'featured_articles' || section.blockType === 'latest_posts'
+  );
 
   const people =
     actors.filter(
@@ -205,7 +212,9 @@ export default async function HomePage() {
         </div>
       </header>
 
-      <section className="border-b border-white/10">
+      <HomepageEditorialSections />
+
+      {!hasEditorialHero ? <section className="border-b border-white/10">
         <div className="mx-auto grid min-h-[76vh] max-w-7xl items-end gap-10 px-6 py-16 lg:grid-cols-[1.3fr_0.7fr] lg:py-24">
           <div>
             <p className="mb-6 text-sm font-semibold uppercase tracking-[0.24em] text-neutral-400">
@@ -266,9 +275,9 @@ export default async function HomePage() {
             </a>
           </article>
         </div>
-      </section>
+      </section> : null}
 
-      <section
+      {!hasEditorialStories ? <section
         id="historias"
         className="mx-auto max-w-7xl px-6 py-20"
       >
@@ -318,7 +327,7 @@ export default async function HomePage() {
             )
           )}
         </div>
-      </section>
+      </section> : null}
 
       <HomeAgendaSection />
 
