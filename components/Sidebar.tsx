@@ -83,6 +83,13 @@ export function Sidebar({
     <aside className="sticky top-0 flex h-screen w-[280px] shrink-0 flex-col justify-between overflow-y-auto border-r border-[#232323] bg-[#080808] p-6">
       <div>
         <div className="mb-8 flex flex-col gap-3">
+          <Link
+            href="/"
+            className="text-xs text-[#767676] transition hover:text-[#D9FF00]"
+          >
+            ← Volver al medio
+          </Link>
+
           <button
             type="button"
             onClick={
@@ -92,13 +99,6 @@ export function Sidebar({
           >
             ← Volver al estudio
           </button>
-
-          <Link
-            href="/"
-            className="text-xs text-[#767676] transition hover:text-[#D9FF00]"
-          >
-            ← Volver al medio
-          </Link>
         </div>
 
         <div className="mb-10">

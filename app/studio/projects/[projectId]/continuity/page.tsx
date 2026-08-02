@@ -490,17 +490,17 @@ function ProjectNotFound({
 
         <div className="mt-7 flex flex-wrap gap-3">
           <Link
-            href="/studio"
-            className="rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black"
-          >
-            Volver al estudio
-          </Link>
-
-          <Link
             href="/"
             className="rounded-full border border-[#333333] px-6 py-3 text-sm font-semibold text-white"
           >
             Ir al medio
+          </Link>
+
+          <Link
+            href="/studio"
+            className="rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black"
+          >
+            Volver al estudio
           </Link>
         </div>
       </div>
