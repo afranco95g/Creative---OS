@@ -39,6 +39,11 @@ interface PersonRow {
   roles: string[] | null;
   skills: string[] | null;
   interests: string[] | null;
+  website_url: string | null;
+  instagram_url: string | null;
+  youtube_url: string | null;
+  linkedin_url: string | null;
+  public_email: string | null;
   verified: boolean | null;
   featured: boolean | null;
   status: string;
@@ -130,7 +135,7 @@ export default async function MyEcosystemPage() {
     supabase
       .from('people')
       .select(
-        'id, profile_id, full_name, slug, headline, biography, avatar_url, city, department, country, roles, skills, interests, verified, featured, status'
+        'id, profile_id, full_name, slug, headline, biography, avatar_url, city, department, country, roles, skills, interests, website_url, instagram_url, youtube_url, linkedin_url, public_email, verified, featured, status'
       )
       .eq('profile_id', user.id)
       .maybeSingle(),
@@ -295,6 +300,12 @@ export default async function MyEcosystemPage() {
             )
               ? personData.interests
               : [],
+
+          websiteUrl: personData.website_url,
+          instagramUrl: personData.instagram_url,
+          youtubeUrl: personData.youtube_url,
+          linkedinUrl: personData.linkedin_url,
+          publicEmail: personData.public_email,
 
           verified:
             Boolean(

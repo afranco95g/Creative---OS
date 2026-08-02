@@ -4,8 +4,11 @@ import Link from 'next/link';
 
 import {
   useMemo,
+  useState,
   useSyncExternalStore,
 } from 'react';
+import { CheckCircle2, Pencil, Sparkles, X } from 'lucide-react';
+import { updateMyPersonProfile, type PersonProfileInput } from '../services/ecosystem/personProfileService';
 
 import LogoutButton from './admin/LogoutButton';
 
@@ -58,6 +61,11 @@ export interface MyEcosystemPerson {
   roles: string[];
   skills: string[];
   interests: string[];
+  websiteUrl: string | null;
+  instagramUrl: string | null;
+  youtubeUrl: string | null;
+  linkedinUrl: string | null;
+  publicEmail: string | null;
   verified: boolean;
   featured: boolean;
   status: string;
@@ -621,7 +629,7 @@ function AccountSummary({
 }
 
 function PersonPlatform({
-  person,
+  person: initialPerson,
   projects,
   workspaceState,
 }: {
@@ -635,6 +643,9 @@ function PersonPlatform({
     | WorkspaceState
     | null;
 }) {
+  const [person, setPerson] = useState(initialPerson);
+  const [editing, setEditing] = useState(false);
+  const completeness = getProfileCompleteness(person);
   return (
     <>
       <section className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
@@ -643,9 +654,7 @@ function PersonPlatform({
             Plataforma personal
           </SectionEyebrow>
 
-          <h2 className="mt-3 text-2xl font-bold">
-            Mi perfil
-          </h2>
+          <div className="mt-3 flex items-center justify-between gap-4"><h2 className="text-2xl font-bold">Mi perfil</h2>{person ? <button type="button" onClick={() => setEditing(true)} className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm font-semibold transition hover:border-[#D9FF00] hover:text-[#D9FF00]"><Pencil size={15}/> Editar perfil</button> : null}</div>
 
           {person ? (
             <>
@@ -741,6 +750,7 @@ function PersonPlatform({
                     : 'Sin definir'
                 }
               />
+              <div className="mt-7 rounded-2xl border border-white/10 bg-black/40 p-5"><div className="flex items-center justify-between"><div><p className="text-xs font-bold uppercase tracking-[.18em] text-[#777]">Activación del perfil</p><p className="mt-2 text-sm text-[#aaa]">Completa la información esencial para enviar tu perfil a revisión.</p></div><strong className="text-2xl text-[#D9FF00]">{completeness}%</strong></div><div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-[#D9FF00] transition-all" style={{width:`${completeness}%`}}/></div></div>
             </>
           ) : (
             <EmptyState
@@ -758,10 +768,37 @@ function PersonPlatform({
         />
       </section>
 
+      {editing && person ? <PersonProfileEditor person={person} onClose={() => setEditing(false)} onSaved={(updated) => { setPerson(updated); setEditing(false); }} /> : null}
+
       <PublicationProcess />
     </>
   );
 }
+
+const PERSON_ROLES = [['artist','Artista'],['producer','Productor/a'],['manager','Gestor/a'],['designer','Diseñador/a'],['journalist','Periodista'],['photographer','Fotógrafo/a'],['videographer','Realizador/a audiovisual'],['educator','Educador/a'],['volunteer','Voluntario/a'],['organization_member','Miembro de organización']] as const;
+
+function PersonProfileEditor({person,onClose,onSaved}:{person:MyEcosystemPerson;onClose:()=>void;onSaved:(person:MyEcosystemPerson)=>void}){
+  const [form,setForm]=useState<PersonProfileInput>({fullName:person.fullName,headline:person.headline??'',biography:person.biography??'',avatarUrl:person.avatarUrl??'',city:person.city??'',department:person.department??'',country:person.country??'Colombia',roles:person.roles,skills:person.skills,interests:person.interests,websiteUrl:person.websiteUrl??'',instagramUrl:person.instagramUrl??'',youtubeUrl:person.youtubeUrl??'',linkedinUrl:person.linkedinUrl??'',publicEmail:person.publicEmail??''});
+  const [skillsText,setSkillsText]=useState(person.skills.join(', '));
+  const [interestsText,setInterestsText]=useState(person.interests.join(', '));
+  const [error,setError]=useState('');
+  const [saving,setSaving]=useState(false);
+  const preview={...person,...form,skills:splitTags(skillsText),interests:splitTags(interestsText)};
+  const completeness=getProfileCompleteness(preview);
+  const field=<K extends keyof PersonProfileInput>(key:K,value:PersonProfileInput[K])=>setForm((current)=>({...current,[key]:value}));
+  const save=async(submitForReview:boolean)=>{setError('');if(!form.fullName.trim()){setError('El nombre es obligatorio.');return}if(submitForReview&&completeness<80){setError('Completa al menos el 80% del perfil antes de enviarlo a revisión.');return}setSaving(true);try{const data=await updateMyPersonProfile(person.id,{...form,skills:splitTags(skillsText),interests:splitTags(interestsText)},submitForReview);onSaved(mapUpdatedPerson(person,data))}catch(cause){setError(cause instanceof Error?cause.message:'No fue posible guardar el perfil.')}finally{setSaving(false)}};
+  return <div role="dialog" aria-modal="true" aria-label="Editar perfil" className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-3 backdrop-blur-md sm:p-6"><section className="flex max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-[30px] border border-white/15 bg-[#0a0a0a]"><header className="flex items-center justify-between border-b border-white/10 px-6 py-5 sm:px-8"><div><p className="text-xs font-bold uppercase tracking-[.22em] text-[#D9FF00]">Plataforma personal</p><h2 className="mt-2 text-2xl font-bold">Editar y activar mi perfil</h2></div><button onClick={onClose} aria-label="Cerrar" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15"><X size={18}/></button></header><div className="grid min-h-0 flex-1 overflow-y-auto lg:grid-cols-[1fr_320px]"><form onSubmit={(event)=>{event.preventDefault();void save(false)}} className="space-y-8 p-6 sm:p-8"><EditorSection title="Identidad profesional"><div className="grid gap-5 sm:grid-cols-2"><TextField label="Nombre completo" value={form.fullName} onChange={(v)=>field('fullName',v)} required/><TextField label="Titular profesional" value={form.headline} onChange={(v)=>field('headline',v)} placeholder="Ej. Productora y gestora cultural"/><TextField label="URL de fotografía" value={form.avatarUrl} onChange={(v)=>field('avatarUrl',v)} placeholder="https://..."/><TextField label="Correo público" value={form.publicEmail} onChange={(v)=>field('publicEmail',v)} type="email"/></div><label className="block"><EditorLabel>Biografía</EditorLabel><textarea value={form.biography} onChange={(e)=>field('biography',e.target.value)} maxLength={1200} placeholder="Cuenta tu trayectoria, enfoque creativo y el tipo de proyectos que desarrollas." className="mt-2 min-h-36 w-full rounded-2xl border border-white/15 bg-black p-4 outline-none focus:border-[#D9FF00]"/><span className="mt-1 block text-right text-xs text-[#666]">{form.biography.length}/1200</span></label></EditorSection><EditorSection title="Ubicación"><div className="grid gap-5 sm:grid-cols-3"><TextField label="Ciudad" value={form.city} onChange={(v)=>field('city',v)}/><TextField label="Departamento" value={form.department} onChange={(v)=>field('department',v)}/><TextField label="País" value={form.country} onChange={(v)=>field('country',v)}/></div></EditorSection><EditorSection title="Roles y capacidades"><div><EditorLabel>Roles creativos</EditorLabel><div className="mt-3 flex flex-wrap gap-2">{PERSON_ROLES.map(([id,label])=>{const active=form.roles.includes(id);return <button key={id} type="button" onClick={()=>field('roles',active?form.roles.filter((role)=>role!==id):[...form.roles,id])} className={`rounded-full border px-4 py-2 text-sm ${active?'border-[#D9FF00] bg-[#D9FF00] font-semibold text-black':'border-white/15 text-[#aaa]'}`}>{label}</button>})}</div></div><TagField label="Habilidades" value={skillsText} onChange={setSkillsText} placeholder="Producción, fotografía, curaduría..."/><TagField label="Intereses" value={interestsText} onChange={setInterestsText} placeholder="Música, territorio, educación..."/></EditorSection><EditorSection title="Enlaces"><div className="grid gap-5 sm:grid-cols-2"><TextField label="Sitio web" value={form.websiteUrl} onChange={(v)=>field('websiteUrl',v)} placeholder="https://..."/><TextField label="Instagram" value={form.instagramUrl} onChange={(v)=>field('instagramUrl',v)} placeholder="https://instagram.com/..."/><TextField label="LinkedIn" value={form.linkedinUrl} onChange={(v)=>field('linkedinUrl',v)} placeholder="https://linkedin.com/in/..."/><TextField label="YouTube" value={form.youtubeUrl} onChange={(v)=>field('youtubeUrl',v)} placeholder="https://youtube.com/@..."/></div></EditorSection>{error?<p className="rounded-2xl border border-red-400/30 bg-red-400/5 p-4 text-sm text-red-200">{error}</p>:null}<div className="flex flex-wrap justify-end gap-3 border-t border-white/10 pt-6"><button type="button" onClick={onClose} className="rounded-full border border-white/15 px-5 py-3">Cancelar</button><button disabled={saving} className="rounded-full border border-[#D9FF00]/40 px-5 py-3 font-semibold text-[#D9FF00] disabled:opacity-50">Guardar borrador</button><button type="button" disabled={saving||completeness<80||person.status==='review'} onClick={()=>void save(true)} className="inline-flex items-center gap-2 rounded-full bg-[#D9FF00] px-5 py-3 font-bold text-black disabled:cursor-not-allowed disabled:opacity-40"><Sparkles size={17}/>{person.status==='review'?'En revisión':'Enviar para activar'}</button></div></form><aside className="border-t border-white/10 bg-black/30 p-6 lg:border-l lg:border-t-0 sm:p-8"><p className="text-xs font-bold uppercase tracking-[.18em] text-[#777]">Progreso del perfil</p><strong className="mt-3 block text-5xl text-[#D9FF00]">{completeness}%</strong><div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full bg-[#D9FF00]" style={{width:`${completeness}%`}}/></div><p className="mt-4 text-sm leading-6 text-[#999]">Necesitas 80% para solicitar la activación pública.</p><div className="mt-8 space-y-3">{profileChecklist(preview).map((item)=><div key={item.label} className="flex items-center gap-3 text-sm"><CheckCircle2 size={17} className={item.complete?'text-[#D9FF00]':'text-[#444]'}/><span className={item.complete?'text-white':'text-[#777]'}>{item.label}</span></div>)}</div></aside></div></section></div>;
+}
+
+function EditorSection({title,children}:{title:string;children:React.ReactNode}){return <section><h3 className="mb-5 text-lg font-semibold">{title}</h3><div className="space-y-5">{children}</div></section>}
+function EditorLabel({children}:{children:React.ReactNode}){return <span className="text-xs font-bold uppercase tracking-[.16em] text-[#777]">{children}</span>}
+function TextField({label,value,onChange,placeholder,type='text',required=false}:{label:string;value:string;onChange:(value:string)=>void;placeholder?:string;type?:string;required?:boolean}){return <label className="block"><EditorLabel>{label}</EditorLabel><input type={type} required={required} value={value} onChange={(e)=>onChange(e.target.value)} placeholder={placeholder} className="mt-2 w-full rounded-xl border border-white/15 bg-black px-4 py-3 outline-none focus:border-[#D9FF00]"/></label>}
+function TagField({label,value,onChange,placeholder}:{label:string;value:string;onChange:(value:string)=>void;placeholder:string}){const tags=splitTags(value);return <label className="block"><EditorLabel>{label}</EditorLabel><input value={value} onChange={(e)=>onChange(e.target.value)} placeholder={placeholder} className="mt-2 w-full rounded-xl border border-white/15 bg-black px-4 py-3 outline-none focus:border-[#D9FF00]"/><span className="mt-2 block text-xs text-[#666]">Separa cada elemento con una coma.</span>{tags.length?<div className="mt-3 flex flex-wrap gap-2">{tags.map((tag)=><span key={tag} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-[#bbb]">{tag}</span>)}</div>:null}</label>}
+function splitTags(value:string){return [...new Set(value.split(',').map((item)=>item.trim()).filter(Boolean))]}
+function profileChecklist(person:MyEcosystemPerson){return [{label:'Nombre y titular profesional',complete:Boolean(person.fullName&&person.headline)},{label:'Biografía',complete:Boolean(person.biography&&person.biography.length>=80)},{label:'Ubicación',complete:Boolean(person.city&&person.country)},{label:'Rol creativo',complete:person.roles.length>0},{label:'Habilidades',complete:person.skills.length>=2},{label:'Intereses',complete:person.interests.length>=2},{label:'Fotografía o avatar',complete:Boolean(person.avatarUrl)},{label:'Canal de contacto',complete:Boolean(person.publicEmail||person.websiteUrl||person.instagramUrl)}]}
+function getProfileCompleteness(person:MyEcosystemPerson|null){if(!person)return 0;const items=profileChecklist(person);return Math.round(items.filter((item)=>item.complete).length/items.length*100)}
+interface UpdatedPersonRow { full_name:string; headline:string|null; biography:string|null; avatar_url:string|null; city:string|null; department:string|null; country:string|null; roles:string[]|null; skills:string[]|null; interests:string[]|null; website_url:string|null; instagram_url:string|null; youtube_url:string|null; linkedin_url:string|null; public_email:string|null; verified:boolean|null; featured:boolean|null; status:string }
+function mapUpdatedPerson(previous:MyEcosystemPerson,row:UpdatedPersonRow):MyEcosystemPerson{return{...previous,fullName:row.full_name,headline:row.headline,biography:row.biography,avatarUrl:row.avatar_url,city:row.city,department:row.department,country:row.country,roles:row.roles??[],skills:row.skills??[],interests:row.interests??[],websiteUrl:row.website_url,instagramUrl:row.instagram_url,youtubeUrl:row.youtube_url,linkedinUrl:row.linkedin_url,publicEmail:row.public_email,verified:Boolean(row.verified),featured:Boolean(row.featured),status:row.status}}
 
 function ProjectsPanel({
   projects,
