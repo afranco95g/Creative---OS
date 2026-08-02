@@ -1,181 +1,134 @@
+import {
+  Activity,
+  BarChart3,
+  BookOpen,
+  CalendarDays,
+  ClipboardCheck,
+  FileText,
+  Images,
+  Landmark,
+  Network,
+  Package,
+  ScrollText,
+  Settings,
+  ShieldCheck,
+  Ticket,
+  Users,
+  WalletCards,
+} from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { canAccessWorkspace } from '../../services/auth/workspace';
-import LogoutButton from '../../components/admin/LogoutButton';
+import LogoutButton from '@/components/admin/LogoutButton';
+import { loadSuperadminOverview } from '@/services/admin/superadminService';
+import { canAccessWorkspace, type PlatformRole } from '@/services/auth/workspace';
 
 const modules = [
-  {
-    title: 'Historias',
-    description:
-      'Administra documentales, entrevistas, artículos, reportajes, fotohistorias y textos de opinión.',
-    href: '/admin/stories',
-    status: 'Activo',
-    available: true,
-  },
-  {
-    title: 'Portada',
-    description: 'Agrega, ordena, oculta y publica bloques aprobados para la portada del medio.',
-    href: '/admin/homepage',
-    status: 'Activo',
-    available: true,
-  },
-  {
-    title: 'Multimedia',
-    description: 'Sube y reutiliza imágenes editoriales con texto alternativo, créditos y metadatos.',
-    href: '/admin/media',
-    status: 'Activo',
-    available: true,
-  },
-  {
-    title: 'Agenda',
-    description:
-      'Publica eventos, talleres, exhibiciones, conciertos, encuentros y actividades culturales.',
-    href: '/gestion-agenda',
-    status: 'Activo',
-    available: true,
-  },
-  {
-    title: 'Convocatorias',
-    description:
-      'Organiza becas, residencias, estímulos, oportunidades laborales y llamados abiertos.',
-    href: '/gestion-financiacion',
-    status: 'Activo',
-    available: true,
-  },
-  {
-    title: 'Artistas',
-    description:
-      'Gestiona los perfiles de artistas y selecciona al artista destacado de la semana.',
-    href: '/revision-actores',
-    status: 'Activo',
-    available: true,
-  },
-  {
-    title: 'Proyectos',
-    description:
-      'Gestiona proyectos culturales y selecciona el proyecto destacado de la portada.',
-    href: '/revision-editorial',
-    status: 'Activo',
-    available: true,
-  },
-  {
-    title: 'Espacios',
-    description:
-      'Registra talleres, estudios, galerías, residencias, laboratorios y espacios culturales.',
-    href: '/revision-ecosistema',
-    status: 'Activo',
-    available: true,
-  },
+  { title: 'Inteligencia', description: 'Tendencias agregadas con umbral de privacidad.', href: '/admin/inteligencia', icon: BarChart3, roles: ['ecosystem_admin', 'super_admin'] },
+  { title: 'Actores', description: 'Revisión y validación de actores del ecosistema.', href: '/revision-actores', icon: Users, roles: ['ecosystem_admin', 'super_admin'] },
+  { title: 'Aplicaciones', description: 'Proyectos y propuestas enviados al ecosistema.', href: '/revision-ecosistema', icon: ClipboardCheck, roles: ['ecosystem_admin', 'super_admin'] },
+  { title: 'Proyectos propios', description: 'Crea proyectos desde una identidad administrada.', href: '/studio?new=1', icon: Network, roles: ['super_admin'] },
+  { title: 'Programación', description: 'Experiencias, agenda y operación cultural.', href: '/gestion-agenda', icon: Activity, roles: ['ecosystem_admin', 'super_admin'] },
+  { title: 'Calendario maestro', description: 'Próximamente: agenda conectada por proyecto y actividad.', href: '/gestion-agenda', icon: CalendarDays, roles: ['super_admin'] },
+  { title: 'Ticketing', description: 'Inscripciones, asistentes y entradas existentes.', href: '/gestion-agenda', icon: Ticket, roles: ['super_admin'] },
+  { title: 'Productos y marcas', description: 'Propuestas comerciales recibidas en aplicaciones.', href: '/revision-ecosistema', icon: Package, roles: ['ecosystem_admin', 'super_admin'] },
+  { title: 'Presupuesto', description: 'Próximamente: líneas vivas y escenarios por proyecto.', href: '/admin', icon: WalletCards, roles: ['finance_admin', 'super_admin'], disabled: true },
+  { title: 'Finanzas', description: 'Convocatorias, postulaciones y fuentes de financiación.', href: '/gestion-financiacion', icon: Landmark, roles: ['finance_admin', 'super_admin'] },
+  { title: 'Historias', description: 'Redacción, revisión, programación y publicación.', href: '/admin/stories', icon: FileText, roles: ['journalist', 'media_admin', 'super_admin'] },
+  { title: 'Portada', description: 'Orden y publicación de secciones del medio.', href: '/admin/homepage', icon: BookOpen, roles: ['media_admin', 'super_admin'] },
+  { title: 'Multimedia', description: 'Imágenes y videos editoriales reutilizables.', href: '/admin/media', icon: Images, roles: ['journalist', 'media_admin', 'super_admin'] },
+  { title: 'Auditoría', description: 'Registro inmutable de acciones administrativas.', href: '/admin/auditoria', icon: ScrollText, roles: ['super_admin'] },
+  { title: 'Configuración', description: 'Roles, políticas y parámetros estratégicos.', href: '/admin/configuracion', icon: Settings, roles: ['super_admin'] },
+] as const;
+
+const metricLabels: Array<[keyof Awaited<ReturnType<typeof loadSuperadminOverview>>['data'], string]> = [
+  ['pendingApplications', 'Aplicaciones pendientes'],
+  ['newSignals', 'Señales nuevas'],
+  ['upcomingExperiences', 'Experiencias próximas'],
+  ['pendingEditorial', 'Contenidos pendientes'],
 ];
 
 export default async function AdminPage() {
   const access = await canAccessWorkspace();
+  if (!access.authenticated) redirect('/login?redirect=/admin');
+  if (!access.capabilities?.canAccessAdmin) redirect('/acceso-denegado');
 
-  if (!access.authenticated) {
-    redirect('/login?redirect=/admin');
-  }
-
-  if (!access.authorized) {
-    redirect('/acceso-denegado');
-  }
-
-  const displayName =
-    access.profile?.full_name?.trim() ||
-    access.profile?.email ||
-    'Miembro del equipo';
+  const role = access.profile?.role as PlatformRole;
+  const isSuperadmin = role === 'super_admin';
+  const overview = isSuperadmin ? await loadSuperadminOverview() : null;
+  const visibleModules = modules.filter((module) =>
+    (module.roles as readonly PlatformRole[]).includes(role)
+  );
 
   return (
     <main className="min-h-screen bg-[#050505] text-white">
       <header className="border-b border-white/10">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-6 md:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-5 md:px-8">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#D9FF00]">
-              Cultura Esta
-            </p>
-
-            <p className="mt-2 text-xl font-semibold">
-              Workspace editorial
-            </p>
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#D9FF00]">CULTURA ESTA</p>
+            <p className="mt-1 text-lg font-semibold">{isSuperadmin ? 'Dirección del ecosistema' : 'Administración'}</p>
           </div>
-
-          <div className="flex items-center gap-4">
-  <Link
-    href="/"
-    className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-white/40"
-  >
-    Ver portada
-  </Link>
-
-  <LogoutButton />
-</div>
+          <div className="flex items-center gap-3">
+            <Link href="/" className="border border-white/15 px-4 py-2 text-sm font-semibold hover:border-white/40">Ver portada</Link>
+            <LogoutButton />
+          </div>
         </div>
       </header>
 
-      <section className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
-        <div className="max-w-3xl">
-          <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#D9FF00]">
-            Panel editorial
-          </p>
-
-          <h1 className="mt-7 text-5xl font-bold leading-[0.98] md:text-6xl">
-            Todo lo que publica y activa Cultura Esta.
-          </h1>
-
-          <p className="mt-7 max-w-2xl text-lg leading-relaxed text-[#9A9A9A]">
-            Desde este espacio se administran los contenidos del medio y,
-            progresivamente, los módulos internos del ecosistema.
-          </p>
-
-          <div className="mt-8 inline-flex rounded-full border border-white/10 bg-white/[0.03] px-5 py-3 text-sm text-[#B0B0B0]">
-            Sesión activa: {displayName}
+      <section className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
+        <div className="flex flex-col justify-between gap-6 border-b border-white/10 pb-10 md:flex-row md:items-end">
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2 text-[#D9FF00]"><ShieldCheck size={18} /><span className="text-xs font-bold uppercase tracking-[0.24em]">{role.replaceAll('_', ' ')}</span></div>
+            <h1 className="mt-5 text-4xl font-bold md:text-5xl">{isSuperadmin ? 'Resumen ejecutivo' : 'Herramientas autorizadas'}</h1>
+            <p className="mt-4 text-[#999]">Sesión activa: {access.profile?.full_name || access.profile?.email}</p>
           </div>
+          {overview?.error ? <p className="max-w-md border-l-2 border-amber-400 pl-4 text-sm text-amber-200">Aplica la migración 026 para activar los indicadores estratégicos.</p> : null}
         </div>
 
-        <div className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {modules.map((module) => (
-            <article
-              key={module.title}
-              className="flex min-h-[255px] flex-col rounded-[26px] border border-white/10 bg-[#090909] p-7"
-            >
-              <div className="flex items-start justify-between gap-5">
-                <h2 className="text-2xl font-semibold">
-                  {module.title}
-                </h2>
-
-                <span
-                  className={
-                    module.available
-                      ? 'rounded-full bg-[#D9FF00] px-3 py-1 text-xs font-bold text-black'
-                      : 'rounded-full border border-white/10 px-3 py-1 text-xs text-[#666666]'
-                  }
-                >
-                  {module.status}
-                </span>
+        {isSuperadmin && overview ? (
+          <div className="grid border-b border-white/10 sm:grid-cols-2 lg:grid-cols-4">
+            {metricLabels.map(([key, label]) => (
+              <div key={key} className="border-white/10 py-7 sm:border-r sm:px-6 sm:first:pl-0">
+                <p className="text-3xl font-bold text-[#D9FF00]">{String(overview.data[key])}</p>
+                <p className="mt-2 text-sm text-[#888]">{label}</p>
               </div>
+            ))}
+          </div>
+        ) : null}
 
-              <p className="mt-5 leading-relaxed text-[#8A8A8A]">
-                {module.description}
-              </p>
+        {isSuperadmin ? (
+          <section className="border-b border-white/10 py-9">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D9FF00]">Qué debería atender hoy</p>
+            <div className="mt-5 grid gap-3 md:grid-cols-3">
+              <Priority label="Aplicaciones sin revisar" value={overview?.data.pendingApplications ?? 0} href="/revision-ecosistema" />
+              <Priority label="Publicaciones pendientes" value={overview?.data.pendingEditorial ?? 0} href="/admin/stories" />
+              <Priority label="Experiencias próximas" value={overview?.data.upcomingExperiences ?? 0} href="/gestion-agenda" />
+            </div>
+          </section>
+        ) : null}
 
-              <div className="mt-auto pt-8">
-                {module.available ? (
-                  <Link
-                    href={module.href}
-                    className="font-bold text-[#D9FF00] transition hover:text-white"
-                  >
-                    Abrir módulo →
-                  </Link>
+        <div className="grid gap-px bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
+          {visibleModules.map((module) => {
+            const Icon = module.icon;
+            return (
+              <article key={module.title} className="min-h-52 bg-[#080808] p-6">
+                <Icon size={22} className="text-[#D9FF00]" />
+                <h2 className="mt-6 text-xl font-semibold">{module.title}</h2>
+                <p className="mt-3 min-h-12 text-sm leading-6 text-[#888]">{module.description}</p>
+                {'disabled' in module && module.disabled ? (
+                  <span className="mt-6 inline-block text-xs font-bold uppercase tracking-[0.16em] text-[#666]">En preparación</span>
                 ) : (
-                  <span className="text-sm text-[#555555]">
-                    Módulo todavía no habilitado
-                  </span>
+                  <Link href={module.href} className="mt-6 inline-block font-semibold text-[#D9FF00] hover:text-white">Abrir módulo →</Link>
                 )}
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       </section>
     </main>
   );
+}
+
+function Priority({ label, value, href }: { label: string; value: number; href: string }) {
+  return <Link href={href} className="flex items-center justify-between border border-white/10 bg-[#090909] p-5 hover:border-[#D9FF00]/60"><span className="text-sm text-[#aaa]">{label}</span><strong className="text-2xl">{value}</strong></Link>;
 }

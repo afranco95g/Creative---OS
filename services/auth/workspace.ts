@@ -7,6 +7,7 @@ export type PlatformRole =
   | 'journalist'
   | 'media_admin'
   | 'ecosystem_admin'
+  | 'finance_admin'
   | 'super_admin';
 
 const VALID_ROLES:
@@ -15,6 +16,7 @@ const VALID_ROLES:
     'journalist',
     'media_admin',
     'ecosystem_admin',
+    'finance_admin',
     'super_admin',
   ];
 
@@ -94,6 +96,19 @@ export async function canAccessWorkspace() {
   const canManageRoles =
     role === 'super_admin';
 
+  const canManageEcosystem =
+    role === 'ecosystem_admin' ||
+    role === 'super_admin';
+
+  const canManageFinance =
+    role === 'finance_admin' ||
+    role === 'super_admin';
+
+  const canAccessAdmin =
+    canWriteEditorial ||
+    canManageEcosystem ||
+    canManageFinance;
+
   return {
     authenticated: true,
 
@@ -120,6 +135,18 @@ export async function canAccessWorkspace() {
       canPublishEditorial,
 
       canApproveProjectEligibility,
+
+      canAccessAdmin,
+
+      canManageEcosystem,
+
+      canManageFinance,
+
+      canViewAudit:
+        role === 'super_admin',
+
+      canViewStrategicIntelligence:
+        canManageEcosystem,
 
       canManageRoles,
     },

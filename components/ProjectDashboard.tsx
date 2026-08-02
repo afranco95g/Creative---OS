@@ -3,9 +3,11 @@
 import { ProjectGraph } from '../types/project';
 import { mapProjectToAreas } from '../engines/universalProjectMapper';
 import { buildAreaNarrative } from '../engines/executiveNarrativeEngine';
+import { EcosystemSignalConsent } from './projects/EcosystemSignalConsent';
 
 interface ProjectDashboardProps {
   graph: ProjectGraph;
+  projectId: string;
 }
 
 const AREA_ICONS: Record<string, string> = {
@@ -18,7 +20,7 @@ const AREA_ICONS: Record<string, string> = {
   impact: '📈',
 };
 
-export function ProjectDashboard({ graph }: ProjectDashboardProps) {
+export function ProjectDashboard({ graph, projectId }: ProjectDashboardProps) {
   const areas = mapProjectToAreas(graph);
 
   return (
@@ -100,6 +102,8 @@ export function ProjectDashboard({ graph }: ProjectDashboardProps) {
           );
         })}
       </div>
+
+      <EcosystemSignalConsent projectId={projectId} />
     </section>
   );
 }

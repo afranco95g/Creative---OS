@@ -258,6 +258,7 @@ export default function ProjectPage() {
             'project' && (
             <ProjectDashboard
               graph={graph}
+              projectId={projectId}
             />
           )}
 
