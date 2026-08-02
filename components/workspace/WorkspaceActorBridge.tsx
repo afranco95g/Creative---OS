@@ -57,11 +57,10 @@ export function WorkspaceActorBridge({
 }: WorkspaceActorBridgeProps) {
   useEffect(() => {
     const actors: WorkspaceActor[] = [];
-    let connected = false;
 
     if (person) {
       actors.push({
-        id: person.id,
+        id: `person:${person.id}`,
         type: 'person',
         name: person.fullName,
         slug: person.slug,
@@ -85,7 +84,7 @@ export function WorkspaceActorBridge({
 
     spaces.forEach((space) => {
       actors.push({
-        id: space.id,
+        id: `space:${space.id}`,
         type: 'space',
         name: space.name,
         slug: space.slug,
@@ -111,7 +110,7 @@ export function WorkspaceActorBridge({
 
     funders.forEach((funder) => {
       actors.push({
-        id: funder.id,
+        id: `brand:${funder.id}`,
         type: 'funder',
         name: funder.name,
         slug: funder.slug,
@@ -135,18 +134,9 @@ export function WorkspaceActorBridge({
       });
     });
 
-    function connectActors() {
-      if (connected || !workspaceStore.getSnapshot().user) {
-        return;
-      }
-
-      connected = true;
-      workspaceStore.setAvailableActors(actors);
-    }
-
-    connectActors();
-
-    return workspaceStore.subscribe(connectActors);
+    workspaceStore.setAvailableActors(
+      actors
+    );
   }, [person, spaces, funders]);
 
   return null;
