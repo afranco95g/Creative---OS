@@ -13,13 +13,14 @@ export interface PublishedEditorialProject {
 }
 
 interface PublishedEditorialProjectRow {
-  id: string;
+  project_id: string;
   title: string;
   description: string;
   category: string;
   progress: number;
   published_at: string | null;
   updated_at: string;
+  workflow_status: string;
 }
 
 export async function loadPublishedEditorialProjects():
@@ -52,21 +53,7 @@ export async function loadPublishedEditorialProjects():
     data,
     error,
   } = await database
-    .from('projects')
-    .select(
-      'id, title, description, category, progress, published_at, updated_at'
-    )
-    .eq(
-      'workflow_status',
-      'published'
-    )
-    .order(
-      'published_at',
-      {
-        ascending: false,
-        nullsFirst: false,
-      }
-    );
+    .rpc('list_editorial_project_reviews');
 
   if (error) {
     throw new Error(
@@ -80,10 +67,10 @@ export async function loadPublishedEditorialProjects():
       data ?? []
     ) as PublishedEditorialProjectRow[];
 
-  return rows.map(
+  return rows.filter((row) => row.workflow_status === 'published').map(
     (row) => ({
       id:
-        row.id,
+        row.project_id,
 
       title:
         row.title,

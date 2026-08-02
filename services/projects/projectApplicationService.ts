@@ -718,6 +718,18 @@ function validateApplicationInput(
   }
 
   if (
+    input.applicationType === 'product' &&
+    input.productDetails &&
+    input.productDetails.wholesalePrice !== null &&
+    input.productDetails.proposedTicketPrice !== null &&
+    input.productDetails.proposedTicketPrice <= input.productDetails.wholesalePrice
+  ) {
+    throw new Error(
+      'El precio propuesto debe ser mayor que el precio mayorista.'
+    );
+  }
+
+  if (
     input.applicationType ===
       'experience' &&
     !input.experienceDetails

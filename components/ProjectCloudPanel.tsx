@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  useCallback,
   useEffect,
   useState,
   useSyncExternalStore,
@@ -11,6 +12,7 @@ import {
 } from '../core/workspaceStore';
 
 import {
+  cloudProjectToWorkspaceProject,
   loadMyCloudProjects,
   submitProjectToMedia,
   syncLocalProjectsToCloud,
@@ -153,23 +155,32 @@ export function ProjectCloudPanel() {
   ] = useState('');
 
   const localProjects =
-    workspaceState?.projects ??
-    [];
+    workspaceState?.projects.filter(
+      (project) =>
+        project.actorId === workspaceState.activeActorId
+    ) ?? [];
 
-  useEffect(() => {
-    void refreshProjects();
-  }, []);
+  const activeActor =
+    workspaceState?.actors.find(
+      (actor) => actor.id === workspaceState.activeActorId
+    ) ?? null;
 
-  async function refreshProjects() {
+  const refreshProjects = useCallback(async () => {
     setIsLoading(true);
     setErrorMessage('');
 
     try {
       const projects =
-        await loadMyCloudProjects();
+        await loadMyCloudProjects(
+          activeActor?.id,
+          activeActor?.type
+        );
 
       setCloudProjects(
         projects
+      );
+      workspaceStore.mergeCloudProjects(
+        projects.map(cloudProjectToWorkspaceProject)
       );
     } catch (error) {
       setErrorMessage(
@@ -178,11 +189,20 @@ export function ProjectCloudPanel() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [activeActor?.id, activeActor?.type]);
+
+  useEffect(() => {
+    if (activeActor) {
+      void refreshProjects();
+    } else {
+      setCloudProjects([]);
+      setIsLoading(false);
+    }
+  }, [activeActor, refreshProjects]);
 
   async function handleSync() {
     if (
-      localProjects.length === 0
+      !activeActor || localProjects.length === 0
     ) {
       setErrorMessage(
         'No hay proyectos locales para vincular.'
@@ -198,11 +218,16 @@ export function ProjectCloudPanel() {
     try {
       const result =
         await syncLocalProjectsToCloud(
-          localProjects
+          localProjects,
+          activeActor.id,
+          activeActor.type
         );
 
       setCloudProjects(
         result.projects
+      );
+      workspaceStore.mergeCloudProjects(
+        result.projects.map(cloudProjectToWorkspaceProject)
       );
 
       setSuccessMessage(
@@ -299,6 +324,7 @@ export function ProjectCloudPanel() {
           onClick={handleSync}
           disabled={
             isSyncing ||
+            !activeActor ||
             localProjects.length ===
               0
           }
@@ -368,11 +394,6 @@ export function ProjectCloudPanel() {
       {applicationProject ? (
         <ProjectApplicationDialog
           project={applicationProject}
-          actors={workspaceState?.actors ?? []}
-          activeActorId={
-            workspaceState?.activeActorId ??
-            null
-          }
           onClose={() => {
             setApplicationProject(
               null

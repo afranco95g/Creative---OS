@@ -1,0 +1,3 @@
+-- Reserved migration number.
+-- The actor ownership work is implemented by migration 022 so this historical
+-- migration remains immutable in environments where it was already recorded.

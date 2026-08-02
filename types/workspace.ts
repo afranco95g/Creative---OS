@@ -6,7 +6,6 @@ import {
 export const WORKSPACE_CONTEXT_IDS = [
   'personal',
   'cultura-esta',
-  'oda',
   'neon-sessions',
 ] as const;
 

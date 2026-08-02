@@ -69,14 +69,9 @@ export default async function ProjectActorsPage({
   const {
     data: project,
   } = await database
-    .from('projects')
-    .select(
-      'id, title, description, workflow_status'
-    )
-    .eq(
-      'id',
-      projectId
-    )
+    .rpc('get_editorial_project_summary', {
+      target_project_id: projectId,
+    })
     .maybeSingle();
 
   if (!project) {

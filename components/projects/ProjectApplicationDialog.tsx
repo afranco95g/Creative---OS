@@ -2,22 +2,20 @@
 
 import {
   type FormEvent,
-  useMemo,
+  useEffect,
   useState,
 } from 'react';
 
 import {
   createProjectApplicationDraft,
+  loadProjectApplicationByProjectId,
   submitProjectApplication,
+  updateProjectApplicationDraft,
 } from '../../services/projects/projectApplicationService';
 
 import type {
   CloudProjectSummary,
 } from '../../services/projects/projectCloudService';
-
-import type {
-  WorkspaceActor,
-} from '../../types/workspace';
 
 import type {
   CampaignApplicationDetails,
@@ -30,8 +28,6 @@ import type {
 
 interface ProjectApplicationDialogProps {
   project: CloudProjectSummary;
-  actors: WorkspaceActor[];
-  activeActorId: string | null;
   onClose: () => void;
   onSubmitted: () => void;
 }
@@ -131,20 +127,9 @@ const routeOptions: Array<{
 
 export function ProjectApplicationDialog({
   project,
-  actors,
-  activeActorId,
   onClose,
   onSubmitted,
 }: ProjectApplicationDialogProps) {
-  const [
-    actorId,
-    setActorId,
-  ] = useState(
-    activeActorId ??
-      actors[0]?.id ??
-      ''
-  );
-
   const [
     applicationType,
     setApplicationType,
@@ -316,18 +301,66 @@ export function ProjectApplicationDialog({
     setErrorMessage,
   ] = useState('');
 
-  const selectedActor =
-    useMemo(
-      () =>
-        actors.find(
-          (actor) =>
-            actor.id === actorId
-        ) ?? null,
-      [
-        actorId,
-        actors,
-      ]
-    );
+  const [existingApplicationId, setExistingApplicationId] =
+    useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void loadProjectApplicationByProjectId(project.id)
+      .then((application) => {
+        if (cancelled || !application) return;
+
+        setExistingApplicationId(application.id);
+        setApplicationType(application.applicationType);
+        setRequestedRoutes(application.requestedRoutes);
+        setPublicSummary(application.publicSummary);
+        setEcosystemOffer(application.ecosystemOffer);
+        setEcosystemNeeds(application.ecosystemNeeds);
+        setTargetAudience(application.targetAudience);
+        setGeographicScope(application.geographicScope);
+
+        if (application.productDetails) {
+          setProductName(application.productDetails.productName);
+          setProductDescription(application.productDetails.productDescription);
+          setWholesalePrice(toInputValue(application.productDetails.wholesalePrice));
+          setProposedTicketPrice(toInputValue(application.productDetails.proposedTicketPrice));
+          setAvailableUnits(toInputValue(application.productDetails.availableUnits));
+          setMinimumOrderUnits(toInputValue(application.productDetails.minimumOrderUnits));
+          setProductionCapacity(application.productDetails.productionCapacity);
+          setDeliveryConditions(application.productDetails.deliveryConditions);
+          setLegalRestrictions(application.productDetails.legalRestrictions);
+          setStorageRequirements(application.productDetails.storageRequirements);
+          setCompatibleExperiences(application.productDetails.compatibleExperiences.join(', '));
+        }
+
+        if (application.experienceDetails) {
+          setExpectedParticipants(toInputValue(application.experienceDetails.expectedParticipants));
+          setEstimatedTicketPrice(toInputValue(application.experienceDetails.estimatedTicketPrice));
+          setPreferredCities(application.experienceDetails.preferredCities.join(', '));
+          setSpaceRequirements(application.experienceDetails.spaceRequirements);
+          setTechnicalRequirements(application.experienceDetails.technicalRequirements);
+          setProposedDates(application.experienceDetails.proposedDates);
+        }
+
+        if (application.campaignDetails) {
+          setCampaignObjective(application.campaignDetails.campaignObjective);
+          setCampaignTargetAudience(application.campaignDetails.targetAudience);
+          setEstimatedReach(toInputValue(application.campaignDetails.estimatedReach));
+          setAvailableBudget(toInputValue(application.campaignDetails.availableBudget));
+          setRequiredProfiles(application.campaignDetails.requiredProfiles.join(', '));
+          setRequiredSpaces(application.campaignDetails.requiredSpaces.join(', '));
+          setExpectedDeliverables(application.campaignDetails.expectedDeliverables.join(', '));
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) setErrorMessage(getErrorMessage(error));
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [project.id]);
 
   const productMargin =
     toNullableNumber(
@@ -357,9 +390,9 @@ export function ProjectApplicationDialog({
   ) {
     event.preventDefault();
 
-    if (!selectedActor) {
+    if (!project.actorId || !project.actorType) {
       setErrorMessage(
-        'Selecciona una identidad válida.'
+        'El proyecto no tiene una identidad propietaria válida.'
       );
 
       return;
@@ -375,12 +408,10 @@ export function ProjectApplicationDialog({
           project.id,
 
         actorId:
-          getRawActorId(
-            selectedActor.id
-          ),
+          project.actorId,
 
         actorType:
-          selectedActor.type,
+          project.actorType,
 
         applicationType,
 
@@ -422,10 +453,9 @@ export function ProjectApplicationDialog({
             : undefined,
       };
 
-      const draft =
-        await createProjectApplicationDraft(
-          input
-        );
+      const draft = existingApplicationId
+        ? await updateProjectApplicationDraft(existingApplicationId, input)
+        : await createProjectApplicationDraft(input);
 
       await submitProjectApplication(
         draft.id
@@ -617,54 +647,21 @@ export function ProjectApplicationDialog({
         >
           <FormSection
             number="01"
-            title="Identidad que aplica"
-            description="Elige la persona, espacio, marca u organización desde la que presentas el proyecto."
+            title="Identidad propietaria"
+            description="La aplicación se presenta desde la misma identidad que creó y administra el proyecto."
           >
-            {actors.length === 0 ? (
+            {!project.actorId || !project.actorType ? (
               <Notice>
-                Esta cuenta todavía no tiene una identidad disponible.
+                Este proyecto necesita una identidad propietaria antes de aplicar.
               </Notice>
             ) : (
-              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                {actors.map(
-                  (actor) => {
-                    const selected =
-                      actor.id ===
-                      actorId;
-
-                    return (
-                      <button
-                        key={actor.id}
-                        type="button"
-                        onClick={() =>
-                          setActorId(
-                            actor.id
-                          )
-                        }
-                        className={[
-                          'rounded-2xl border p-4 text-left transition',
-                          selected
-                            ? 'border-[#D9FF00] bg-[#D9FF00]/10'
-                            : 'border-white/10 bg-[#111111] hover:border-white/30',
-                        ].join(' ')}
-                      >
-                        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#777777]">
-                          {actorTypeLabel(
-                            actor.type
-                          )}
-                        </p>
-
-                        <h3 className="mt-2 font-semibold">
-                          {actor.name}
-                        </h3>
-
-                        <p className="mt-2 text-xs text-[#777777]">
-                          {actor.role}
-                        </p>
-                      </button>
-                    );
-                  }
-                )}
+              <div className="rounded-2xl border border-[#D9FF00]/30 bg-[#D9FF00]/10 p-4">
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#777777]">
+                  {actorTypeLabel(project.actorType)}
+                </p>
+                <p className="mt-2 font-semibold text-white">
+                  Identidad vinculada al proyecto
+                </p>
               </div>
             )}
           </FormSection>
@@ -1031,7 +1028,8 @@ export function ProjectApplicationDialog({
               type="submit"
               disabled={
                 isSubmitting ||
-                !selectedActor
+                !project.actorId ||
+                !project.actorType
               }
               className="rounded-full bg-[#D9FF00] px-7 py-3 text-sm font-bold text-black disabled:opacity-50"
             >
@@ -1338,21 +1336,8 @@ function createTemporarySnapshot(
   };
 }
 
-function getRawActorId(
-  actorId: string
-): string {
-  const separatorIndex =
-    actorId.indexOf(':');
-
-  return separatorIndex >= 0
-    ? actorId.slice(
-        separatorIndex + 1
-      )
-    : actorId;
-}
-
 function actorTypeLabel(
-  type: WorkspaceActor['type']
+  type: NonNullable<CloudProjectSummary['actorType']>
 ): string {
   switch (type) {
     case 'person':
@@ -1379,6 +1364,10 @@ function toNullableNumber(
   return Number.isFinite(parsed)
     ? parsed
     : null;
+}
+
+function toInputValue(value: number | null): string {
+  return value === null ? '' : String(value);
 }
 
 function splitList(

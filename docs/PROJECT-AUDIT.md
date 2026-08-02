@@ -12,12 +12,11 @@ Fecha: 2026-08-01
   dependencias de hooks y codigo no usado. Ya no bloquean la primera adopcion
   del lint, pero deben reducirse progresivamente.
 
-## Bloqueos criticos
+## Cierre aplicado
 
 ### Postulaciones de proyectos
 
-`ProjectApplicationDialog` y `projectApplicationService` usan una tabla y
-cuatro RPC que no existen en las migraciones:
+La migracion `022_mvp_project_workflows.sql` implementa:
 
 - `project_applications`
 - `submit_project_application`
@@ -25,9 +24,13 @@ cuatro RPC que no existen en las migraciones:
 - `review_project_application`
 - `list_project_applications_for_review`
 
-La migracion `database/020_project_applications.sql` esta vacia. El flujo no
-puede funcionar contra una base creada exclusivamente desde este repositorio
-hasta definir y aplicar ese contrato, incluyendo RLS y permisos.
+- propiedad de proyectos por actor administrado;
+- snapshots de postulacion sin grafo ni mensajes;
+- RLS de propietario y colas de revision mediante RPC;
+- resúmenes editoriales que excluyen columnas privadas.
+
+`020` y `021` permanecen como numeros reservados para no reescribir el
+historial de migraciones.
 
 ### Perfil interno de personas
 
@@ -61,7 +64,7 @@ no archivo por archivo.
 - Eliminada la copia no usada de `ProjectEditorialForm` en `services/`.
 - Eliminados placeholders antiguos de Supabase y OpenAI.
 - Eliminados archivos vacios, un typo de `publicFunding` y componentes sin uso.
-- Eliminada la migracion vacia `021`, que no tenia consumidores.
+- Conservadas `020` y `021` como migraciones reservadas e inmutables.
 - Eliminada la dependencia `framer-motion`, sin importaciones en el proyecto.
 - Anadido `.env.example` y actualizado el README para Vercel/Supabase.
 
@@ -74,8 +77,8 @@ no archivo por archivo.
 
 ## Siguientes decisiones
 
-1. Implementar y probar la migracion `020` antes de habilitar postulaciones de
-   proyectos en produccion.
+1. Aplicar la migracion `022` y ejecutar el plan de pruebas del MVP antes de
+   habilitar postulaciones en produccion.
 2. Decidir si el sistema generico de entidades reemplaza las pantallas actuales
    o si debe eliminarse.
 3. Conectar el editor del perfil interno de personas.

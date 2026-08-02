@@ -35,14 +35,6 @@ const defaultContexts:
     isEnabled: true,
   },
   {
-    id: 'oda',
-    name: 'ODA',
-    description:
-      'Proyectos sociales, voluntariado, territorio e impacto.',
-    type: 'organization',
-    isEnabled: true,
-  },
-  {
     id: 'neon-sessions',
     name: 'Neon Sessions',
     description:

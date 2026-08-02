@@ -36,6 +36,10 @@ existir en los entornos Production y Preview de Vercel. Cada cambio en
 
 ## Base de datos
 
-La migracion `020_project_applications.sql` esta reservada pero aun no
-contiene el esquema requerido. El flujo de postulacion de proyectos no debe
-considerarse operativo hasta completar y aplicar esa migracion.
+Aplica las migraciones de `database/` en orden. `020` y `021` son numeros
+reservados; `022_mvp_project_workflows.sql` incorpora propiedad de proyectos
+por actor, postulaciones seguras y RPCs editoriales que no exponen el grafo ni
+los mensajes privados.
+
+Antes de desplegar una version que use estos flujos, ejecuta `022` en el SQL
+Editor de Supabase y valida los escenarios de [docs/MVP-TESTING.md](docs/MVP-TESTING.md).

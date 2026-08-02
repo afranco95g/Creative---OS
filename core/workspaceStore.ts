@@ -260,6 +260,46 @@ class WorkspaceStore {
     );
   }
 
+  mergeCloudProjects(
+    cloudProjects: WorkspaceProject[]
+  ) {
+    const projectsById = new Map(
+      this.state.projects.map(
+        (project) => [project.id, project]
+      )
+    );
+
+    cloudProjects.forEach((cloudProject) => {
+      const localProject = projectsById.get(
+        cloudProject.id
+      );
+
+      if (
+        !localProject ||
+        Date.parse(cloudProject.updatedAt) >=
+          Date.parse(localProject.updatedAt)
+      ) {
+        projectsById.set(
+          cloudProject.id,
+          cloudProject
+        );
+      }
+    });
+
+    this.state = {
+      ...this.state,
+      projects: Array.from(
+        projectsById.values()
+      ).sort(
+        (left, right) =>
+          Date.parse(right.updatedAt) -
+          Date.parse(left.updatedAt)
+      ),
+    };
+
+    this.emit();
+  }
+
   createUser(
     name: string,
     email: string,
