@@ -83,6 +83,7 @@ Ejecutar en Supabase SQL Editor, en este orden:
 
 1. `database/026_superadmin_foundation.sql`
 2. `database/027_financial_operations_foundation.sql`
+3. `database/028_media_admin_boundary.sql`
 
 Despues desplegar el commit correspondiente en Vercel.
 
@@ -105,5 +106,7 @@ Despues desplegar el commit correspondiente en Vercel.
 - La exportacion XLSX/PDF y el calendario maestro multivista requieren una fase adicional.
 - La interfaz de presupuesto y ticketing sobre las tablas 027 requiere completarse antes de
   declarar esos modulos listos para beta.
-- Las migraciones historicas concedieron a `media_admin` acceso operativo en algunas RPC de
-  agenda y financiacion. Deben endurecerse con una migracion de compatibilidad antes de beta.
+- Las RPC historicas pueden seguir devolviendo metadatos no editoriales si se invocan fuera de
+  la interfaz. La migracion 028 bloquea su escritura mediante triggers y restringe RLS; una
+  siguiente limpieza debe reemplazar las funciones antiguas para reducir tambien esa superficie
+  de lectura tecnica.

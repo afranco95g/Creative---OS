@@ -9,8 +9,14 @@ import {
 import {
   createClient,
 } from '../../lib/supabase/server';
+import { canAccessWorkspace } from '../../services/auth/workspace';
 
 export default async function FundingManagementPage() {
+  const access = await canAccessWorkspace();
+  if (access.profile?.role === 'media_admin') {
+    redirect('/admin');
+  }
+
   const supabase =
     await createClient();
 

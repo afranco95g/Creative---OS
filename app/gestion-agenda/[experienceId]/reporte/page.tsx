@@ -9,6 +9,7 @@ import {
 import {
   createClient,
 } from '../../../../lib/supabase/server';
+import { canAccessWorkspace } from '../../../../services/auth/workspace';
 
 interface ExperienceReportPageProps {
   params: Promise<{
@@ -22,6 +23,11 @@ export default async function ExperienceReportPage({
   const {
     experienceId,
   } = await params;
+
+  const access = await canAccessWorkspace();
+  if (access.profile?.role === 'media_admin') {
+    redirect('/admin');
+  }
 
   const supabase =
     await createClient();

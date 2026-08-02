@@ -66,9 +66,12 @@ export default async function ExperienceAttendeesPage({
     profile?.role ??
     'member';
 
+  if (role === 'media_admin') {
+    redirect('/admin');
+  }
+
   const canAdministrate =
     role === 'ecosystem_admin' ||
-    role === 'media_admin' ||
     role === 'super_admin';
 
   const {
