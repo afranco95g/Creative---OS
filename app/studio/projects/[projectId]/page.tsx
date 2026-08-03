@@ -193,12 +193,15 @@ export default function ProjectPage() {
     router.push('/studio');
   }
 
-  function handleSendMessage(
+  async function handleSendMessage(
     message: string
   ) {
-    projectStore.sendMessage(
-      message
-    );
+    try {
+      const response=await fetch('/api/knowledge/search',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({query:message,purpose:'conversation',projectId})});
+      if(!response.ok)throw new Error('Knowledge retrieval unavailable');
+      const payload=await response.json() as {results:Array<{document:{id:string;title:string};chunk:{id:string;text:string};score:number}>};
+      projectStore.sendMessage(message,{snippets:payload.results.map(r=>r.chunk.text),topics:payload.results.flatMap(()=>[]),sources:payload.results.map(r=>({documentId:r.document.id,chunkId:r.chunk.id,title:r.document.title,topic:[]}))});
+    } catch { projectStore.sendMessage(message); }
   }
 
   if (!workspaceState) {

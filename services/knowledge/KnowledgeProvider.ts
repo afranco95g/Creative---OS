@@ -1,0 +1,2 @@
+import type { ProviderHealth,ProviderKnowledgeResult,StructuredKnowledgeQuery,KnowledgeEntityType } from '../../types/knowledge';
+export interface KnowledgeProvider {readonly id:string;search(query:StructuredKnowledgeQuery):Promise<ProviderKnowledgeResult[]>;getDocument(id:string,entityType?:KnowledgeEntityType):Promise<ProviderKnowledgeResult|null>;health():Promise<ProviderHealth>;supports(query:StructuredKnowledgeQuery):boolean;}

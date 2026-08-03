@@ -10,7 +10,7 @@ interface ProducerChatProps {
   graph: ProjectGraph;
   messages: ConversationMessage[];
   progress: number;
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string) => void | Promise<void>;
 }
 
 export function ProducerChat({
@@ -28,7 +28,7 @@ export function ProducerChat({
 
     if (!input.trim()) return;
 
-    onSendMessage(input.trim());
+    void onSendMessage(input.trim());
     setInput('');
   }
 

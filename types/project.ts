@@ -194,7 +194,10 @@ export interface ProducerResponse {
   nextQuestion: string;
   nextQuestionOptions?: string[];
   interpretation?: TurnInterpretation;
+  sources?: Array<{ documentId:string; chunkId:string; title:string; topic:string[] }>;
 }
+
+export interface KnowledgeGuidance { snippets:string[]; topics:string[]; sources:Array<{documentId:string;chunkId:string;title:string;topic:string[]}>; }
 
 export type InterpretationType = 'explicit_fact' | 'probable_inference' | 'suggestion' | 'contradiction' | 'unanswered' | 'not_applicable';
 export interface ModuleClassification {

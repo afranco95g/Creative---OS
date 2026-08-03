@@ -1,7 +1,9 @@
 import type { KnowledgeSource } from '../../types/knowledge';
 
 // Catálogo intencionalmente pequeño. La ingesta debe verificar licencia, versión y vigencia.
-export const INITIAL_KNOWLEDGE_SOURCES: KnowledgeSource[] = [
+export const INITIAL_KNOWLEDGE_SOURCES: Array<Pick<KnowledgeSource,
+  'id'|'title'|'institution'|'author'|'publicationDate'|'language'|'topic'|'jurisdiction'|'sourceType'|'license'|'canonicalUrl'|'retrievedAt'|'version'|'isActive'
+>> = [
   { id: 'minculturas-economia-creativa', title: 'Recursos de economía cultural y creativa', institution: 'Ministerio de las Culturas, las Artes y los Saberes', author: null, publicationDate: null, language: 'es', topic: 'formulación cultural', jurisdiction: 'CO', sourceType: 'official', license: 'metadata-only-pending-review', canonicalUrl: 'https://www.mincultura.gov.co/', retrievedAt: '2026-08-03', version: 'catalog-1', isActive: true },
   { id: 'oit-siyb', title: 'Start and Improve Your Business', institution: 'Organización Internacional del Trabajo', author: null, publicationDate: null, language: 'es', topic: 'costos y negocio', jurisdiction: 'global', sourceType: 'official', license: 'metadata-only-pending-review', canonicalUrl: 'https://www.ilo.org/', retrievedAt: '2026-08-03', version: 'catalog-1', isActive: true },
   { id: 'openstax-managerial-accounting', title: 'Principles of Accounting, Volume 2: Managerial Accounting', institution: 'OpenStax', author: null, publicationDate: null, language: 'en', topic: 'costos, margen y punto de equilibrio', jurisdiction: 'global', sourceType: 'open-academic', license: 'CC BY 4.0', canonicalUrl: 'https://openstax.org/details/books/principles-managerial-accounting', retrievedAt: '2026-08-03', version: 'catalog-1', isActive: true },

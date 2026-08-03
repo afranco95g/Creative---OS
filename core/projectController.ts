@@ -1,6 +1,7 @@
 import type {
   ConversationMessage,
   ProducerResponse,
+  KnowledgeGuidance,
   ProjectGraph,
   ProjectModuleId,
   ProjectPatch,
@@ -96,7 +97,8 @@ export function createProjectControllerState(
 export function processProjectMessage(
   currentState:
     ProjectControllerState,
-  userInput: string
+  userInput: string,
+  knowledge?: KnowledgeGuidance
 ): ProjectControllerTurnResult {
   const cleanInput =
     userInput.trim();
@@ -185,11 +187,12 @@ export function processProjectMessage(
   const nextProgress =
     getProjectProgress(nextGraph);
 
-  const nextQuestion =
+  const baseNextQuestion =
     getNextBestQuestion(
       nextGraph,
       nextMessagesPreview
     );
+  const nextQuestion = enhanceQuestionWithKnowledge(baseNextQuestion, cleanInput, knowledge);
 
   const registeredDecision =
     decisionActions.length > 0;
@@ -211,6 +214,7 @@ export function processProjectMessage(
         buildGapList(nextGraph),
 
       nextQuestion,
+      sources: knowledge?.sources,
     };
 
   const nextMessages =
@@ -738,3 +742,5 @@ function buildGapList(
       module.title
   );
 }
+
+function enhanceQuestionWithKnowledge(question:string,input:string,knowledge?:KnowledgeGuidance){if(!knowledge?.snippets.length)return question;const text=`${input} ${knowledge.topics.join(' ')} ${knowledge.snippets.join(' ')}`.toLowerCase();if(/costo|costeo|presupuesto|margen|precio/.test(text))return '¿Ese valor incluye costos directos, mano de obra, costos indirectos, impuestos y contingencias, o todavía debemos construir ese desglose?';if(/indicador|impacto|resultado|evaluacion/.test(text))return '¿Qué cambio observable esperas, cómo lo medirás y qué evidencia permitirá atribuirlo al proyecto?';if(/poblacion|publico|comunidad|beneficiario/.test(text))return '¿Quién es el público prioritario, qué necesidad verificable tiene y con qué evidencia lo sabemos?';if(/derecho|legal|permiso|licencia/.test(text))return '¿Qué permisos, licencias o derechos condicionan la ejecución y quién debe validarlos antes del piloto?';return question;}

@@ -1,6 +1,7 @@
 import type {
   ConversationMessage,
   ProjectGraph,
+  KnowledgeGuidance,
 } from '../types/project';
 
 import {
@@ -58,7 +59,7 @@ class ProjectStore {
     };
   }
 
-  sendMessage(userInput: string) {
+  sendMessage(userInput: string, knowledge?: KnowledgeGuidance) {
     const cleanInput = userInput.trim();
 
     if (!cleanInput) {
@@ -67,7 +68,8 @@ class ProjectStore {
 
     const result = processProjectMessage(
       this.state,
-      cleanInput
+      cleanInput,
+      knowledge
     );
 
     this.state = result.state;

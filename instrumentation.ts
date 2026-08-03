@@ -1,0 +1,1 @@
+export async function register(){if(process.env.NEXT_RUNTIME==='nodejs'){const {knowledgeEngine}=await import('./services/knowledge/KnowledgeEngine');knowledgeEngine.initialize().catch(error=>console.error('Knowledge Engine no pudo iniciar:',error));}}

@@ -1,0 +1,10 @@
+import 'server-only';
+import path from 'node:path';
+import { readFile } from 'node:fs/promises';
+import { PDFParse } from 'pdf-parse';
+import * as mammoth from 'mammoth';
+export interface ExtractedPage {page:number|null;text:string;section:string;}
+export interface ExtractedDocument {pages:ExtractedPage[];title?:string;author?:string;}
+export async function parseKnowledgeDocument(file:string):Promise<ExtractedDocument>{const ext=path.extname(file).toLowerCase();if(['.md','.markdown','.txt','.csv','.html','.htm'].includes(ext)){const raw=await readFile(file,'utf8');const text=ext==='.html'||ext==='.htm'?raw.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' '):raw;return{pages:splitSections(text).map(x=>({page:null,...x}))};}if(ext==='.docx'){const result=await mammoth.extractRawText({path:file});return{pages:splitSections(result.value).map(x=>({page:null,...x}))};}if(ext==='.pdf'){const data=await readFile(file);const parser=new PDFParse({data:new Uint8Array(data)});try{const text=await parser.getText();return{pages:text.pages.map(p=>({page:p.num,text:p.text,section:detectHeading(p.text)}))};}finally{await parser.destroy();}}if(ext==='.xlsx')throw new Error('XLSX preparado pero requiere un adaptador tabular antes de activarse.');throw new Error(`Formato no soportado: ${ext}`);}
+function splitSections(text:string){const lines=text.replace(/\r/g,'').split('\n');const out:Array<{section:string;text:string}>=[];let section='Documento';let body:string[]=[];const flush=()=>{const value=body.join('\n').trim();if(value)out.push({section,text:value});body=[]};for(const line of lines){if(/^(#{1,4}\s+|[A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ\s\d.:_-]{5,80}$)/.test(line.trim())){flush();section=line.replace(/^#+\s*/,'').trim();}else body.push(line);}flush();return out.length?out:[{section:'Documento',text:text.trim()}];}
+function detectHeading(text:string){return text.split('\n').map(x=>x.trim()).find(x=>x.length>3&&x.length<100)??'Página';}
