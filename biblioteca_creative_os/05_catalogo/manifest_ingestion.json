@@ -1,0 +1,46 @@
+{
+  "library_name": "Creative OS - Biblioteca inicial",
+  "version": "0.1.0",
+  "language_priority": ["es", "en"],
+  "jurisdiction_priority": ["Colombia", "Global"],
+  "chunking": {
+    "strategy": "heading_aware",
+    "target_tokens": 700,
+    "overlap_tokens": 100,
+    "preserve_tables": true,
+    "preserve_page_number": true
+  },
+  "required_metadata": [
+    "title",
+    "institution",
+    "publication_date",
+    "language",
+    "topic",
+    "jurisdiction",
+    "canonical_url",
+    "license_or_terms",
+    "page_number",
+    "heading"
+  ],
+  "recommended_topics": [
+    "formulacion",
+    "marco_logico",
+    "emprendimiento_cultural",
+    "costos",
+    "precios",
+    "presupuesto",
+    "indicadores",
+    "impacto",
+    "sostenibilidad",
+    "sistematizacion",
+    "convocatorias",
+    "gestion_de_proyectos"
+  ],
+  "safety_rules": [
+    "No presentar orientación tributaria o legal como definitiva.",
+    "Distinguir hechos del usuario, inferencias y recomendaciones de fuente.",
+    "Conservar trazabilidad de cada fragmento utilizado.",
+    "No almacenar conversaciones privadas dentro de la biblioteca global.",
+    "Solicitar confirmación antes de crear líneas presupuestales a partir de inferencias."
+  ]
+}
