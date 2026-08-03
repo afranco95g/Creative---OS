@@ -268,9 +268,21 @@ export function getProjectProgress(graph: ProjectGraph) {
 
   if (modules.length === 0) return 0;
 
-  const total = modules.reduce((sum, module) => sum + module.score, 0);
+  const critical = new Set<ProjectModuleId>(['identity', 'purpose', 'community', 'generalObjective', 'activities', 'budget', 'sustainability']);
+  const weighted = modules.reduce((sum, module) => sum + module.score * (critical.has(module.id) ? 2 : 1), 0);
+  const weight = modules.reduce((sum, module) => sum + (critical.has(module.id) ? 2 : 1), 0);
+  const contradictionPenalty = graph.risks.filter((risk) => risk.status === 'open' && risk.impact === 'high').length * 2;
+  return Math.max(0, Math.min(100, Math.round(weighted / weight) - contradictionPenalty));
+}
 
-  return Math.round(total / modules.length);
+export function explainProjectProgress(graph: ProjectGraph) {
+  const modules = Object.values(graph.modules);
+  return {
+    confirmed: modules.filter((module) => module.score >= 55).sort((a, b) => b.score - a.score).slice(0, 5).map((module) => module.title),
+    building: modules.filter((module) => module.score >= 25 && module.score < 55).sort((a, b) => b.score - a.score).slice(0, 5).map((module) => module.title),
+    pending: modules.filter((module) => module.score < 25).slice(0, 5).map((module) => module.title),
+    recommended: getWeakModules(graph, 1)[0]?.title ?? 'Revisar coherencia y evidencias',
+  };
 }
 
 export function getWeakModules(graph: ProjectGraph, limit = 5) {

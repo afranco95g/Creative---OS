@@ -40,6 +40,7 @@ import type {
 import {
   workspaceStore,
 } from '@/core/workspaceStore';
+import { cloudProjectToWorkspaceProject, loadFullCloudProject } from '@/services/projects/projectCloudService';
 
 import type {
   ProjectGraph,
@@ -108,12 +109,22 @@ export default function ProjectPage() {
     loadedProjectId,
     setLoadedProjectId,
   ] = useState<string | null>(null);
+  const [cloudLoadAttempted, setCloudLoadAttempted] = useState(false);
+  const [cloudLoadError, setCloudLoadError] = useState('');
 
   const project =
     workspaceState?.projects.find(
       (currentProject) =>
         currentProject.id === projectId
     ) ?? null;
+
+  useEffect(() => {
+    if (project || !workspaceState?.user || cloudLoadAttempted) return;
+    setCloudLoadAttempted(true);
+    void loadFullCloudProject(projectId)
+      .then((cloudProject) => workspaceStore.mergeCloudProjects([cloudProjectToWorkspaceProject(cloudProject)]))
+      .catch((error: unknown) => setCloudLoadError(error instanceof Error ? error.message : 'No fue posible recuperar el proyecto.'));
+  }, [project, projectId, workspaceState?.user, cloudLoadAttempted]);
 
   /*
    * Carga en ProjectStore el grafo y la conversación
@@ -190,7 +201,8 @@ export default function ProjectPage() {
   }
 
   if (!project) {
-    return <ProjectNotFound />;
+    if (workspaceState.user && !cloudLoadAttempted) return <ProjectLoading />;
+    return <ProjectNotFound message={cloudLoadError} />;
   }
 
   if (
@@ -754,7 +766,7 @@ function ProjectLoading() {
   );
 }
 
-function ProjectNotFound() {
+function ProjectNotFound({ message = '' }: { message?: string }) {
   return (
     <main className="min-h-screen bg-[#050505] px-8 py-12 text-white">
       <div className="mx-auto max-w-3xl rounded-3xl border border-[#232323] bg-[#101010] p-8">
@@ -767,8 +779,7 @@ function ProjectNotFound() {
         </h1>
 
         <p className="mt-4 leading-relaxed text-[#A6A6A6]">
-          El proyecto no existe o ya no está disponible en
-          este navegador.
+          {message || 'El proyecto no existe o no pertenece a esta cuenta.'}
         </p>
 
         <Link

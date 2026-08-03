@@ -179,6 +179,24 @@ export async function loadMyCloudProjects(
   );
 }
 
+export async function loadFullCloudProject(projectId: string): Promise<CloudWorkspaceProject> {
+  const user = await getAuthenticatedUser();
+  const { data, error } = await getDatabaseClient()
+    .from('projects')
+    .select([
+      'id','owner_id','actor_id','actor_type','title','description','category','stage','progress',
+      'graph','messages','workflow_status','eligibility_note','editorial_note',
+      'eligibility_requested_at','eligibility_reviewed_at','submitted_to_media_at',
+      'editorial_reviewed_at','published_at','client_updated_at','updated_at','created_at',
+    ].join(', '))
+    .eq('id', projectId)
+    .eq('owner_id', user.id)
+    .maybeSingle();
+  if (error) throw new Error(error.message || 'No fue posible recuperar el proyecto.');
+  if (!data) throw new Error('El proyecto no existe o no pertenece a esta cuenta.');
+  return mapCloudWorkspaceProject(data as CloudProjectRow);
+}
+
 export async function syncLocalProjectsToCloud(
   projects: WorkspaceProject[],
   actorId: string,
@@ -234,7 +252,7 @@ export async function syncLocalProjectsToCloud(
 
       return (
         !remote ||
-        Date.parse(project.updatedAt) >=
+        Date.parse(project.updatedAt) >
           Date.parse(remote.client_updated_at)
       );
     }
@@ -272,6 +290,20 @@ export async function syncLocalProjectsToCloud(
         error.message ||
           'No fue posible sincronizar los proyectos.'
       );
+    }
+
+    // Recovery history is best-effort so deployments can roll out the table
+    // independently without blocking the primary save.
+    const snapshots = projectsToUpload.map((project) => ({
+      project_id: project.id,
+      owner_id: user.id,
+      client_updated_at: project.updatedAt,
+      graph: project.graph,
+      messages: project.messages,
+    }));
+    const { error: snapshotError } = await database.from('project_snapshots').insert(snapshots);
+    if (snapshotError && !/does not exist|schema cache/i.test(snapshotError.message ?? '')) {
+      console.warn('No fue posible crear el snapshot de recuperación:', snapshotError.message);
     }
   }
 

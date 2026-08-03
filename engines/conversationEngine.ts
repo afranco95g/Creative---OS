@@ -17,6 +17,7 @@ import {
 import {
   getNextBestQuestion,
 } from './questionEngine';
+import { interpretTurn } from './turnInterpretationEngine';
 
 const DECISION_EXPRESSIONS: RegExp[] = [
   /\bdecidi\b/,
@@ -210,6 +211,9 @@ export function extractProjectPatchesFromMessage(
       normalizedMessage,
       [
         'skaters',
+        'skate',
+        'bmx',
+        'deportes extremos',
         'artistas',
         'emprendedores',
         'jovenes',
@@ -495,7 +499,8 @@ export function extractProjectPatchesFromMessage(
 
 function buildProducerResponse(
   graph: ProjectGraph,
-  patches: ProjectPatch[]
+  patches: ProjectPatch[],
+  interpretation: ReturnType<typeof interpretTurn>
 ): ProducerResponse {
   const updatedModules = patches
     .map(
@@ -537,22 +542,27 @@ function buildProducerResponse(
     );
 
   return {
-    understood:
-      recognizedDecision
+    understood: interpretation.explicitFacts.length
+      ? interpretation.understoodSummary
+      : recognizedDecision
         ? 'Entendido. Registré esta información como una decisión del proyecto y la conecté con las áreas relacionadas. También quedará disponible para revisión en la memoria ejecutiva.'
         : 'Perfecto. Ya integré esta información al proyecto. Estamos convirtiendo la idea en una estructura que después podrá servir para una convocatoria, una propuesta, un presupuesto o una presentación.',
 
-    organized: Array.from(
-      new Set([
-        ...updatedModules,
-        ...strongModules,
-      ])
-    ).slice(0, 5),
+    organized: interpretation.explicitFacts.length
+      ? interpretation.explicitFacts.map((fact) => `${fact.confidence === 'confirmed' ? 'Confirmado' : 'Preliminar'} · ${fact.field}: ${String(fact.value)}`).slice(0, 6)
+      : Array.from(new Set([...updatedModules, ...strongModules])).slice(0, 5),
 
     gaps: weakModules,
 
-    nextQuestion:
-      getNextBestQuestion(graph),
+    nextQuestion: interpretation.recommendedNextQuestion || getNextBestQuestion(graph),
+    nextQuestionOptions: interpretation.recommendedNextQuestion ? [
+      'Solo materiales y fabricación.',
+      'Incluye materiales y mano de obra.',
+      'Incluye todos los costos.',
+      'No lo sé todavía.',
+      'Quiero desglosarlo.',
+    ] : undefined,
+    interpretation,
   };
 }
 
@@ -572,10 +582,25 @@ export function processConversationTurn(
       patches
     );
 
+  const interpretation = interpretTurn(message, nextGraph, patches);
+  if (interpretation.financialSignals.length) {
+    nextGraph.tools.proposedFinancialSignals = [
+      ...(nextGraph.tools.proposedFinancialSignals ?? []),
+      ...interpretation.financialSignals.filter((signal) => signal.requiresConfirmation),
+    ];
+  }
+  if (interpretation.pendingQuestions.length) {
+    nextGraph.tools.pendingQuestions = [
+      ...(nextGraph.tools.pendingQuestions ?? []),
+      ...interpretation.pendingQuestions,
+    ];
+  }
+
   const response =
     buildProducerResponse(
       nextGraph,
-      patches
+      patches,
+      interpretation
     );
 
   const userMessage:

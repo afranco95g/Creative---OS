@@ -3,6 +3,7 @@
 import { ProjectGraph, ConversationMessage } from '../types/project';
 import { getAllDocumentReadiness } from '../engines/documentEngine';
 import { buildProductionUpdate } from '../engines/productionEngine';
+import { explainProjectProgress } from '../core/projectEngine';
 
 interface LivingWorkspaceProps {
   graph: ProjectGraph;
@@ -20,6 +21,7 @@ export function LivingWorkspace({ graph, messages, progress }: LivingWorkspacePr
   const weakModules = Object.values(graph.modules)
     .filter((module) => module.score < 55)
     .slice(0, 5);
+  const progressExplanation = explainProjectProgress(graph);
 
   return (
     <aside className="sticky top-12 h-fit max-h-[calc(100vh-96px)] overflow-y-auto rounded-3xl border border-[#232323] bg-[#101010] p-6">
@@ -51,6 +53,13 @@ export function LivingWorkspace({ graph, messages, progress }: LivingWorkspacePr
               style={{ width: `${progress}%` }}
             />
           </div>
+          <details className="mt-4 rounded-xl border border-white/10 p-3 text-xs text-[#aaa]">
+            <summary className="cursor-pointer text-[#D9FF00]">Por qué estás en {progress}%</summary>
+            <p className="mt-3"><span className="text-white">Confirmado:</span> {progressExplanation.confirmed.join(', ') || 'Base inicial'}</p>
+            <p className="mt-2"><span className="text-white">En construcción:</span> {progressExplanation.building.join(', ') || 'Sin módulos intermedios'}</p>
+            <p className="mt-2"><span className="text-white">Pendiente:</span> {progressExplanation.pending.join(', ') || 'Revisión final'}</p>
+            <p className="mt-2"><span className="text-white">Próximo avance:</span> fortalecer {progressExplanation.recommended}.</p>
+          </details>
         </div>
       </div>
 

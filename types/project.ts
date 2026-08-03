@@ -192,6 +192,59 @@ export interface ProducerResponse {
   organized: string[];
   gaps: string[];
   nextQuestion: string;
+  nextQuestionOptions?: string[];
+  interpretation?: TurnInterpretation;
+}
+
+export type FactConfidence = 'confirmed' | 'preliminary' | 'requires_confirmation';
+
+export interface InterpretedFact {
+  field: string;
+  value: string | number | boolean;
+  confidence: FactConfidence;
+  source: 'user' | 'system_inference' | 'knowledge' | 'estimate';
+}
+
+export type FinancialSignalKind =
+  | 'cost' | 'expense' | 'investment' | 'income' | 'price'
+  | 'preliminary_margin' | 'tax' | 'financing' | 'in_kind';
+
+export interface FinancialSignal {
+  id: ID;
+  kind: FinancialSignalKind;
+  concept: string;
+  amount: number | null;
+  currency: 'COP';
+  quantity: number;
+  unit: string;
+  status: 'declared' | 'estimated' | 'requires_breakdown' | 'requires_estimate';
+  source: 'conversation' | 'document' | 'manual';
+  requiresConfirmation: boolean;
+}
+
+export interface PendingQuestion {
+  id: ID;
+  area: ProjectModuleId;
+  question: string;
+  reason: string;
+  createdAt: string;
+  status: 'pending' | 'answered' | 'dismissed';
+}
+
+export interface TurnInterpretation {
+  understoodSummary: string;
+  explicitFacts: InterpretedFact[];
+  inferredFacts: InterpretedFact[];
+  updatedModules: ProjectModuleId[];
+  proposedPatches: ProjectPatch[];
+  financialSignals: FinancialSignal[];
+  timelineSignals: string[];
+  riskSignals: string[];
+  contradictionSignals: string[];
+  pendingQuestions: PendingQuestion[];
+  nextQuestionCandidates: string[];
+  recommendedNextQuestion: string;
+  confidence: number;
 }
 
 export interface ConversationMessage {
@@ -263,4 +316,7 @@ export interface ProjectTools {
   budgetLines: ProjectBudgetLine[];
   scheduleItems: ProjectScheduleItem[];
   grant: GrantWorkspace;
+  pendingQuestions?: PendingQuestion[];
+  proposedFinancialSignals?: FinancialSignal[];
+  activeArea?: ProjectModuleId | null;
 }

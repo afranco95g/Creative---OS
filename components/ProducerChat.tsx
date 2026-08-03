@@ -1,8 +1,9 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { ConversationMessage, ProjectGraph } from '../types/project';
 import { LivingWorkspace } from './LivingWorkspace';
+import { persistenceCoordinator, type PersistenceStatus } from '../core/persistenceCoordinator';
 
 interface ProducerChatProps {
   graph: ProjectGraph;
@@ -18,6 +19,8 @@ export function ProducerChat({
   onSendMessage,
 }: ProducerChatProps) {
   const [input, setInput] = useState('');
+  const [sync, setSync] = useState<{ status: PersistenceStatus; message: string }>(persistenceCoordinator.getStatus());
+  useEffect(() => persistenceCoordinator.subscribe((status, message) => setSync({ status, message })), []);
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -57,7 +60,7 @@ export function ProducerChat({
                   </div>
                 </div>
               ) : (
-                <ProducerResponseCard key={message.id} message={message} />
+                <ProducerResponseCard key={message.id} message={message} onChoose={setInput} />
               )
             )}
           </div>
@@ -73,9 +76,10 @@ export function ProducerChat({
             />
 
             <div className="flex items-center justify-between border-t border-[#232323] pt-4">
-              <p className="text-xs text-[#767676]">
-                Una frase es suficiente para seguir avanzando.
-              </p>
+              <div>
+                <p className={`text-xs ${sync.status === 'error' ? 'text-red-300' : sync.status === 'offline' ? 'text-amber-300' : 'text-[#767676]'}`}>{sync.message || 'Una frase es suficiente para seguir avanzando.'}</p>
+                {sync.status === 'error' ? <button type="button" onClick={() => persistenceCoordinator.retry()} className="mt-1 text-xs text-[#D9FF00] underline">Reintentar</button> : null}
+              </div>
 
               <button className="rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black transition hover:bg-white">
                 Continuar proyecto
@@ -92,8 +96,10 @@ export function ProducerChat({
 
 function ProducerResponseCard({
   message,
+  onChoose,
 }: {
   message: ConversationMessage;
+  onChoose: (value: string) => void;
 }) {
   const response = message.response;
 
@@ -153,7 +159,22 @@ function ProducerResponseCard({
           <p className="text-2xl font-medium leading-snug text-[#D9FF00]">
             {response.nextQuestion}
           </p>
+          {response.nextQuestionOptions?.length ? (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {response.nextQuestionOptions.map((option) => <button key={option} type="button" onClick={() => onChoose(option)} className="rounded-full border border-white/15 px-3 py-2 text-left text-xs text-[#cfcfcf] hover:border-[#D9FF00]">{option}</button>)}
+            </div>
+          ) : null}
+          <div className="mt-4 flex flex-wrap gap-3 text-xs text-[#888]">
+            {['Cambiar pregunta', 'Ver un ejemplo', '¿Por qué me preguntas esto?', 'Dejar pendiente', 'Cambiar de área'].map((action) => <button key={action} type="button" onClick={() => onChoose(action)} className="hover:text-white">{action}</button>)}
+          </div>
         </div>
+        {response.interpretation?.financialSignals.length ? (
+          <div className="border-t border-[#232323] pt-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-[#767676]">Datos económicos detectados</p>
+            <div className="mt-3 space-y-2">{response.interpretation.financialSignals.map((signal) => <p key={signal.id} className="text-sm text-[#bbb]">{signal.concept}: {signal.amount === null ? 'pendiente' : `COP ${signal.amount.toLocaleString('es-CO')}`} · {signal.status}</p>)}</div>
+            {response.interpretation.financialSignals.some((signal) => signal.requiresConfirmation) ? <p className="mt-4 text-sm text-[#D9FF00]">Detecté datos económicos y necesidades futuras. Revísalos antes de incorporarlos definitivamente al presupuesto.</p> : null}
+          </div>
+        ) : null}
       </div>
     </div>
   );

@@ -16,6 +16,7 @@ import {
 import {
   workspaceStore,
 } from '../../core/workspaceStore';
+import { persistenceCoordinator } from '../../core/persistenceCoordinator';
 
 interface WorkspaceAuthBridgeProps {
   children: ReactNode;
@@ -103,6 +104,7 @@ export function WorkspaceAuthBridge({
           name,
           email,
         });
+      persistenceCoordinator.start(user.id);
     }
 
     async function initializeWorkspace() {
@@ -127,6 +129,7 @@ export function WorkspaceAuthBridge({
 
         workspaceStore
           .disconnectAuthenticatedUser();
+        persistenceCoordinator.stop();
 
         return;
       }
@@ -161,6 +164,7 @@ export function WorkspaceAuthBridge({
             ) {
               workspaceStore
                 .disconnectAuthenticatedUser();
+              persistenceCoordinator.stop();
 
               return;
             }
@@ -175,6 +179,7 @@ export function WorkspaceAuthBridge({
       isMounted = false;
 
       subscription.unsubscribe();
+      persistenceCoordinator.stop();
     };
   }, []);
 
