@@ -41,6 +41,7 @@ import {
   workspaceStore,
 } from '@/core/workspaceStore';
 import { cloudProjectToWorkspaceProject, loadFullCloudProject } from '@/services/projects/projectCloudService';
+import { buildExecutiveActionPlan } from '@/engines/executiveReviewEngine';
 
 import type {
   ProjectGraph,
@@ -117,6 +118,10 @@ export default function ProjectPage() {
       (currentProject) =>
         currentProject.id === projectId
     ) ?? null;
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'diagnosis') setActiveView('diagnosis');
+  }, []);
 
   useEffect(() => {
     if (project || !workspaceState?.user || cloudLoadAttempted) return;
@@ -269,6 +274,7 @@ export default function ProjectPage() {
             <ProjectDashboard
               graph={graph}
               projectId={projectId}
+              onChange={(nextGraph) => projectStore.replaceGraph(nextGraph)}
             />
           )}
 
@@ -389,6 +395,7 @@ function ExecutiveReview({
       (risk) =>
         risk.status === 'open'
     );
+  const actionPlan = buildExecutiveActionPlan(graph);
 
   return (
     <section className="mx-auto max-w-6xl space-y-10">
@@ -457,6 +464,12 @@ function ExecutiveReview({
           emptyMessage="No hay prioridades pendientes."
         />
       </div>
+
+      <section className="rounded-3xl border border-[#232323] bg-[#101010] p-7">
+        <p className="text-xs uppercase tracking-[0.2em] text-[#767676]">Plan del Productor Ejecutivo</p>
+        <h3 className="mt-3 text-2xl font-semibold">Acciones justificadas según la etapa</h3>
+        <div className="mt-6 space-y-4">{actionPlan.map((item)=><article key={item.id} className="rounded-2xl border border-white/10 bg-[#151515] p-5"><div className="flex justify-between gap-4"><strong>Prioridad {item.priority}: {item.action}</strong><span className="text-xs uppercase text-[#D9FF00]">{graph.modules[item.area].title}</span></div><p className="mt-3 text-sm text-[#aaa]"><b className="text-white">Por qué:</b> {item.reason}</p><p className="mt-2 text-sm text-[#aaa]"><b className="text-white">Resultado esperado:</b> {item.expectedResult}</p><p className="mt-2 text-xs text-[#777]">Dependencia: {item.dependency} · Responsable sugerido: {item.owner} · Estado: {item.status}</p></article>)}</div>
+      </section>
 
       <div className="grid gap-6 xl:grid-cols-2">
         <section className="rounded-3xl border border-[#232323] bg-[#101010] p-7">

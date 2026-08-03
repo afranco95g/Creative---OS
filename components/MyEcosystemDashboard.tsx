@@ -833,6 +833,15 @@ function ProjectsPanel({
 
       <ProjectCloudPanel />
 
+      <section className="mt-6">
+        <p className="text-sm font-semibold text-white">¿Qué quieres hacer?</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <ProjectEntry href="/studio?new=1" title="Crear una idea" description="Empieza desde una intuición y desarróllala con Creative OS." />
+          <ProjectEntry href="/importar-proyecto" title="Importar un proyecto" description="Carga información existente para que el Productor Ejecutivo proponga un plan." />
+          <ProjectEntry href="/aplicar" title="Aplicar al ecosistema" description="Presenta un proyecto consolidado que busca conexiones, agenda, aliados o acompañamiento." />
+        </div>
+      </section>
+
       {!workspaceState ? (
         <div className="mt-6 h-40 animate-pulse rounded-2xl bg-[#151515]" />
       ) : projects.length === 0 ? (
@@ -881,6 +890,8 @@ function ProjectsPanel({
     </article>
   );
 }
+
+function ProjectEntry({href,title,description}:{href:string;title:string;description:string}){return <Link href={href} className="rounded-2xl border border-white/10 bg-[#111] p-5 transition hover:border-[#D9FF00]"><strong>{title}</strong><p className="mt-2 text-sm leading-6 text-[#888]">{description}</p></Link>}
 
 function SpacePlatform({
   space,

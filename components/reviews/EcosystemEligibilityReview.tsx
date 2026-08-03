@@ -31,7 +31,7 @@ const decisionOptions: Array<{
   },
   {
     value: 'experience',
-    label: 'Aprobado como experiencia',
+    label: 'Aceptar en el ecosistema · actividad candidata',
   },
   {
     value: 'ticket_distribution',

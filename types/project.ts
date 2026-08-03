@@ -196,6 +196,12 @@ export interface ProducerResponse {
   interpretation?: TurnInterpretation;
 }
 
+export type InterpretationType = 'explicit_fact' | 'probable_inference' | 'suggestion' | 'contradiction' | 'unanswered' | 'not_applicable';
+export interface ModuleClassification {
+  targetModule: ProjectModuleId; extractedContent: string; evidenceQuote: string; confidence: number;
+  interpretationType: InterpretationType; requiresConfirmation: boolean; rejectedModules: ProjectModuleId[]; reason: string;
+}
+
 export type FactConfidence = 'confirmed' | 'preliminary' | 'requires_confirmation';
 
 export interface InterpretedFact {
@@ -245,6 +251,7 @@ export interface TurnInterpretation {
   nextQuestionCandidates: string[];
   recommendedNextQuestion: string;
   confidence: number;
+  classifications: ModuleClassification[];
 }
 
 export interface ConversationMessage {

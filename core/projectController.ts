@@ -258,6 +258,7 @@ function attachResponseToProducerMessages(
 
       return {
         ...message,
+        content: message.content || [response.understood,response.organized.length?`Organizado: ${response.organized.join('; ')}.`:'',response.gaps.length?`Por fortalecer: ${response.gaps.join('; ')}.`:'',response.nextQuestion?`Siguiente pregunta: ${response.nextQuestion}`:''].filter(Boolean).join('\n\n'),
         response,
       };
     }

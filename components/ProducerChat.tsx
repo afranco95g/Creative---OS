@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { ConversationMessage, ProjectGraph } from '../types/project';
 import { LivingWorkspace } from './LivingWorkspace';
 import { persistenceCoordinator, type PersistenceStatus } from '../core/persistenceCoordinator';
@@ -34,6 +35,10 @@ export function ProducerChat({
   return (
     <section className="mx-auto grid max-w-[1280px] grid-cols-[1fr_340px] gap-10">
       <div className="min-h-screen pb-40">
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-[#0b0b0b] p-4">
+          <p className="max-w-2xl text-sm leading-6 text-[#999]">Aplicar solicita conexiones o acompañamiento con un snapshot autorizado. No detiene el desarrollo ni publica automáticamente el proyecto.</p>
+          <Link href="/mi-ecosistema" className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black">Aplicar al ecosistema</Link>
+        </div>
         {messages.length === 0 ? (
           <div className="pt-24">
             <p className="mb-4 text-sm uppercase tracking-[0.25em] text-[#D9FF00]">

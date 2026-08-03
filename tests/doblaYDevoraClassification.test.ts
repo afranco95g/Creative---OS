@@ -1,0 +1,14 @@
+import { classifyProjectEvidence } from '../engines/semanticClassificationEngine';
+import { createInitialProjectGraph } from '../core/projectEngine';
+import { buildExecutiveActionPlan } from '../engines/executiveReviewEngine';
+const input='Público: jóvenes amantes del cine. En seis meses: investigación de derechos, cotizaciones, diseño de marca, búsqueda de espacio y campaña. Falta financiación. Buscamos alianzas gastronómicas.';
+const result=classifyProjectEvidence(input);
+const targets=(module:string)=>result.filter(x=>x.targetModule===module);
+if(!targets('community').length||targets('team').length)throw new Error('El público debe ir únicamente a community.');
+if(!targets('timeline').length||!targets('activities').length)throw new Error('Debe fragmentar duración y actividades.');
+if(targets('budget').some(x=>x.confidence>=.8))throw new Error('Financiación sin cifras no puede consolidar presupuesto.');
+if(targets('allies').some(x=>!x.requiresConfirmation))throw new Error('Alianzas gastronómicas deben ser oportunidad por confirmar.');
+const graph=createInitialProjectGraph();graph.title='Dobla y devora';graph.modules.identity.content='Experiencia de doblaje de escenas audiovisuales y gastronomía.';
+const plan=buildExecutiveActionPlan(graph).map(x=>x.action).join(' ');
+if(!/marco legal/.test(plan)||!/piloto técnico/.test(plan)||!/grupo pequeño/.test(plan))throw new Error('El plan ejecutivo no priorizó derechos, piloto y validación.');
+console.log('Dobla y devora classification: OK');

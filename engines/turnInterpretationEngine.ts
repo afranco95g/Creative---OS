@@ -1,6 +1,7 @@
 import { createId, now } from '../core/projectEngine';
 import type { ProjectGraph, ProjectPatch, TurnInterpretation } from '../types/project';
 import { detectFinancialSignals } from './budgetSignalProcessor';
+import { classifyProjectEvidence } from './semanticClassificationEngine';
 
 const normalize = (value: string) => value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
@@ -28,12 +29,13 @@ export function interpretTurn(input: string, graph: ProjectGraph, patches: Proje
     explicitFacts.some((f) => f.field === 'brand_identity') ? 'La identidad de marca aún está pendiente' : '',
   ].filter(Boolean);
 
+  const classifications = classifyProjectEvidence(input);
   return {
     understoodSummary: `${summaryParts.join('; ')}.`, explicitFacts, inferredFacts,
     updatedModules: Array.from(new Set(patches.map((patch) => patch.moduleId))), proposedPatches: patches,
     financialSignals, timelineSignals: [], riskSignals: needsBreakdown ? ['El costo declarado puede omitir costos indirectos.'] : [], contradictionSignals: [],
     pendingQuestions: needsBreakdown ? [{ id: createId(), area: 'budget', question: recommendedNextQuestion, reason: 'Validar el alcance del costo unitario antes de evaluar rentabilidad.', createdAt: now(), status: 'pending' }] : [],
     nextQuestionCandidates: recommendedNextQuestion ? [recommendedNextQuestion, '¿Quieres desglosar el costo unitario por componentes?'] : [],
-    recommendedNextQuestion, confidence: explicitFacts.length ? 0.9 : 0.65,
+    recommendedNextQuestion, confidence: explicitFacts.length ? 0.9 : 0.65, classifications,
   };
 }

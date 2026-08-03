@@ -50,7 +50,7 @@ function serializeToMarkdown(
             return [
               `## Mensaje ${index + 1} · ${role}`,
               '',
-              String(message.content),
+              String(message.content || formatProducerResponse((message as { response?: { understood?: string; organized?: string[]; gaps?: string[]; nextQuestion?: string } }).response)),
             ].join('\n');
           })
           .join('\n\n---\n\n')
@@ -272,6 +272,7 @@ function formatList(
 
 function getMessageRoleLabel(role: string): string {
   if (role === 'user') return 'Usuario';
+  if (role === 'producer') return 'Productor Ejecutivo';
   if (role === 'assistant') {
     return 'Productor Ejecutivo';
   }
@@ -279,4 +280,9 @@ function getMessageRoleLabel(role: string): string {
   if (role === 'system') return 'Sistema';
 
   return role;
+}
+
+function formatProducerResponse(response?: { understood?: string; organized?: string[]; gaps?: string[]; nextQuestion?: string }): string {
+  if (!response) return 'Mensaje sin contenido disponible.';
+  return [response.understood,response.organized?.length?`Organizado: ${response.organized.join('; ')}.`:'',response.gaps?.length?`Por fortalecer: ${response.gaps.join('; ')}.`:'',response.nextQuestion?`Siguiente pregunta: ${response.nextQuestion}`:''].filter(Boolean).join('\n\n');
 }

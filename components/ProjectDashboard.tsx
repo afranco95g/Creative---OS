@@ -5,10 +5,12 @@ import { mapProjectToAreas } from '../engines/universalProjectMapper';
 import { buildAreaNarrative } from '../engines/executiveNarrativeEngine';
 import { EcosystemSignalConsent } from './projects/EcosystemSignalConsent';
 import { BudgetSuggestion } from './projects/BudgetSuggestion';
+import { ProjectReanalysis } from './projects/ProjectReanalysis';
 
 interface ProjectDashboardProps {
   graph: ProjectGraph;
   projectId: string;
+  onChange?: (graph: ProjectGraph) => void;
 }
 
 const AREA_ICONS: Record<string, string> = {
@@ -21,7 +23,7 @@ const AREA_ICONS: Record<string, string> = {
   impact: '📈',
 };
 
-export function ProjectDashboard({ graph, projectId }: ProjectDashboardProps) {
+export function ProjectDashboard({ graph, projectId, onChange }: ProjectDashboardProps) {
   const areas = mapProjectToAreas(graph);
 
   return (
@@ -105,6 +107,7 @@ export function ProjectDashboard({ graph, projectId }: ProjectDashboardProps) {
       </div>
 
       <EcosystemSignalConsent projectId={projectId} />
+      {onChange ? <ProjectReanalysis graph={graph} onChange={onChange} /> : null}
       <BudgetSuggestion projectId={projectId} budgetContent={graph.modules.budget.content} />
     </section>
   );

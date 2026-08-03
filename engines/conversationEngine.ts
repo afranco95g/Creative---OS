@@ -18,6 +18,7 @@ import {
   getNextBestQuestion,
 } from './questionEngine';
 import { interpretTurn } from './turnInterpretationEngine';
+import { classifyProjectEvidence } from './semanticClassificationEngine';
 
 const DECISION_EXPRESSIONS: RegExp[] = [
   /\bdecidi\b/,
@@ -99,6 +100,8 @@ export function extractProjectPatchesFromMessage(
   message: string,
   graph: ProjectGraph
 ): ProjectPatch[] {
+  const semantic = classifyProjectEvidence(message).filter((item) => item.confidence >= 0.8 && !item.requiresConfirmation);
+  if (semantic.length) return semantic.map((item) => ({ ...createPatch(item.targetModule, item.extractedContent, Math.round(item.confidence * 35)), evidenceQuote: item.evidenceQuote }));
   const patches: ProjectPatch[] = [];
 
   const updatedModules =
@@ -615,7 +618,7 @@ export function processConversationTurn(
     ConversationMessage = {
       id: createId(),
       role: 'producer',
-      content: '',
+      content: producerResponseToNarrative(response),
       response,
       createdAt: now(),
     };
@@ -632,4 +635,8 @@ export function processConversationTurn(
 
     response,
   };
+}
+
+export function producerResponseToNarrative(response: ProducerResponse): string {
+  return [response.understood,response.organized.length?`Organizado: ${response.organized.join('; ')}.`:'',response.gaps.length?`Por fortalecer: ${response.gaps.join('; ')}.`:'',response.nextQuestion?`Siguiente pregunta: ${response.nextQuestion}`:''].filter(Boolean).join('\n\n');
 }

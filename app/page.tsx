@@ -331,6 +331,19 @@ export default async function HomePage() {
 
       <HomeAgendaSection />
 
+      <section className="border-y border-white/10 bg-[#0a0a0a]">
+        <div className="mx-auto max-w-7xl px-6 py-20">
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#D9FF00]">Haz parte del ecosistema</p>
+          <h2 className="mt-4 max-w-4xl text-4xl font-black tracking-[-0.04em] sm:text-5xl">¿Ya tienes un proyecto? Aplica al ecosistema.</h2>
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-neutral-400">Presenta una actividad, taller, evento, experiencia, producto cultural, proyecto artístico o activación que ya tenga suficiente estructura.</p>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-neutral-500">Aplicar permite solicitar conexiones, recursos, conocimientos, espacios, colaboradores, financiación, distribución o acompañamiento. No publica automáticamente el proyecto ni garantiza su aprobación.</p>
+          <div className="mt-9 grid gap-4 md:grid-cols-2">
+            <Link href="/studio?new=1" className="rounded-3xl border border-white/15 p-6 transition hover:border-white"><strong className="text-xl">Desarrollar una idea</strong><span className="mt-2 block text-neutral-400">Trabaja con el Productor Ejecutivo desde el inicio.</span></Link>
+            <Link href="/aplicar" className="rounded-3xl bg-[#D9FF00] p-6 text-black"><strong className="text-xl">Aplicar con un proyecto existente</strong><span className="mt-2 block text-black/70">Presenta una propuesta que ya está en marcha o consolidada.</span></Link>
+          </div>
+        </div>
+      </section>
+
       <section
         id="ecosistema"
         className="mx-auto max-w-7xl px-6 py-20"
