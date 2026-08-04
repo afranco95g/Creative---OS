@@ -1,0 +1,140 @@
+{
+  "package": "Creative OS - Investigación cognitiva y biblioteca de casos",
+  "version": "1.0",
+  "created": "2026-08-03",
+  "purpose": "Fuentes y síntesis para diseñar modos de pensamiento, Executive Review y una biblioteca de casos contextualizados.",
+  "documents": [
+    "02_biblioteca_de_casos_y_taxonomia.docx",
+    "01_modelo_cognitivo_productor_ejecutivo.docx",
+    "04_cuestionario_investigacion_fundador.docx",
+    "03_executive_review_memo_decision.docx"
+  ],
+  "source_pdfs": [
+    "gary_klein_naturalistic_decision_making.pdf",
+    "nesta_innovation_teams_labs.pdf",
+    "undp_accelerator_labs_annual_report_2025.pdf",
+    "nesta_compendium_innovation_methods.pdf",
+    "world_bank_understanding_cci_2024.pdf",
+    "world_bank_cities_culture_creativity.pdf",
+    "undp_accelerator_labs_evaluation.pdf"
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Have We Learned Anything About Decision Making?",
+      "institution": "UK Government / Gary Klein",
+      "year": "2015",
+      "file": "gary_klein_naturalistic_decision_making.pdf",
+      "url": "https://assets.publishing.service.gov.uk/media/5a80d02ae5274a2e87dbbf73/Dr_Gary_Klein__Senior_Scientist_at_MacroCognition_LLC.pdf",
+      "topics": "Naturalistic decision making, recognition-primed decision making, mental simulation",
+      "license": "Publicly downloadable government-hosted presentation; verify reuse conditions before redistribution outside the internal library."
+    },
+    {
+      "id": "S2",
+      "title": "Decision-Making During High-Risk Events: A Systematic Review",
+      "institution": "Peer-reviewed open-access research (PMC)",
+      "year": "2023",
+      "file": "No incluido como PDF; enlace en catálogo",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10564111/",
+      "topics": "Recognition-primed, analytical, rule-based and creative decision strategies",
+      "license": "Open-access article; consult the article page for its specific license."
+    },
+    {
+      "id": "S3",
+      "title": "Naturalistic Decision-Making in Sport",
+      "institution": "Peer-reviewed open-access research (PMC)",
+      "year": "2022",
+      "file": "No incluido como PDF; enlace en catálogo",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9252097/",
+      "topics": "Pattern recognition, diagnosis, mental simulation, expertise",
+      "license": "Open-access article; consult the article page for its specific license."
+    },
+    {
+      "id": "S4",
+      "title": "Innovation Teams and Labs: A Practice Guide",
+      "institution": "Nesta",
+      "year": "2014",
+      "file": "nesta_innovation_teams_labs.pdf",
+      "url": "https://www.nesta.org.uk/documents/640/innovation_teams_and_labs_a_practice_guide.pdf",
+      "topics": "Innovation capabilities, teams, methods, resources, partnerships, impact measurement",
+      "license": "Nesta content is generally CC BY-NC-SA 4.0 unless otherwise stated."
+    },
+    {
+      "id": "S5",
+      "title": "Compendium of Innovation Methods",
+      "institution": "Nesta",
+      "year": "2019",
+      "file": "nesta_compendium_innovation_methods.pdf",
+      "url": "https://media.nesta.org.uk/documents/Compendium-of-Innovation-Methods-March-2019.pdf",
+      "topics": "Methods for exploration, experimentation, prototyping, scaling and systems change",
+      "license": "Nesta content is generally CC BY-NC-SA 4.0 unless otherwise stated."
+    },
+    {
+      "id": "S6",
+      "title": "Cities, Culture, Creativity",
+      "institution": "World Bank and UNESCO",
+      "year": "2021",
+      "file": "world_bank_cities_culture_creativity.pdf",
+      "url": "https://documents1.worldbank.org/curated/en/104121621556036559/pdf/Cities-Culture-Creativity-Leveraging-Culture-and-Creativity-for-Sustainable-Urban-Development-and-Inclusive-Growth.pdf",
+      "topics": "Creative ecosystems, urban development, enabling conditions, inclusion and cultural value",
+      "license": "World Bank Open Knowledge publication; consult document rights statement."
+    },
+    {
+      "id": "S7",
+      "title": "Understanding Cultural and Creative Industries and Designing Approaches for its Development",
+      "institution": "GIZ / World Bank",
+      "year": "2024",
+      "file": "world_bank_understanding_cci_2024.pdf",
+      "url": "https://thedocs.worldbank.org/en/doc/111a11b5ff7ce45ffbe4b78c7e96ee5d-0460012024/original/Understanding-Cultural-and-Creative-Industries-and-Designing-Approaches-for-its-Development-A-Guide.pdf",
+      "topics": "CCI development, ecosystem diagnosis, policy and support approaches, sector cases",
+      "license": "Publicly downloadable report; consult rights statement in document."
+    },
+    {
+      "id": "S8",
+      "title": "2025 Annual Report: The Full Six-year Journey of the Accelerator Labs Network",
+      "institution": "UNDP Accelerator Labs",
+      "year": "2026",
+      "file": "undp_accelerator_labs_annual_report_2025.pdf",
+      "url": "https://www.undp.org/sites/g/files/zskgke326/files/2026-04/2025_undp_accelerator_labs_annual_report_0.pdf",
+      "topics": "Distributed R&D, experimentation, grassroots innovation, learning loops, portfolios",
+      "license": "UNDP publication; consult document terms for reuse."
+    },
+    {
+      "id": "S9",
+      "title": "Mid-term Evaluation of the UNDP Innovation Facility / Accelerator Labs",
+      "institution": "UNDP Evaluation",
+      "year": "2024",
+      "file": "undp_accelerator_labs_evaluation.pdf",
+      "url": "https://erc.undp.org/evaluation/documents/download/23915",
+      "topics": "Evaluation of innovation capability, institutionalisation, learning, operational constraints",
+      "license": "UNDP evaluation publication; consult document terms for reuse."
+    },
+    {
+      "id": "S10",
+      "title": "Supporting Decision Making with Strategic Foresight",
+      "institution": "OECD Observatory of Public Sector Innovation",
+      "year": "2023",
+      "file": "No incluido como PDF; enlace en catálogo",
+      "url": "https://www.oecd.org/en/publications/supporting-decision-making-with-strategic-foresight_1d78c791-en.html",
+      "topics": "Context-specific foresight, assumptions, experimentation, feedback and learning loops",
+      "license": "OECD page states CC BY-SA 3.0 IGO for the OPSI presentation page; consult publication terms."
+    },
+    {
+      "id": "S11",
+      "title": "Collective Intelligence for Sustainable Development: 13 Stories",
+      "institution": "UNDP Accelerator Labs / Nesta",
+      "year": "2021",
+      "file": "No incluido por restricción técnica del servidor; enlace en catálogo",
+      "url": "https://www.undp.org/acceleratorlabs/publications/collective-intelligence-sustainable-development-13-stories-undp-accelerator-labs",
+      "topics": "Collective intelligence, participatory sensing, complex systems, distributed problem solving",
+      "license": "UNDP publication; consult document terms for reuse."
+    }
+  ],
+  "ingestion_notes": {
+    "do_not_treat_as_training_data_automatically": true,
+    "retain_source_and_license_metadata": true,
+    "recommended_chunking": "Por encabezado y sección, 600-1000 tokens, overlap 80-120 tokens.",
+    "case_extraction": "Extraer contexto, decisión, señales, opciones, acción, resultado, aprendizaje y límites de transferencia.",
+    "human_review_required": true
+  }
+}
