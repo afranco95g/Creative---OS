@@ -77,6 +77,9 @@ export interface ProjectGraph {
   documents: CompiledDocument[];
   eventLog: ProjectEvent[];
   tools: ProjectTools;
+  knowledge?: import('./projectKnowledge').ProjectKnowledgeState;
+  consistency?: import('./projectConsistency').ProjectConsistencyState;
+  financialAuthority?: import('./financialAuthority').FinancialAuthorityState;
   createdAt: string;
   updatedAt: string;
 }
@@ -195,6 +198,8 @@ export interface ProducerResponse {
   nextQuestionOptions?: string[];
   interpretation?: TurnInterpretation;
   sources?: Array<{ documentId:string; chunkId:string; title:string; topic:string[] }>;
+  currentInterpretation?: import('./projectKnowledge').ProjectInterpretationResult;
+  currentConsistencyIssue?: import('./projectConsistency').ConsistencyIssue;
 }
 
 export interface KnowledgeGuidance { snippets:string[]; topics:string[]; sources:Array<{documentId:string;chunkId:string;title:string;topic:string[]}>; }

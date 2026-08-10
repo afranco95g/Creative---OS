@@ -41,6 +41,7 @@ import {
   workspaceStore,
 } from '@/core/workspaceStore';
 import { cloudProjectToWorkspaceProject, loadFullCloudProject } from '@/services/projects/projectCloudService';
+import { acceptCanonicalFinancialProposal, persistFinancialProposal } from '@/services/projects/financialAuthorityService';
 import { buildExecutiveActionPlan } from '@/engines/executiveReviewEngine';
 
 import type {
@@ -269,6 +270,10 @@ export default function ProjectPage() {
               onSendMessage={
                 handleSendMessage
               }
+              onResolveConfirmation={(id, status) => projectStore.resolveKnowledgeConfirmation(id, status)}
+              onCorrectConfirmation={(id, correction) => projectStore.correctKnowledgeConfirmation(id, correction)}
+              onResolveConsistencyIssue={(id, status) => projectStore.resolveConsistencyIssue(id, status)}
+              onAcceptFinancialProposal={async(proposal)=>{await persistFinancialProposal(proposal);await acceptCanonicalFinancialProposal(proposal);projectStore.acceptFinancialProposal(proposal.id);}}
             />
           )}
 

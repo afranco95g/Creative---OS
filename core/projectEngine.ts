@@ -7,6 +7,7 @@ import {
   ProjectPatch,
   ProjectStage,
 } from '../types/project';
+import type { ProjectKnowledgeState } from '../types/projectKnowledge';
 
 export function createId() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -18,6 +19,15 @@ export function createId() {
 
 export function now() {
   return new Date().toISOString();
+}
+
+export function createInitialProjectKnowledgeState(): ProjectKnowledgeState {
+  const timestamp = now();
+  return { version: 1, entities: [], confirmations: [], projectType: { secondaryTypes: [], drivers: [], confidence: 0, updatedAt: timestamp }, updatedAt: timestamp };
+}
+
+export function createInitialProjectConsistencyState(): import('../types/projectConsistency').ProjectConsistencyState {
+  return { version: 1, issues: [], evaluatedAt: null };
 }
 
 function createEvidence(quote: string, source: Evidence['source'] = 'conversation'): Evidence {
@@ -65,6 +75,9 @@ export function createInitialProjectGraph(): ProjectGraph {
     team: [],
     documents: [],
     eventLog: [],
+    knowledge: createInitialProjectKnowledgeState(),
+    consistency: createInitialProjectConsistencyState(),
+    financialAuthority: { items: [], proposals: [], events: [] },
     tools: {
       budgetLines: [],
       scheduleItems: [],

@@ -14,7 +14,7 @@ export function detectFinancialSignals(input: string): FinancialSignal[] {
   const signals: FinancialSignal[] = [];
   const money = '(?:cop\\s*|\\$\\s*)?([0-9]{1,3}(?:[.,][0-9]{3})+|[0-9]+)';
   const cost = new RegExp(`(?:me cuesta|cuesta|costo(?: de)?|fabricar(?:lo|la|los|las)? cuesta)\\s*${money}`, 'i').exec(text);
-  const price = new RegExp(`(?:lo vendo en|la vendo en|vendo (?:en|a)|precio(?: de venta)?(?: es|:)?)\\s*${money}`, 'i').exec(text);
+  const price = new RegExp(`(?:lo vendo en|la vendo en|vendo (?:en|a)|(?:quiero|queremos) vender(?:lo|la|los|las)? (?:en|a)|precio(?: de venta)?(?: es|:)?)\\s*${money}`, 'i').exec(text);
 
   if (cost) signals.push({ id: createId(), kind: 'cost', concept: 'Costo unitario declarado', amount: parseCop(cost[1]), currency: 'COP', quantity: 1, unit: /zapato|calzado/.test(text) ? 'par' : 'unidad', status: 'requires_breakdown', source: 'conversation', requiresConfirmation: true });
   if (price) signals.push({ id: createId(), kind: 'price', concept: 'Precio de venta declarado', amount: parseCop(price[1]), currency: 'COP', quantity: 1, unit: /zapato|calzado/.test(text) ? 'par' : 'unidad', status: 'declared', source: 'conversation', requiresConfirmation: true });

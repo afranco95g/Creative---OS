@@ -9,6 +9,7 @@ import {
   WorkspaceState,
   WORKSPACE_CONTEXT_IDS,
 } from '../../types/workspace';
+import { createInitialProjectConsistencyState, createInitialProjectKnowledgeState } from '../projectEngine';
 
 const LEGACY_STORAGE_KEY =
   'creative-os-workspace';
@@ -332,6 +333,8 @@ function migrateProject(
 
     graph: {
       ...candidate.graph,
+      knowledge: candidate.graph.knowledge ?? createInitialProjectKnowledgeState(),
+      consistency: candidate.graph.consistency ?? createInitialProjectConsistencyState(),
       tools: candidate.graph.tools ?? {
         budgetLines: [],
         scheduleItems: [],

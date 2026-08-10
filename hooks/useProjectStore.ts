@@ -49,5 +49,11 @@ export function useProjectActions() {
 
     resetProject: () =>
       projectStore.resetProject(),
+    resolveKnowledgeConfirmation: (id: string, status: 'accepted'|'rejected'|'dismissed') =>
+      projectStore.resolveKnowledgeConfirmation(id, status),
+    correctKnowledgeConfirmation: (id: string, correction: string) =>
+      projectStore.correctKnowledgeConfirmation(id, correction),
+    resolveConsistencyIssue: (id: string, status: 'acknowledged'|'resolved'|'dismissed', note?: string) =>
+      projectStore.resolveConsistencyIssue(id, status, note),
   };
 }

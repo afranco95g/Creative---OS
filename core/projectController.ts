@@ -192,23 +192,23 @@ export function processProjectMessage(
       nextGraph,
       nextMessagesPreview
     );
-  const nextQuestion = enhanceQuestionWithKnowledge(baseNextQuestion, cleanInput, knowledge);
+  const nextQuestion = conversationResult.response.currentInterpretation?.suggestedQuestion
+    || conversationResult.response.nextQuestion
+    || enhanceQuestionWithKnowledge(baseNextQuestion, cleanInput, knowledge);
 
   const registeredDecision =
     decisionActions.length > 0;
 
   const response:
     ProducerResponse = {
-      understood:
-        buildHumanUnderstanding(
-          nextInsight,
-          registeredDecision
-        ),
+      ...conversationResult.response,
+      understood: conversationResult.response.currentInterpretation?.knowledgeEntities.length
+        ? conversationResult.response.understood
+        : buildHumanUnderstanding(nextInsight, registeredDecision),
 
-      organized:
-        buildOrganizedList(
-          nextGraph
-        ),
+      organized: conversationResult.response.currentInterpretation?.organizedItems.length
+        ? conversationResult.response.organized
+        : buildOrganizedList(nextGraph),
 
       gaps:
         buildGapList(nextGraph),

@@ -5,12 +5,23 @@ import Link from 'next/link';
 import { ConversationMessage, ProjectGraph } from '../types/project';
 import { LivingWorkspace } from './LivingWorkspace';
 import { persistenceCoordinator, type PersistenceStatus } from '../core/persistenceCoordinator';
+import { getPendingConfirmations } from '../engines/projectKnowledgeEngine';
+import { getTopConsistencyIssue } from '../engines/projectConsistencyEngine';
+import type { ConfirmationRequest, ProjectKnowledgeEntity } from '../types/projectKnowledge';
+import type { ConsistencyIssue } from '../types/projectConsistency';
+import type { FinancialProposal } from '../types/financialAuthority';
+import { isFinancialAuthorityV2Enabled } from '../lib/featureFlags';
+import { FinancialProposalCard } from './FinancialProposalCard';
 
 interface ProducerChatProps {
   graph: ProjectGraph;
   messages: ConversationMessage[];
   progress: number;
   onSendMessage: (message: string) => void | Promise<void>;
+  onResolveConfirmation: (id:string,status:'accepted'|'rejected'|'dismissed')=>void;
+  onCorrectConfirmation: (id:string,correction:string)=>void;
+  onResolveConsistencyIssue: (id:string,status:'acknowledged'|'dismissed')=>void;
+  onAcceptFinancialProposal: (proposal:FinancialProposal)=>void|Promise<void>;
 }
 
 export function ProducerChat({
@@ -18,9 +29,16 @@ export function ProducerChat({
   messages,
   progress,
   onSendMessage,
+  onResolveConfirmation,
+  onCorrectConfirmation,
+  onResolveConsistencyIssue,
+  onAcceptFinancialProposal,
 }: ProducerChatProps) {
   const [input, setInput] = useState('');
   const [sync, setSync] = useState<{ status: PersistenceStatus; message: string }>(persistenceCoordinator.getStatus());
+  const pendingConfirmations=getPendingConfirmations(graph);
+  const topIssue=getTopConsistencyIssue(graph);
+  const financialProposal=isFinancialAuthorityV2Enabled()?graph.financialAuthority?.proposals.find(item=>item.status==='pending'||item.status==='edited'):undefined;
   useEffect(() => persistenceCoordinator.subscribe((status, message) => setSync({ status, message })), []);
 
   function handleSubmit(event: FormEvent) {
@@ -70,6 +88,10 @@ export function ProducerChat({
             )}
           </div>
         )}
+
+        {pendingConfirmations[0] ? <ConfirmationCard key={pendingConfirmations[0].id} request={pendingConfirmations[0]} entity={graph.knowledge?.entities.find(item=>pendingConfirmations[0].entityIds.includes(item.id))} pendingCount={pendingConfirmations.length} onResolve={onResolveConfirmation} onCorrect={onCorrectConfirmation}/> : null}
+        {topIssue ? <ConsistencyCard key={topIssue.id} issue={topIssue} onResolve={onResolveConsistencyIssue}/> : null}
+        {financialProposal ? <FinancialProposalCard proposal={financialProposal} onAccept={onAcceptFinancialProposal}/> : null}
 
         <form onSubmit={handleSubmit} className="sticky bottom-8 mt-10">
           <div className="rounded-3xl border border-[#232323] bg-[#101010]/95 p-4 shadow-2xl backdrop-blur">
@@ -184,3 +206,17 @@ function ProducerResponseCard({
     </div>
   );
 }
+
+function ConfirmationCard({request,entity,pendingCount,onResolve,onCorrect}:{request:ConfirmationRequest;entity?:ProjectKnowledgeEntity;pendingCount:number;onResolve:(id:string,status:'accepted'|'rejected'|'dismissed')=>void;onCorrect:(id:string,correction:string)=>void}){
+  const [editing,setEditing]=useState(false),[correction,setCorrection]=useState('');
+  const understood=entity?describeKnowledge(entity):request.question;
+  return <section className="mt-8 max-w-[780px] rounded-3xl border border-[#4A3D16] bg-[#151207] p-6">
+    <div className="flex items-center justify-between gap-4"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#FFC857]">Quiero confirmar algo</p><span className="text-xs text-[#8f8465]">{pendingCount} {pendingCount===1?'cosa':'cosas'} por confirmar</span></div>
+    <p className="mt-4 text-xs uppercase tracking-[0.16em] text-[#81775d]">Entendí que</p><p className="mt-2 text-lg leading-7 text-white">{understood}</p><p className="mt-3 text-sm leading-6 text-[#b7aa83]">{request.question}</p>
+    {editing?<div className="mt-5"><textarea aria-label="Corrección de la interpretación" value={correction} onChange={event=>setCorrection(event.target.value)} placeholder="Escribe la información correcta…" className="min-h-24 w-full rounded-2xl border border-white/10 bg-black/40 p-4 text-sm outline-none focus:border-[#FFC857]"/><div className="mt-3 flex gap-2"><button type="button" disabled={!correction.trim()} onClick={()=>{onCorrect(request.id,correction.trim());setEditing(false);setCorrection('');}} className="rounded-full bg-[#FFC857] px-4 py-2 text-sm font-bold text-black disabled:opacity-40">Guardar corrección</button><button type="button" onClick={()=>setEditing(false)} className="rounded-full border border-white/15 px-4 py-2 text-sm">Cancelar</button></div></div>:<div className="mt-5 flex flex-wrap gap-2"><button type="button" onClick={()=>onResolve(request.id,'accepted')} className="rounded-full bg-[#D9FF00] px-4 py-2 text-sm font-bold text-black">Confirmar</button><button type="button" onClick={()=>setEditing(true)} className="rounded-full border border-[#FFC857]/40 px-4 py-2 text-sm text-[#FFC857]">Corregir</button><button type="button" onClick={()=>onResolve(request.id,'rejected')} className="rounded-full border border-white/15 px-4 py-2 text-sm">No es correcto</button><button type="button" onClick={()=>onResolve(request.id,'dismissed')} className="rounded-full px-4 py-2 text-sm text-[#888]">Después</button></div>}
+  </section>;
+}
+
+function ConsistencyCard({issue,onResolve}:{issue:ConsistencyIssue;onResolve:(id:string,status:'acknowledged'|'dismissed')=>void}){return <section className={`mt-6 max-w-[780px] rounded-3xl border p-6 ${issue.severity==='critical'?'border-red-500/35 bg-red-950/20':'border-amber-500/25 bg-amber-950/10'}`}><p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-300">Encontré algo para revisar</p><h3 className="mt-3 text-lg font-semibold">{issue.title}</h3><p className="mt-2 text-sm leading-6 text-[#c0b9aa]">{issue.explanation}</p><div className="mt-5 flex flex-wrap gap-2"><button type="button" onClick={()=>onResolve(issue.id,'acknowledged')} className="rounded-full bg-white px-4 py-2 text-sm font-bold text-black">Revisar ahora</button><button type="button" onClick={()=>onResolve(issue.id,'dismissed')} className="rounded-full border border-white/15 px-4 py-2 text-sm">Continuar de todas formas</button></div></section>}
+
+function describeKnowledge(entity:ProjectKnowledgeEntity){if(typeof entity.value==='object'&&!Array.isArray(entity.value)){const value=entity.value as Record<string,unknown>;if(typeof value.amount==='number')return `${entity.label}: COP ${value.amount.toLocaleString('es-CO')}${value.unit?` por ${String(value.unit)}`:''}.`;if(value.actor&&value.responsibility)return `${String(value.actor)} será responsable de ${String(value.responsibility)}.`;}return `${entity.label}: ${String(entity.value)}.`;}

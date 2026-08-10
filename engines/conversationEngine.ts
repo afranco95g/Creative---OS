@@ -19,6 +19,8 @@ import {
 } from './questionEngine';
 import { interpretTurn } from './turnInterpretationEngine';
 import { classifyProjectEvidence } from './semanticClassificationEngine';
+import { interpretProjectMessage, mergeProjectKnowledge, traceInterpretation } from './projectKnowledgeEngine';
+import { applyConsistencyEvaluation, evaluateProjectConsistency, getTopConsistencyIssue } from './projectConsistencyEngine';
 
 const DECISION_EXPRESSIONS: RegExp[] = [
   /\bdecidi\b/,
@@ -503,7 +505,8 @@ export function extractProjectPatchesFromMessage(
 function buildProducerResponse(
   graph: ProjectGraph,
   patches: ProjectPatch[],
-  interpretation: ReturnType<typeof interpretTurn>
+  interpretation: ReturnType<typeof interpretTurn>,
+  currentInterpretation: ReturnType<typeof interpretProjectMessage>
 ): ProducerResponse {
   const updatedModules = patches
     .map(
@@ -545,19 +548,23 @@ function buildProducerResponse(
     );
 
   return {
-    understood: interpretation.explicitFacts.length
+    understood: currentInterpretation.knowledgeEntities.length
+      ? currentInterpretation.interpretationSummary
+      : interpretation.explicitFacts.length
       ? interpretation.understoodSummary
       : recognizedDecision
         ? 'Entendido. Registré esta información como una decisión del proyecto y la conecté con las áreas relacionadas. También quedará disponible para revisión en la memoria ejecutiva.'
         : 'Perfecto. Ya integré esta información al proyecto. Estamos convirtiendo la idea en una estructura que después podrá servir para una convocatoria, una propuesta, un presupuesto o una presentación.',
 
-    organized: interpretation.explicitFacts.length
+    organized: currentInterpretation.organizedItems.length
+      ? currentInterpretation.organizedItems
+      : interpretation.explicitFacts.length
       ? interpretation.explicitFacts.map((fact) => `${fact.confidence === 'confirmed' ? 'Confirmado' : 'Preliminar'} · ${fact.field}: ${String(fact.value)}`).slice(0, 6)
       : Array.from(new Set([...updatedModules, ...strongModules])).slice(0, 5),
 
     gaps: weakModules,
 
-    nextQuestion: interpretation.recommendedNextQuestion || getNextBestQuestion(graph),
+    nextQuestion: currentInterpretation.suggestedQuestion || interpretation.recommendedNextQuestion || getNextBestQuestion(graph),
     nextQuestionOptions: interpretation.recommendedNextQuestion ? [
       'Solo materiales y fabricación.',
       'Incluye materiales y mano de obra.',
@@ -566,6 +573,7 @@ function buildProducerResponse(
       'Quiero desglosarlo.',
     ] : undefined,
     interpretation,
+    currentInterpretation,
   };
 }
 
@@ -579,13 +587,17 @@ export function processConversationTurn(
       graph
     );
 
-  const nextGraph =
+  let nextGraph =
     applyPatches(
       graph,
       patches
     );
 
   const interpretation = interpretTurn(message, nextGraph, patches);
+  const currentInterpretation = interpretProjectMessage({ message, graph: nextGraph }, patches);
+  nextGraph = mergeProjectKnowledge(nextGraph, currentInterpretation);
+  nextGraph = applyConsistencyEvaluation(nextGraph, evaluateProjectConsistency({ graph: nextGraph }));
+  traceInterpretation(message, currentInterpretation);
   if (interpretation.financialSignals.length) {
     nextGraph.tools.proposedFinancialSignals = [
       ...(nextGraph.tools.proposedFinancialSignals ?? []),
@@ -603,8 +615,10 @@ export function processConversationTurn(
     buildProducerResponse(
       nextGraph,
       patches,
-      interpretation
+      interpretation,
+      currentInterpretation
     );
+  response.currentConsistencyIssue = getTopConsistencyIssue(nextGraph) ?? undefined;
 
   const userMessage:
     ConversationMessage = {

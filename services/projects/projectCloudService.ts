@@ -1,4 +1,4 @@
-import { getProjectProgress } from '@/core/projectEngine';
+import { createInitialProjectConsistencyState, createInitialProjectKnowledgeState, getProjectProgress } from '@/core/projectEngine';
 import { supabase } from '@/lib/supabase/client';
 
 import type {
@@ -473,7 +473,7 @@ function mapCloudWorkspaceProject(
 ): CloudWorkspaceProject {
   return {
     ...mapCloudProjectSummary(row),
-    graph: row.graph,
+    graph: { ...row.graph, knowledge: row.graph.knowledge ?? createInitialProjectKnowledgeState(), consistency: row.graph.consistency ?? createInitialProjectConsistencyState() },
     messages: row.messages ?? [],
   };
 }

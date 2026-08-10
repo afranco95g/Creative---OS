@@ -1,0 +1,16 @@
+export type CurrencyCode = 'COP' | (string & {});
+export interface Money { amount:number; currency:CurrencyCode; }
+export type FinancialDirection = 'income'|'expense';
+export type FinancialItemStatus = 'proposed'|'estimated'|'quoted'|'approved'|'committed'|'invoiced'|'executed'|'paid'|'cancelled';
+export type FinancialSource = 'manual'|'conversation'|'document'|'import'|'system';
+export type FinancialProposalStatus = 'pending'|'accepted'|'edited'|'rejected'|'expired';
+export interface FinancialProposal { id:string; projectId:string; sourceKnowledgeIds:string[]; direction:FinancialDirection; concept:string; quantity:number; unit:string; unitPrice:Money; calculatedTotal:Money; proposedStatus:FinancialItemStatus; confidence:number; reason:string; status:FinancialProposalStatus; idempotencyKey:string; createdAt:string; updatedAt:string; }
+export interface CanonicalFinancialItem { id:string; projectId:string; direction:FinancialDirection; category:string; subcategory?:string; concept:string; description:string; quantity:number; unit:string; unitPrice:Money; discount:Money; vat:Money; withholding:Money; otherTaxes:Money; total:Money; status:FinancialItemStatus; fundingSource?:string; provider?:string; responsibleId?:string; relatedWorkItemId?:string; expectedDate?:string; actualDate?:string; period?:string; notes:string; evidence:string[]; supportDocumentUrl?:string; invoiceUrl?:string; costCenter?:string; source:FinancialSource; sourceKnowledgeIds:string[]; proposalId?:string; idempotencyKey:string; version:number; createdAt:string; updatedAt:string; }
+export type FinancialDomainEventType='financial_item_created'|'financial_item_updated'|'financial_item_status_changed'|'financial_item_cancelled'|'financial_proposal_created'|'financial_proposal_accepted'|'financial_proposal_rejected'|'financial_item_linked_to_knowledge';
+export interface FinancialDomainEvent { id:string; projectId:string; entityId:string; type:FinancialDomainEventType; actorId?:string; timestamp:string; before?:Record<string,unknown>; after?:Record<string,unknown>; reason?:string; idempotencyKey:string; }
+export interface FinancialChangeSummary { itemId:string; projectId:string; concept:string; previousUnitPrice:Money; currentUnitPrice:Money; previousTotal:Money; currentTotal:Money; difference:Money; summary:string[]; }
+export interface FinancialDivergence { kind:'graph_only'|'table_only'|'value_mismatch'|'status_mismatch'|'tax_mismatch'|'total_mismatch'|'responsible_mismatch'; graphLineId?:string; canonicalItemId?:string; concept:string; detail:string; }
+export interface FinancialDivergenceReport { projectId:string; comparedAt:string; divergences:FinancialDivergence[]; hasConflicts:boolean; autoMerged:false; }
+export interface FinancialAuthorityState { items:CanonicalFinancialItem[]; proposals:FinancialProposal[]; events:FinancialDomainEvent[]; }
+export interface FinancialConflict { kind:'version_conflict'; itemId:string; expectedVersion:number; actualVersion:number; message:string; }
+

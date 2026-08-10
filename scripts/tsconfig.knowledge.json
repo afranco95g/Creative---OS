@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "outDir": "../.knowledge-tools",
+    "rootDir": "..",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "isolatedModules": false
+  },
+  "include": [
+    "knowledge-admin.ts",
+    "../services/knowledge/KnowledgeEngine.ts",
+    "../services/knowledge/KnowledgeCache.ts",
+    "../services/knowledge/knowledgeConfig.ts",
+    "../services/knowledge/knowledgeCatalog.ts",
+    "../services/knowledge/knowledgeChunker.ts",
+    "../services/knowledge/knowledgeTaxonomy.ts",
+    "../services/knowledge/documentParsers.ts",
+    "../types/knowledge.ts"
+  ]
+}

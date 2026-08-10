@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "outDir": "../.test-tools",
+    "rootDir": "..",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "isolatedModules": false
+  },
+  "include": [
+    "knowledgeQueryBuilder.test.ts",
+    "kicksInterpretation.test.ts",
+    "doblaYDevoraClassification.test.ts",
+    "projectKnowledgeV2.test.ts",
+    "executiveEngineV23.test.ts",
+    "financialAuthorityV24.test.ts"
+  ]
+}
