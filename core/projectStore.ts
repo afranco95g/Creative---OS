@@ -144,7 +144,7 @@ class ProjectStore {
     let graph = resolveConfirmation(this.state.graph, confirmationId, status);
     if (status === 'accepted') {
       const request=graph.knowledge?.confirmations.find(item=>item.id===confirmationId);let financial=graph.financialAuthority??initialFinancialAuthorityState();
-      for(const entityId of request?.entityIds??[]){const entity=graph.knowledge?.entities.find(item=>item.id===entityId);if(!entity)continue;const proposal=materializeFinancialKnowledge({projectId:graph.id,knowledgeEntity:entity});if(proposal)financial=createProposal(financial,proposal).state;}
+      for(const entityId of request?.entityIds??[]){const entity=graph.knowledge?.entities.find(item=>item.id===entityId);if(!entity)continue;const quantityEntity=entity.type==='financial_fact'&&typeof entity.value==='object'&&!Array.isArray(entity.value)&&(entity.value as {unit?:string}).unit==='artista'?graph.knowledge?.entities.find(item=>item.key==='artist_requirement'):undefined;const proposal=materializeFinancialKnowledge({projectId:graph.id,knowledgeEntity:entity,quantityEntity});if(proposal)financial=createProposal(financial,proposal).state;}
       graph={...graph,financialAuthority:financial};
     }
     this.state = { ...this.state, graph: applyConsistencyEvaluation(graph, evaluateProjectConsistency({ graph })) };
