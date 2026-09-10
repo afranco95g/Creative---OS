@@ -102,12 +102,12 @@ function LoginContent() {
           href="/"
           className="text-sm text-texto-largo transition hover:text-texto-principal"
         >
-          ← Volver a Cultura Esta
+          ← Volver a El Culebreo
         </Link>
 
         <div className="mt-8 border border-borde bg-superficie-elevada p-8 shadow-stencil md:p-10">
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-texto-principal">
-            Cultura Esta
+            El Culebreo
           </p>
 
           <h1 className="stencil-heading mt-5 text-4xl font-bold leading-tight">
@@ -116,7 +116,7 @@ function LoginContent() {
 
           <p className="mt-4 leading-relaxed text-texto-largo">
             Accede a tus proyectos, perfiles, espacios,
-            organizaciones y conexiones dentro de Cultura Esta.
+            organizaciones y conexiones dentro de El Culebreo.
           </p>
 
           <form

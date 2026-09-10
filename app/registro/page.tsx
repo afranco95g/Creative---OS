@@ -297,7 +297,7 @@ function RegisterContent() {
 
         <section className="w-full max-w-xl border border-borde bg-superficie-elevada p-8 shadow-stencil md:p-10">
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-texto-principal">
-            Cultura Esta
+            El Culebreo
           </p>
 
           <h1 className="stencil-heading mt-6 text-4xl font-bold leading-tight">

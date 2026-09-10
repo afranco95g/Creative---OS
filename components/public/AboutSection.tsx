@@ -13,7 +13,7 @@ export function AboutSection() {
         </h2>
 
         <p className="mt-10 max-w-4xl text-2xl leading-relaxed text-[#9A9A9A]">
-          Cultura Esta no es solamente un medio,
+          El Culebreo no es solamente un medio,
           una comunidad o una plataforma.
 
           Es una infraestructura que conecta

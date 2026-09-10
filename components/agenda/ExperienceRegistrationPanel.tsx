@@ -294,7 +294,7 @@ export function ExperienceRegistrationPanel({
           </div>
 
           <p className="text-xs leading-5 text-[#666666]">
-            Al inscribirte aceptas que Cultura Esta
+            Al inscribirte aceptas que El Culebreo
             almacene estos datos para administrar tu
             participación en la actividad.
           </p>

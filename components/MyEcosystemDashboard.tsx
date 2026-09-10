@@ -384,7 +384,7 @@ export function MyEcosystemDashboard({
             </div>
 
             <p className="mt-6 text-xs font-bold uppercase tracking-[0.28em] text-[#D9FF00]">
-              Cultura Esta
+              El Culebreo
             </p>
 
             <h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
@@ -1301,7 +1301,7 @@ function PublicationProcess() {
         <ProcessStep
           number="06"
           title="Publicado"
-          description="Aparece en Cultura Esta."
+          description="Aparece en El Culebreo."
         />
       </div>
     </section>

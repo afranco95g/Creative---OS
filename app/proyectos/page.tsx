@@ -64,7 +64,7 @@ export default async function PublicProjectsPage() {
           <p className="mt-8 max-w-3xl text-lg leading-8 text-[#A6A6A6]">
             Procesos construidos con Creative OS, aceptados
             por el ecosistema y desarrollados editorialmente
-            por Cultura Esta.
+            por El Culebreo.
           </p>
         </div>
       </section>
@@ -131,7 +131,7 @@ export default async function PublicProjectsPage() {
                     ) : (
                       <div className="flex aspect-[16/10] items-end bg-[#111111] p-7">
                         <p className="max-w-xs text-xs font-bold uppercase tracking-[0.24em] text-[#D9FF00]">
-                          Cultura Esta · Proyecto
+                          El Culebreo · Proyecto
                         </p>
                       </div>
                     )}

@@ -241,7 +241,7 @@ export default async function PublicActorPage({
 
             <p className="mt-7 whitespace-pre-line text-lg leading-9 text-texto-largo">
               {actor.description ||
-                'Este perfil hace parte del ecosistema cultural y creativo de Cultura Esta.'}
+                'Este perfil hace parte del ecosistema cultural y creativo de El Culebreo.'}
             </p>
 
             <section className="mt-16 border-t border-borde pt-12">

@@ -62,7 +62,7 @@ export function PlatformShell({
 
             <div className="flex flex-wrap items-center gap-3">
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-texto-largo">
-                Cultura Esta
+                El Culebreo
               </p>
 
               {entityType ? (

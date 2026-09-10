@@ -17,10 +17,10 @@ import './globals.css';
 export const metadata: Metadata = {
   title: {
     default:
-      'Cultura Esta',
+      'El Culebreo',
 
     template:
-      '%s | Cultura Esta',
+      '%s | El Culebreo',
   },
 
   description:

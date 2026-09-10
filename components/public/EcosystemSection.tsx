@@ -20,7 +20,7 @@ export function EcosystemSection() {
             </h2>
 
             <p className="mt-8 max-w-xl text-lg leading-relaxed text-[#999999]">
-              Cultura Esta organiza el ecosistema alrededor del
+              El Culebreo organiza el ecosistema alrededor del
               Medio, las Personas, los Espacios y los
               Financiadores. La tecnología permite que estos
               actores creen proyectos, experiencias,

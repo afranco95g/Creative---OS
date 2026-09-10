@@ -96,7 +96,7 @@ export function WorkspaceAuthBridge({
         profile?.full_name ||
         metadataName ||
         email.split('@')[0] ||
-        'Cuenta de Cultura Esta';
+        'Cuenta de El Culebreo';
 
       workspaceStore
         .connectAuthenticatedUser({
