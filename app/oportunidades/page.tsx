@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { SiteHeader } from '../../components/public/SiteHeader';
+
 import {
   listPublishedFundingOpportunities,
 } from '../../services/public/publicFunding';
@@ -36,45 +38,26 @@ export default async function PublicOpportunitiesPage() {
     await listPublishedFundingOpportunities();
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
-      <header className="border-b border-white/10 px-6 py-6">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
-          <Link
-            href="/"
-            className="text-xl font-black tracking-[-0.04em]"
-          >
-            CULTURA ESTA
-          </Link>
+    <main className="min-h-screen bg-superficie text-texto-largo">
+      <SiteHeader
+        ctaLabel="Crear oportunidad"
+        ctaHref="/gestion-financiacion"
+        links={[
+          { label: 'Mi Ecosistema', href: '/mi-ecosistema' },
+        ]}
+      />
 
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/mi-ecosistema"
-              className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold"
-            >
-              Mi Ecosistema
-            </Link>
-
-            <Link
-              href="/gestion-financiacion"
-              className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
-            >
-              Crear oportunidad
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <section className="border-b border-white/10 px-6 py-20 lg:py-28">
+      <section className="border-b border-borde px-6 py-20 sm:px-8 lg:px-12 lg:py-28">
         <div className="mx-auto max-w-7xl">
-          <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#D9FF00]">
+          <p className="text-xs font-bold uppercase tracking-[0.28em] text-texto-principal">
             Financiación y alianzas
           </p>
 
-          <h1 className="mt-7 max-w-6xl text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-9xl">
+          <h1 className="stencil-heading mt-7 max-w-6xl text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-9xl">
             Recursos que encuentran proyectos.
           </h1>
 
-          <p className="mt-8 max-w-3xl text-lg leading-8 text-[#A0A0A0]">
+          <p className="mt-8 max-w-3xl text-lg leading-8 text-texto-largo">
             Convocatorias, patrocinios, alianzas,
             residencias y posibilidades para fortalecer
             procesos culturales y creativos.
@@ -82,10 +65,10 @@ export default async function PublicOpportunitiesPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:py-24">
+      <section className="mx-auto max-w-7xl px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
         <div className="flex items-end justify-between gap-5">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#777777]">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
               Oportunidades abiertas
             </p>
 
@@ -94,7 +77,7 @@ export default async function PublicOpportunitiesPage() {
             </h2>
           </div>
 
-          <p className="text-sm text-[#666666]">
+          <p className="text-sm text-texto-largo">
             {opportunities.length}{' '}
             {opportunities.length === 1
               ? 'oportunidad'
@@ -104,12 +87,12 @@ export default async function PublicOpportunitiesPage() {
 
         {opportunities.length ===
         0 ? (
-          <div className="mt-8 rounded-3xl border border-dashed border-white/15 bg-[#0A0A0A] p-10">
+          <div className="mt-8 border border-dashed border-borde bg-superficie-elevada p-10">
             <h2 className="text-2xl font-bold">
               Todavía no hay oportunidades publicadas
             </h2>
 
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-[#777777]">
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-texto-largo">
               Las posibilidades de financiación aparecerán
               después de ser creadas y aprobadas por el
               ecosistema.
@@ -123,10 +106,10 @@ export default async function PublicOpportunitiesPage() {
                   key={
                     opportunity.id
                   }
-                  className="group rounded-[32px] border border-white/10 bg-[#0A0A0A] p-8 transition hover:border-[#D9FF00]"
+                  className="group border border-borde bg-superficie-elevada p-8 transition hover:shadow-stencil"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-4">
-                    <span className="rounded-full bg-[#D9FF00] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-black">
+                    <span className="border border-borde bg-rojo-base px-4 py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-hueso">
                       {
                         typeLabels[
                           opportunity.opportunityType
@@ -136,7 +119,7 @@ export default async function PublicOpportunitiesPage() {
                     </span>
 
                     {opportunity.closesAt ? (
-                      <span className="text-xs text-[#777777]">
+                      <span className="text-xs text-texto-largo">
                         Cierra el{' '}
                         {new Date(
                           `${opportunity.closesAt}T12:00:00`
@@ -160,26 +143,26 @@ export default async function PublicOpportunitiesPage() {
                   <Link
                     href={`/oportunidades/${opportunity.id}`}
                   >
-                    <h2 className="mt-7 text-3xl font-bold tracking-[-0.035em] transition group-hover:text-[#D9FF00]">
+                    <h2 className="mt-7 text-3xl font-bold tracking-[-0.035em] transition group-hover:text-texto-principal">
                       {
                         opportunity.title
                       }
                     </h2>
                   </Link>
 
-                  <p className="mt-5 text-base leading-8 text-[#999999]">
+                  <p className="mt-5 text-base leading-8 text-texto-largo">
                     {
                       opportunity.summary
                     }
                   </p>
 
-                  <p className="mt-6 text-sm font-bold text-[#D9FF00]">
+                  <p className="mt-6 text-sm font-bold text-texto-principal">
                     {formatAmountRange(
                       opportunity
                     )}
                   </p>
 
-                  <p className="mt-7 text-xs text-[#555555]">
+                  <p className="mt-7 text-xs text-texto-largo">
                     Publicada por{' '}
                     {
                       opportunity.ownerName
@@ -189,14 +172,14 @@ export default async function PublicOpportunitiesPage() {
                   <div className="mt-7 flex flex-wrap gap-3">
                     <Link
                       href={`/oportunidades/${opportunity.id}`}
-                      className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-[#D9FF00]"
+                      className="border border-borde px-5 py-3 text-sm font-semibold transition hover:bg-superficie"
                     >
                       Ver oportunidad
                     </Link>
 
                     <Link
                       href={`/oportunidades/${opportunity.id}/postular`}
-                      className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
+                      className="border border-borde bg-rojo-base px-5 py-3 text-sm font-bold text-hueso transition hover:shadow-stencil"
                     >
                       Postular proyecto
                     </Link>

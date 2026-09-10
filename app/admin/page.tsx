@@ -66,7 +66,7 @@ export default async function AdminPage() {
       <header className="border-b border-white/10">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-5 md:px-8">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#D9FF00]">CULTURA ESTA</p>
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#D9FF00]">EL CULEBREO</p>
             <p className="mt-1 text-lg font-semibold">{isSuperadmin ? 'Dirección del ecosistema' : 'Administración'}</p>
           </div>
           <div className="flex items-center gap-3">

@@ -4,7 +4,7 @@ export function AboutSection() {
       <div className="mx-auto max-w-7xl px-10 py-32">
 
         <p className="text-sm font-bold tracking-[0.35em] uppercase text-[#D9FF00]">
-          ¿QUÉ ES CULTURA ESTA?
+          ¿QUÉ ES EL CULEBREO?
         </p>
 
         <h2 className="mt-8 max-w-5xl text-6xl font-bold leading-tight text-white">

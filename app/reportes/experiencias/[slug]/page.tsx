@@ -4,6 +4,8 @@ import {
   notFound,
 } from 'next/navigation';
 
+import { SiteHeader } from '@/components/public/SiteHeader';
+
 import {
   getPublishedExperienceReport,
 } from '@/services/public/publicExperienceReports';
@@ -34,49 +36,30 @@ export default async function PublicReportPage({
   }
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
-      <header className="border-b border-white/10 px-6 py-6">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
-          <Link
-            href="/"
-            className="text-xl font-black tracking-[-0.04em]"
-          >
-            CULTURA ESTA
-          </Link>
+    <main className="min-h-screen bg-superficie text-texto-largo">
+      <SiteHeader
+        ctaLabel="Explorar calendario"
+        ctaHref="/agenda"
+        links={[
+          { label: 'Ver actividad', href: `/agenda/${report.experienceSlug}` },
+        ]}
+      />
 
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href={`/agenda/${report.experienceSlug}`}
-              className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold"
-            >
-              Ver actividad
-            </Link>
-
-            <Link
-              href="/agenda"
-              className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
-            >
-              Explorar agenda
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <section className="border-b border-white/10 px-6 py-20 lg:py-28">
+      <section className="border-b border-borde px-6 py-20 sm:px-8 lg:px-12 lg:py-28">
         <div className="mx-auto max-w-7xl">
-          <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#D9FF00]">
+          <p className="text-xs font-bold uppercase tracking-[0.28em] text-texto-principal">
             Reporte de resultados
           </p>
 
-          <h1 className="mt-7 max-w-6xl text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-9xl">
+          <h1 className="stencil-heading mt-7 max-w-6xl text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-9xl">
             {report.experienceTitle}
           </h1>
 
-          <p className="mt-8 max-w-4xl text-xl leading-9 text-[#AAAAAA]">
+          <p className="mt-8 max-w-4xl text-xl leading-9 text-texto-largo">
             {report.summary}
           </p>
 
-          <p className="mt-7 text-sm text-[#666666]">
+          <p className="mt-7 text-sm text-texto-largo">
             Publicado el{' '}
             {new Date(
               report.publishedAt
@@ -98,7 +81,7 @@ export default async function PublicReportPage({
       </section>
 
       {report.coverImageUrl ? (
-        <section className="px-6 pt-10">
+        <section className="px-6 pt-10 sm:px-8 lg:px-12">
           <img
             src={
               report.coverImageUrl
@@ -106,13 +89,13 @@ export default async function PublicReportPage({
             alt={
               report.experienceTitle
             }
-            className="mx-auto aspect-[16/8] w-full max-w-7xl rounded-[36px] object-cover"
+            className="mx-auto aspect-[16/8] w-full max-w-7xl border border-borde object-cover"
           />
         </section>
       ) : null}
 
-      <section className="mx-auto max-w-7xl px-6 py-20">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+      <section className="mx-auto max-w-7xl px-6 py-20 sm:px-8 lg:px-12">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
           Participación
         </p>
 
@@ -181,8 +164,8 @@ export default async function PublicReportPage({
           />
         </div>
 
-        <section className="mt-16 rounded-[32px] border border-white/10 bg-[#0A0A0A] p-8">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+        <section className="mt-16 border border-borde bg-superficie-elevada p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
             Recursos
           </p>
 
@@ -217,7 +200,7 @@ export default async function PublicReportPage({
         {report.evidenceUrls.length >
         0 ? (
           <section className="mt-16">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
               Evidencias
             </p>
 
@@ -240,14 +223,14 @@ export default async function PublicReportPage({
                     }
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-6 transition hover:border-[#D9FF00]"
+                    className="border border-borde bg-superficie-elevada p-6 transition hover:shadow-stencil"
                   >
-                    <p className="text-xs uppercase tracking-[0.16em] text-[#D9FF00]">
+                    <p className="text-xs uppercase tracking-[0.16em] text-texto-principal">
                       Evidencia{' '}
                       {index + 1}
                     </p>
 
-                    <p className="mt-4 break-all text-sm leading-6 text-[#888888]">
+                    <p className="mt-4 break-all text-sm leading-6 text-texto-largo">
                       {url}
                     </p>
                   </a>
@@ -259,8 +242,8 @@ export default async function PublicReportPage({
 
         {report.projectSlug &&
         report.projectHeadline ? (
-          <section className="mt-16 rounded-[32px] border border-[#D9FF00]/20 bg-[#D9FF00]/5 p-8">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">
+          <section className="mt-16 border border-borde bg-rojo-base p-8 text-hueso">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-hueso">
               Proyecto relacionado
             </p>
 
@@ -272,7 +255,7 @@ export default async function PublicReportPage({
 
             <Link
               href={`/proyectos/${report.projectSlug}`}
-              className="mt-7 inline-flex rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black"
+              className="mt-7 inline-flex border border-hueso px-6 py-3 text-sm font-bold text-hueso transition hover:bg-rojo-profundo"
             >
               Ver proyecto
             </Link>
@@ -294,12 +277,12 @@ function Metric({
     string;
 }) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#0A0A0A] p-6">
-      <p className="text-4xl font-black text-[#D9FF00]">
+    <article className="border border-borde bg-superficie-elevada p-6">
+      <p className="text-4xl font-black text-texto-principal">
         {value}
       </p>
 
-      <p className="mt-3 text-xs uppercase tracking-[0.14em] text-[#777777]">
+      <p className="mt-3 text-xs uppercase tracking-[0.14em] text-texto-largo">
         {label}
       </p>
     </article>
@@ -317,12 +300,12 @@ function NarrativeSection({
     string;
 }) {
   return (
-    <article className="rounded-[32px] border border-white/10 bg-[#0A0A0A] p-8">
+    <article className="border border-borde bg-superficie-elevada p-8">
       <h2 className="text-3xl font-bold tracking-[-0.035em]">
         {title}
       </h2>
 
-      <p className="mt-6 whitespace-pre-line text-base leading-8 text-[#AAAAAA]">
+      <p className="mt-6 whitespace-pre-line text-base leading-8 text-texto-largo">
         {content ||
           'Sin información publicada.'}
       </p>
@@ -341,12 +324,12 @@ function FinancialMetric({
     number;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#111111] p-5">
-      <p className="text-xs uppercase tracking-[0.15em] text-[#666666]">
+    <div className="border border-borde bg-superficie p-5">
+      <p className="text-xs uppercase tracking-[0.15em] text-texto-largo">
         {label}
       </p>
 
-      <p className="mt-3 text-2xl font-black text-[#D9FF00]">
+      <p className="mt-3 text-2xl font-black text-texto-principal">
         {new Intl.NumberFormat(
           'es-CO',
           {

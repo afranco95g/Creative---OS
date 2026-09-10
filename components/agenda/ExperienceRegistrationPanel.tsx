@@ -157,7 +157,7 @@ export function ExperienceRegistrationPanel({
 
   if (isLoading) {
     return (
-      <div className="mt-8 h-48 animate-pulse rounded-3xl bg-[#111111]" />
+      <div className="mt-8 h-48 animate-pulse border border-borde bg-superficie" />
     );
   }
 
@@ -166,20 +166,20 @@ export function ExperienceRegistrationPanel({
     false;
 
   return (
-    <section className="mt-8 border-t border-white/10 pt-7">
-      <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">
+    <section className="mt-8 border-t border-borde pt-7">
+      <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-principal">
         Inscripción
       </p>
 
       {availability?.capacity !== null ? (
-        <div className="mt-4 rounded-2xl border border-white/10 bg-[#111111] p-4">
-          <p className="text-sm font-semibold text-white">
+        <div className="mt-4 border border-borde bg-superficie p-4">
+          <p className="text-sm font-semibold text-texto-principal">
             {availability?.remaining ??
               0}{' '}
             cupos disponibles
           </p>
 
-          <p className="mt-2 text-xs text-[#777777]">
+          <p className="mt-2 text-xs text-texto-largo">
             {
               availability?.registeredCount ??
               0
@@ -193,7 +193,7 @@ export function ExperienceRegistrationPanel({
           </p>
         </div>
       ) : (
-        <p className="mt-4 text-sm text-[#888888]">
+        <p className="mt-4 text-sm text-texto-largo">
           Actividad sin límite de cupos definido.
         </p>
       )}
@@ -293,14 +293,14 @@ export function ExperienceRegistrationPanel({
             />
           </div>
 
-          <p className="text-xs leading-5 text-[#666666]">
+          <p className="text-xs leading-5 text-texto-largo">
             Al inscribirte aceptas que El Culebreo
             almacene estos datos para administrar tu
             participación en la actividad.
           </p>
 
           {errorMessage ? (
-            <div className="rounded-2xl border border-red-400/20 bg-red-400/10 px-4 py-3 text-sm leading-6 text-red-200">
+            <div className="border border-borde bg-rojo-base px-4 py-3 text-sm leading-6 text-hueso">
               {errorMessage}
             </div>
           ) : null}
@@ -308,7 +308,7 @@ export function ExperienceRegistrationPanel({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex w-full items-center justify-center rounded-full bg-[#D9FF00] px-6 py-4 text-sm font-bold text-black transition hover:bg-white disabled:opacity-50"
+            className="flex w-full items-center justify-center border border-borde bg-rojo-base px-6 py-4 text-sm font-bold text-hueso transition hover:shadow-stencil disabled:opacity-50"
           >
             {isSubmitting
               ? 'Registrando...'
@@ -316,12 +316,12 @@ export function ExperienceRegistrationPanel({
           </button>
         </form>
       ) : (
-        <div className="mt-6 rounded-2xl border border-white/10 bg-[#111111] p-5">
-          <p className="font-semibold">
+        <div className="mt-6 border border-borde bg-superficie p-5">
+          <p className="font-semibold text-texto-principal">
             Inscripciones cerradas
           </p>
 
-          <p className="mt-2 text-sm leading-6 text-[#777777]">
+          <p className="mt-2 text-sm leading-6 text-texto-largo">
             La actividad ya comenzó, terminó o alcanzó
             su capacidad máxima.
           </p>
@@ -333,7 +333,7 @@ export function ExperienceRegistrationPanel({
           href={externalTicketUrl}
           target="_blank"
           rel="noreferrer"
-          className="mt-4 flex w-full items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-semibold transition hover:border-white"
+          className="mt-4 flex w-full items-center justify-center border border-borde px-6 py-3 text-sm font-semibold transition hover:bg-superficie"
         >
           Usar enlace externo de inscripción
         </a>
@@ -351,7 +351,7 @@ function getErrorMessage(
 }
 
 const labelClassName =
-  'mb-2 block text-xs font-medium text-[#999999]';
+  'mb-2 block text-xs font-medium text-texto-largo';
 
 const inputClassName =
-  'w-full rounded-2xl border border-white/10 bg-[#080808] px-4 py-3 text-sm text-white outline-none transition focus:border-[#D9FF00]';
+  'w-full border border-borde bg-superficie px-4 py-3 text-sm text-texto-largo outline-none transition focus:border-acento';

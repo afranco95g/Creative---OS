@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { SiteHeader } from '../../components/public/SiteHeader';
+
 import {
   getPublicActorHref,
   listPublishedEcosystemActors,
@@ -68,52 +70,25 @@ export default async function PublicEcosystemPage() {
     await listPublishedEcosystemActors();
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
-      <header className="border-b border-white/10 px-6 py-6 sm:px-8 lg:px-12">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <Link
-            href="/"
-            className="text-xl font-black tracking-[-0.04em]"
-          >
-            CULTURA ESTA
-          </Link>
+    <main className="min-h-screen bg-superficie text-texto-largo">
+      <SiteHeader
+        links={[
+          { label: 'Ver proyectos', href: '/proyectos' },
+          { label: 'Volver al medio', href: '/' },
+        ]}
+      />
 
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/proyectos"
-              className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold transition hover:border-white"
-            >
-              Ver proyectos
-            </Link>
-
-            <Link
-              href="/"
-              className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold transition hover:border-white"
-            >
-              Volver al medio
-            </Link>
-
-            <Link
-              href="/studio?new=1"
-              className="rounded-full bg-[#D9FF00] px-5 py-2.5 text-sm font-bold text-black transition hover:bg-white"
-            >
-              Crear un proyecto
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <section className="border-b border-white/10 px-6 py-20 sm:px-8 lg:px-12 lg:py-28">
+      <section className="border-b border-borde px-6 py-20 sm:px-8 lg:px-12 lg:py-28">
         <div className="mx-auto max-w-7xl">
-          <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#D9FF00]">
+          <p className="text-xs font-bold uppercase tracking-[0.28em] text-texto-principal">
             Ecosistema creativo
           </p>
 
-          <h1 className="mt-6 max-w-6xl text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-9xl">
+          <h1 className="stencil-heading mt-6 max-w-6xl text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-9xl">
             La cultura la hacen personas conectadas.
           </h1>
 
-          <p className="mt-8 max-w-3xl text-lg leading-8 text-[#A6A6A6]">
+          <p className="mt-8 max-w-3xl text-lg leading-8 text-texto-largo">
             Explora las personas, espacios, marcas y
             organizaciones que crean, reciben, producen,
             financian y hacen circular proyectos culturales.
@@ -174,7 +149,7 @@ export default async function PublicEcosystemPage() {
               >
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D9FF00]">
+                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-texto-principal">
                       {
                         section.eyebrow
                       }
@@ -184,14 +159,14 @@ export default async function PublicEcosystemPage() {
                       {section.title}
                     </h2>
 
-                    <p className="mt-4 max-w-3xl text-sm leading-7 text-[#888888]">
+                    <p className="mt-4 max-w-3xl text-sm leading-7 text-texto-largo">
                       {
                         section.description
                       }
                     </p>
                   </div>
 
-                  <p className="text-sm text-[#666666]">
+                  <p className="text-sm text-texto-largo">
                     {
                       sectionActors.length
                     }{' '}
@@ -204,8 +179,8 @@ export default async function PublicEcosystemPage() {
 
                 {sectionActors.length ===
                 0 ? (
-                  <div className="mt-8 rounded-3xl border border-dashed border-white/15 bg-[#0A0A0A] p-8">
-                    <p className="text-[#777777]">
+                  <div className="mt-8 border border-dashed border-borde bg-superficie-elevada p-8">
+                    <p className="text-texto-largo">
                       Todavía no hay perfiles públicos de este tipo.
                     </p>
                   </div>
@@ -262,23 +237,23 @@ function PublicActorCard({
       href={getPublicActorHref(
         actor
       )}
-      className="group flex min-h-[390px] flex-col rounded-[30px] border border-white/10 bg-[#0A0A0A] p-7 transition hover:-translate-y-1 hover:border-[#D9FF00]"
+      className="group flex min-h-[390px] flex-col border border-borde bg-superficie-elevada p-7 transition hover:shadow-stencil"
     >
       <div className="flex items-start justify-between gap-4">
         {actor.imageUrl ? (
           <img
             src={actor.imageUrl}
             alt={actor.name}
-            className="h-20 w-20 rounded-full object-cover"
+            className="h-20 w-20 border border-borde object-cover"
           />
         ) : (
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#D9FF00] text-xl font-black text-black">
-            {initials || 'CE'}
+          <div className="flex h-20 w-20 items-center justify-center border border-borde bg-rojo-base text-xl font-black text-hueso">
+            {initials || 'EC'}
           </div>
         )}
 
         {actor.verified ? (
-          <span className="rounded-full border border-[#D9FF00]/30 bg-[#D9FF00]/10 px-3 py-1.5 text-[10px] font-bold uppercase text-[#D9FF00]">
+          <span className="border border-borde px-3 py-1.5 text-[10px] font-bold uppercase text-texto-principal">
             Verificado
           </span>
         ) : null}
@@ -288,11 +263,11 @@ function PublicActorCard({
         {actor.name}
       </h3>
 
-      <p className="mt-3 text-sm font-semibold text-[#D9FF00]">
+      <p className="mt-3 text-sm font-semibold text-texto-principal">
         {actor.headline}
       </p>
 
-      <p className="mt-5 line-clamp-4 text-sm leading-7 text-[#888888]">
+      <p className="mt-5 line-clamp-4 text-sm leading-7 text-texto-largo">
         {actor.description ||
           'Perfil del ecosistema cultural y creativo.'}
       </p>
@@ -304,7 +279,7 @@ function PublicActorCard({
             .map((label) => (
               <span
                 key={label}
-                className="rounded-full border border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] text-[#666666]"
+                className="border border-borde px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] text-texto-largo"
               >
                 {formatLabel(
                   label
@@ -315,12 +290,12 @@ function PublicActorCard({
       ) : null}
 
       <div className="mt-auto pt-8">
-        <p className="text-xs text-[#555555]">
+        <p className="text-xs text-texto-largo">
           {location ||
             'Ubicación sin definir'}
         </p>
 
-        <p className="mt-5 text-sm font-bold transition group-hover:text-[#D9FF00]">
+        <p className="mt-5 text-sm font-bold transition group-hover:text-texto-principal">
           Conocer perfil →
         </p>
       </div>
@@ -336,12 +311,12 @@ function Metric({
   label: string;
 }) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#0A0A0A] p-5">
-      <p className="text-3xl font-black text-[#D9FF00]">
+    <article className="border border-borde bg-superficie-elevada p-5">
+      <p className="text-3xl font-black text-texto-principal">
         {value}
       </p>
 
-      <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-[#777777]">
+      <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-texto-largo">
         {label}
       </p>
     </article>

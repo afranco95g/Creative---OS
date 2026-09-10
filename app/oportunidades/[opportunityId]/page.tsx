@@ -4,6 +4,8 @@ import {
   notFound,
 } from 'next/navigation';
 
+import { SiteHeader } from '../../../components/public/SiteHeader';
+
 import {
   getPublishedFundingOpportunity,
 } from '../../../services/public/publicFunding';
@@ -58,37 +60,18 @@ export default async function FundingOpportunityPage({
   }
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
-      <header className="border-b border-white/10 px-6 py-6">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
-          <Link
-            href="/"
-            className="text-xl font-black tracking-[-0.04em]"
-          >
-            CULTURA ESTA
-          </Link>
+    <main className="min-h-screen bg-superficie text-texto-largo">
+      <SiteHeader
+        ctaLabel="Postular proyecto"
+        ctaHref={`/oportunidades/${opportunity.id}/postular`}
+        links={[
+          { label: 'Ver oportunidades', href: '/oportunidades' },
+        ]}
+      />
 
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/oportunidades"
-              className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold"
-            >
-              Ver oportunidades
-            </Link>
-
-            <Link
-              href={`/oportunidades/${opportunity.id}/postular`}
-              className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
-            >
-              Postular proyecto
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <section className="border-b border-white/10 px-6 py-20 lg:py-28">
+      <section className="border-b border-borde px-6 py-20 sm:px-8 lg:px-12 lg:py-28">
         <div className="mx-auto max-w-7xl">
-          <span className="rounded-full bg-[#D9FF00] px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-black">
+          <span className="border border-borde bg-rojo-base px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-hueso">
             {
               typeLabels[
                 opportunity.opportunityType
@@ -97,15 +80,15 @@ export default async function FundingOpportunityPage({
             }
           </span>
 
-          <h1 className="mt-9 max-w-6xl text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-9xl">
+          <h1 className="stencil-heading mt-9 max-w-6xl text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-9xl">
             {opportunity.title}
           </h1>
 
-          <p className="mt-8 max-w-4xl text-xl leading-9 text-[#AAAAAA]">
+          <p className="mt-8 max-w-4xl text-xl leading-9 text-texto-largo">
             {opportunity.summary}
           </p>
 
-          <p className="mt-8 text-sm text-[#666666]">
+          <p className="mt-8 text-sm text-texto-largo">
             Publicada por{' '}
             {
               opportunity.ownerName
@@ -114,10 +97,10 @@ export default async function FundingOpportunityPage({
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[320px_minmax(0,760px)] lg:justify-between lg:py-24">
+      <section className="mx-auto grid max-w-7xl gap-10 px-6 py-16 sm:px-8 lg:grid-cols-[320px_minmax(0,760px)] lg:justify-between lg:px-12 lg:py-24">
         <aside>
-          <div className="sticky top-8 rounded-[30px] border border-white/10 bg-[#0A0A0A] p-7">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">
+          <div className="sticky top-8 border border-borde bg-superficie-elevada p-7">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-principal">
               Información
             </p>
 
@@ -155,7 +138,7 @@ export default async function FundingOpportunityPage({
 
             <Link
               href={`/oportunidades/${opportunity.id}/postular`}
-              className="mt-8 flex w-full items-center justify-center rounded-full bg-[#D9FF00] px-6 py-4 text-sm font-bold text-black transition hover:bg-white"
+              className="mt-8 flex w-full items-center justify-center border border-borde bg-rojo-base px-6 py-4 text-sm font-bold text-hueso transition hover:shadow-stencil"
             >
               Postular un proyecto
             </Link>
@@ -179,8 +162,8 @@ export default async function FundingOpportunityPage({
 
           {opportunity.requiredDocuments.length >
           0 ? (
-            <section className="mt-14 border-t border-white/10 pt-12">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">
+            <section className="mt-14 border-t border-borde pt-12">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-principal">
                 Requisitos
               </p>
 
@@ -195,7 +178,7 @@ export default async function FundingOpportunityPage({
                       key={
                         document
                       }
-                      className="rounded-2xl border border-white/10 bg-[#0A0A0A] p-5 text-sm leading-7 text-[#AAAAAA]"
+                      className="border border-borde bg-superficie-elevada p-5 text-sm leading-7 text-texto-largo"
                     >
                       — {document}
                     </li>
@@ -205,8 +188,8 @@ export default async function FundingOpportunityPage({
             </section>
           ) : null}
 
-          <section className="mt-16 rounded-[32px] border border-[#D9FF00]/20 bg-[#D9FF00]/5 p-8">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">
+          <section className="mt-16 border border-borde bg-rojo-base p-8 text-hueso">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-hueso">
               Creative OS
             </p>
 
@@ -214,7 +197,7 @@ export default async function FundingOpportunityPage({
               Postula un proyecto estructurado
             </h2>
 
-            <p className="mt-5 max-w-2xl text-base leading-8 text-[#999999]">
+            <p className="mt-5 max-w-2xl text-base leading-8 text-hueso">
               El proyecto debe haber pasado la revisión de
               elegibilidad del ecosistema. Puedes adjuntar un
               reporte publicado como evidencia de experiencia
@@ -223,7 +206,7 @@ export default async function FundingOpportunityPage({
 
             <Link
               href={`/oportunidades/${opportunity.id}/postular`}
-              className="mt-8 inline-flex rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black"
+              className="mt-8 inline-flex border border-hueso px-6 py-3 text-sm font-bold text-hueso transition hover:bg-rojo-profundo"
             >
               Comenzar postulación
             </Link>
@@ -242,8 +225,8 @@ function Section({
   content: string;
 }) {
   return (
-    <section className="border-b border-white/10 pb-12">
-      <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">
+    <section className="border-b border-borde pb-12">
+      <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-principal">
         Oportunidad
       </p>
 
@@ -251,7 +234,7 @@ function Section({
         {title}
       </h2>
 
-      <p className="mt-7 whitespace-pre-line text-lg leading-9 text-[#AAAAAA]">
+      <p className="mt-7 whitespace-pre-line text-lg leading-9 text-texto-largo">
         {content}
       </p>
     </section>
@@ -266,12 +249,12 @@ function InformationItem({
   value: string;
 }) {
   return (
-    <div className="mt-7 border-t border-white/10 pt-6">
-      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#666666]">
+    <div className="mt-7 border-t border-borde pt-6">
+      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-texto-largo">
         {label}
       </p>
 
-      <p className="mt-3 text-sm font-semibold leading-6">
+      <p className="mt-3 text-sm font-semibold leading-6 text-texto-principal">
         {value}
       </p>
     </div>

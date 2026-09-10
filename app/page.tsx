@@ -120,9 +120,9 @@ export default async function HomePage() {
     <main className="min-h-screen bg-superficie text-texto-largo">
       <SiteHeader
         links={[
-          { label: 'Historias', href: '#historias' },
-          { label: 'Calendario', href: '#agenda' },
-          { label: 'Ecosistema', href: '#ecosistema' },
+          { label: 'Historias', href: '/' },
+          { label: 'Calendario', href: '/agenda' },
+          { label: 'Ecosistema', href: '/ecosistema' },
           { label: 'Proyectos', href: '/proyectos' },
         ]}
       />
