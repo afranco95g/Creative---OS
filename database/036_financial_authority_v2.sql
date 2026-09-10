@@ -1,6 +1,12 @@
 -- Executive Engine V2.4 — Financial Authority (aditive and reversible)
 begin;
 
+do $$ begin
+  if to_regclass('public.project_budget_lines') is null then
+    raise exception 'Prerequisite missing: public.project_budget_lines. Apply and validate migration 027 before 036.';
+  end if;
+end $$;
+
 alter table public.project_budget_lines
   add column if not exists currency text not null default 'COP',
   add column if not exists related_work_item_id uuid,
@@ -32,18 +38,34 @@ create table if not exists public.financial_proposals (
 
 create table if not exists public.financial_domain_events (
   id uuid primary key default gen_random_uuid(), project_id uuid not null references public.projects(id) on delete cascade,
-  entity_id uuid not null, event_type text not null, actor_id uuid references public.profiles(id) on delete set null,
+  entity_id uuid not null, event_type text not null check(event_type in (
+    'financial_item_created','financial_item_updated','financial_item_status_changed','financial_item_cancelled',
+    'financial_proposal_created','financial_proposal_accepted','financial_proposal_rejected','financial_item_linked_to_knowledge'
+  )), actor_id uuid references public.profiles(id) on delete set null,
   happened_at timestamptz not null default now(), before_state jsonb, after_state jsonb, reason text,
   idempotency_key text not null, unique(project_id,idempotency_key)
 );
 
 alter table public.financial_proposals enable row level security;
 alter table public.financial_domain_events enable row level security;
+drop policy if exists "Project owners manage financial proposals" on public.financial_proposals;
+drop policy if exists "Project owners read financial events" on public.financial_domain_events;
 create policy "Project owners manage financial proposals" on public.financial_proposals for all to authenticated
 using(exists(select 1 from public.projects p where p.id=project_id and p.owner_id=auth.uid()))
 with check(exists(select 1 from public.projects p where p.id=project_id and p.owner_id=auth.uid()));
 create policy "Project owners read financial events" on public.financial_domain_events for select to authenticated
 using(exists(select 1 from public.projects p where p.id=project_id and p.owner_id=auth.uid()));
+
+do $$ begin
+  if not exists(select 1 from pg_constraint where conname='project_budget_lines_proposal_fk') then
+    alter table public.project_budget_lines add constraint project_budget_lines_proposal_fk
+      foreign key(proposal_id) references public.financial_proposals(id) on delete set null;
+  end if;
+end $$;
+
+drop trigger if exists financial_proposals_set_updated_at on public.financial_proposals;
+create trigger financial_proposals_set_updated_at before update on public.financial_proposals
+for each row execute function public.set_updated_at();
 
 create or replace function public.accept_financial_proposal(target_proposal_id uuid, command_key text)
 returns public.project_budget_lines language plpgsql security definer set search_path='' as $$

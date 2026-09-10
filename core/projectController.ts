@@ -25,6 +25,8 @@ import type {
 
 import {
   getNextBestQuestion,
+  getQuestionIntent,
+  isQuestionAlreadyAnswered,
 } from '../engines/questionEngine';
 
 import {
@@ -192,9 +194,14 @@ export function processProjectMessage(
       nextGraph,
       nextMessagesPreview
     );
-  const nextQuestion = conversationResult.response.currentInterpretation?.suggestedQuestion
+  const candidateNextQuestion = conversationResult.response.currentInterpretation?.suggestedQuestion
     || conversationResult.response.nextQuestion
     || enhanceQuestionWithKnowledge(baseNextQuestion, cleanInput, knowledge);
+  const candidateIntent = getQuestionIntent(candidateNextQuestion);
+  const alreadyAskedIntent = currentState.messages.some((message) => message.role === 'producer' && getQuestionIntent(message.response?.nextQuestion || message.content) === candidateIntent);
+  const nextQuestion = candidateIntent !== 'other' && (isQuestionAlreadyAnswered(candidateIntent, nextGraph) || alreadyAskedIntent)
+    ? baseNextQuestion
+    : candidateNextQuestion;
 
   const registeredDecision =
     decisionActions.length > 0;
@@ -238,6 +245,8 @@ export function processProjectMessage(
       progress:
         nextProgress,
     };
+
+  if(process.env.NODE_ENV==='development')console.debug('[ExecutiveEngineV2 runtime]',{stage:'question-selected',candidateIntent,selectedIntent:getQuestionIntent(nextQuestion),knowledgeEntities:nextGraph.knowledge?.entities.length??0,financialProposals:nextGraph.financialAuthority?.proposals.length??0});
 
   return {
     state: nextState,

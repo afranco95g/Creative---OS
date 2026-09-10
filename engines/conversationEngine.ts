@@ -21,6 +21,8 @@ import { interpretTurn } from './turnInterpretationEngine';
 import { classifyProjectEvidence } from './semanticClassificationEngine';
 import { interpretProjectMessage, mergeProjectKnowledge, traceInterpretation } from './projectKnowledgeEngine';
 import { applyConsistencyEvaluation, evaluateProjectConsistency, getTopConsistencyIssue } from './projectConsistencyEngine';
+import { createProposal, initialFinancialAuthorityState, materializeFinancialKnowledge } from './financialAuthorityEngine';
+import { isFinancialAuthorityV2Enabled } from '../lib/featureFlags';
 
 const DECISION_EXPRESSIONS: RegExp[] = [
   /\bdecidi\b/,
@@ -596,6 +598,16 @@ export function processConversationTurn(
   const interpretation = interpretTurn(message, nextGraph, patches);
   const currentInterpretation = interpretProjectMessage({ message, graph: nextGraph }, patches);
   nextGraph = mergeProjectKnowledge(nextGraph, currentInterpretation);
+  if(isFinancialAuthorityV2Enabled()){
+    let financial=nextGraph.financialAuthority??initialFinancialAuthorityState();
+    const quantityEntity=nextGraph.knowledge?.entities.find(item=>item.key==='artist_requirement'&&item.status!=='superseded');
+    for(const entity of currentInterpretation.knowledgeEntities.filter(item=>item.key==='artist_performance_fee')){
+      const proposal=materializeFinancialKnowledge({projectId:nextGraph.id,knowledgeEntity:entity,quantityEntity,allowProposed:true});
+      if(proposal)financial=createProposal(financial,proposal).state;
+    }
+    nextGraph={...nextGraph,financialAuthority:financial};
+  }
+  if(process.env.NODE_ENV==='development')console.debug('[ExecutiveEngineV2 runtime]',{stage:'interpretation-complete',v1Patches:patches.length,v2Entities:currentInterpretation.knowledgeEntities.length,knowledgeEntities:nextGraph.knowledge?.entities.length??0,confirmations:nextGraph.knowledge?.confirmations.length??0,financialProposals:nextGraph.financialAuthority?.proposals.length??0,financialAuthorityV2:isFinancialAuthorityV2Enabled()});
   nextGraph = applyConsistencyEvaluation(nextGraph, evaluateProjectConsistency({ graph: nextGraph }));
   traceInterpretation(message, currentInterpretation);
   if (interpretation.financialSignals.length) {

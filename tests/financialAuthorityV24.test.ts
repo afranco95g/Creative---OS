@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { acceptFinancialProposal, calculateFundingGap, createProposal, detectFinancialDivergence, initialFinancialAuthorityState, materializeFinancialKnowledge, syncFinancialItemToKnowledge, updateFinancialItem } from '../engines/financialAuthorityEngine';
 import { createInitialProjectGraph } from '../core/projectEngine';
+import { interpretProjectMessage } from '../engines/projectKnowledgeEngine';
 import type { CanonicalFinancialItem, FinancialProposal } from '../types/financialAuthority';
 import type { ProjectKnowledgeEntity } from '../types/projectKnowledge';
 
@@ -9,6 +10,7 @@ const entity=(id:string,amount:number,status:ProjectKnowledgeEntity['status']='c
 const proposal=materializeFinancialKnowledge({projectId:'project-1',knowledgeEntity:entity('knowledge-1',500000)});
 assert(proposal&&proposal.quantity===5&&proposal.calculatedTotal.amount===2500000&&proposal.status==='pending');
 assert.equal(materializeFinancialKnowledge({projectId:'project-1',knowledgeEntity:entity('x',1,'proposed')}),null,'Un dato no confirmado no se materializa.');
+const approximate=interpretProjectMessage({message:'Necesito 5 artistas y creo que cada uno cuesta unos 500.000.',graph:createInitialProjectGraph()});const approximateCost=approximate.knowledgeEntities.find(item=>item.type==='financial_fact');const artistNeed=approximate.knowledgeEntities.find(item=>item.key==='artist_requirement');assert(approximateCost&&approximateCost.status==='proposed'&&approximateCost.confidence<1,'El lenguaje aproximado conserva semántica propuesta, no verdad confirmada.');assert.equal((approximateCost.value as {amount:number;unit:string}).amount,500000);assert.equal((approximateCost.value as {unit:string}).unit,'artista');assert.equal((artistNeed?.value as {quantity:number}).quantity,5);
 
 let state=initialFinancialAuthorityState();const created=createProposal(state,proposal!);state=created.state;
 const duplicateProposal=createProposal(state,{...proposal!,id:'retry'});assert.equal(duplicateProposal.created,false);assert.equal(duplicateProposal.state.proposals.length,1);
@@ -23,6 +25,7 @@ const graph=createInitialProjectGraph();const knowledge=syncFinancialItemToKnowl
 graph.tools.budgetLines=[{id:'legacy',category:'Talento',concept:'Artistas',quantity:5,unit:'artista',unitValue:500000,vatRate:0,withholdingRate:0,otherTaxes:0,status:'proposed',responsible:'',provider:'',estimatedDate:'',actualDate:'',source:'manual'}];const report=detectFinancialDivergence(graph.id,graph.tools.budgetLines,[(update as {item:CanonicalFinancialItem}).item]);assert(report.hasConflicts&&report.autoMerged===false&&report.divergences.some(d=>d.kind==='value_mismatch'));
 assert(detectFinancialDivergence(graph.id,[],[accepted.item]).divergences.some(d=>d.kind==='table_only'));
 assert(detectFinancialDivergence(graph.id,graph.tools.budgetLines,[]).divergences.some(d=>d.kind==='graph_only'));
+const taxItem={...(update as {item:CanonicalFinancialItem}).item,unitPrice:{amount:500000,currency:'COP'},vat:{amount:950000,currency:'COP'},total:{amount:3450000,currency:'COP'}};assert(detectFinancialDivergence(graph.id,graph.tools.budgetLines,[taxItem]).divergences.some(d=>d.kind==='tax_mismatch'));
 
 const income:CanonicalFinancialItem={...accepted.item,id:'funding',direction:'income',status:'approved',total:{amount:5000000,currency:'COP'}};const cost:CanonicalFinancialItem={...accepted.item,id:'cost',quantity:1,total:{amount:20000000,currency:'COP'}};assert.equal(calculateFundingGap([cost,income]).amount,15000000);
 

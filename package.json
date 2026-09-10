@@ -7,12 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "tsc -p tests/tsconfig.tests.json && node .test-tools/tests/knowledgeQueryBuilder.test.js && node .test-tools/tests/kicksInterpretation.test.js && node .test-tools/tests/doblaYDevoraClassification.test.js && node .test-tools/tests/projectKnowledgeV2.test.js && node .test-tools/tests/executiveEngineV23.test.js && node .test-tools/tests/financialAuthorityV24.test.js",
+    "test": "tsc -p tests/tsconfig.tests.json && node .test-tools/tests/knowledgeQueryBuilder.test.js && node .test-tools/tests/kicksInterpretation.test.js && node .test-tools/tests/doblaYDevoraClassification.test.js && node .test-tools/tests/projectKnowledgeV2.test.js && node .test-tools/tests/executiveEngineV23.test.js && node .test-tools/tests/financialAuthorityV24.test.js && node .test-tools/tests/muscoRuntimeIntegration.test.js",
     "typecheck": "tsc --noEmit",
     "knowledge:scan": "tsc -p scripts/tsconfig.knowledge.json && node .knowledge-tools/scripts/knowledge-admin.js scan",
     "knowledge:ingest": "tsc -p scripts/tsconfig.knowledge.json && node .knowledge-tools/scripts/knowledge-admin.js ingest",
     "knowledge:validate": "tsc -p scripts/tsconfig.knowledge.json && node .knowledge-tools/scripts/knowledge-admin.js validate",
     "knowledge:report": "tsc -p scripts/tsconfig.knowledge.json && node .knowledge-tools/scripts/knowledge-admin.js report"
+    ,"financial:migration-preview": "tsc -p scripts/tsconfig.financial.json && node .financial-tools/scripts/financial-migration-preview.js preview"
+    ,"financial:backup": "tsc -p scripts/tsconfig.financial.json && node .financial-tools/scripts/financial-migration-preview.js backup"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",

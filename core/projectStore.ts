@@ -77,6 +77,8 @@ class ProjectStore {
 
     this.state = result.state;
 
+    if(process.env.NODE_ENV==='development')console.debug('[ExecutiveEngineV2 runtime]',{stage:'store-committed',projectId:this.state.graph.id,knowledgeEntities:this.state.graph.knowledge?.entities.length??0,financialProposals:this.state.graph.financialAuthority?.proposals.length??0});
+
     this.emit();
   }
 

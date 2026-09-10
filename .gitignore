@@ -3,6 +3,7 @@ node_modules/
 biblioteca_creative_os/.knowledge-cache/
 .knowledge-tools/
 .test-tools/
+.financial-tools/
 out/
 
 .env*

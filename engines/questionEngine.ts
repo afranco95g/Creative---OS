@@ -13,6 +13,17 @@ interface QuestionDefinition {
   deepen: string;
 }
 
+export type QuestionIntent = 'clarify_project_name' | 'clarify_project_type' | 'clarify_purpose' | 'clarify_problem' | 'clarify_audience' | 'clarify_location' | 'clarify_objective' | 'clarify_activities' | 'clarify_date' | 'clarify_quantity' | 'clarify_budget' | 'clarify_responsibility' | 'clarify_allies' | 'clarify_risks' | 'clarify_sustainability' | 'clarify_impact' | 'clarify_metrics' | 'clarify_tasks' | 'clarify_decisions' | 'clarify_documents' | 'clarify_evidence' | 'clarify_opportunities' | 'other';
+
+const MODULE_INTENTS: Partial<Record<ProjectModuleId, QuestionIntent>> = {
+  identity: 'clarify_project_name', community: 'clarify_audience', context: 'clarify_location',
+  purpose: 'clarify_purpose', problem: 'clarify_problem', generalObjective: 'clarify_objective', specificObjectives: 'clarify_objective',
+  activities: 'clarify_activities', timeline: 'clarify_date', budget: 'clarify_budget', team: 'clarify_responsibility',
+  allies: 'clarify_allies', risks: 'clarify_risks', sustainability: 'clarify_sustainability', impact: 'clarify_impact',
+  kpis: 'clarify_metrics', tasks: 'clarify_tasks', decisions: 'clarify_decisions', documents: 'clarify_documents',
+  evidence: 'clarify_evidence', opportunities: 'clarify_opportunities',
+};
+
 const STRATEGIC_QUESTIONS: Record<
   ProjectModuleId,
   QuestionDefinition
@@ -179,6 +190,7 @@ export function getNextBestQuestion(
 
   const previousQuestions =
     getPreviousQuestions(messages);
+  const previousIntents: Set<QuestionIntent> = new Set(messages.filter((message) => message.role === 'producer').map((message) => getQuestionIntent(message.response?.nextQuestion || message.content)).filter((intent) => intent !== 'other'));
 
   for (
     const module of weakModules
@@ -187,8 +199,11 @@ export function getNextBestQuestion(
       selectQuestionForModule(
         module
       );
+    const intent = MODULE_INTENTS[module.id] ?? getQuestionIntent(question);
 
     if (
+      !isQuestionAlreadyAnswered(intent, graph) &&
+      !previousIntents.has(intent) &&
       !previousQuestions.has(
         normalizeText(question)
       )
@@ -198,6 +213,55 @@ export function getNextBestQuestion(
   }
 
   return 'Ya hemos recorrido las preguntas prioritarias. ¿Qué frente del proyecto te gustaría revisar, cambiar o convertir ahora en un documento?';
+}
+
+export function getQuestionIntent(question: string): QuestionIntent {
+  const text = normalizeText(question);
+  if (/como se llama|como te gustaria nombrar|nombre del proyecto/.test(text)) return 'clarify_project_name';
+  if (/tipo de proyecto|formato del proyecto/.test(text)) return 'clarify_project_type';
+  if (/por que|principio no deberia perder/.test(text)) return 'clarify_purpose';
+  if (/problema|necesidad real/.test(text)) return 'clarify_problem';
+  if (/a que personas|comunidad|publico|audiencia/.test(text)) return 'clarify_audience';
+  if (/donde|lugar|ubicacion|region/.test(text)) return 'clarify_location';
+  if (/objetivo|resultado principal|resultado general/.test(text)) return 'clarify_objective';
+  if (/actividades|primera que permitiria/.test(text)) return 'clarify_activities';
+  if (/cuando|fecha|tiempo|primer mes/.test(text)) return 'clarify_date';
+  if (/cuantos|cantidad/.test(text)) return 'clarify_quantity';
+  if (/presupuesto|costo|valor|tarifa|honorarios/.test(text)) return 'clarify_budget';
+  if (/quien|responsable|equipo|rol/.test(text)) return 'clarify_responsibility';
+  if (/aliados|instituciones|marcas/.test(text)) return 'clarify_allies';
+  if (/riesgo|dificultar|reducirlo/.test(text)) return 'clarify_risks';
+  if (/sostener|sostenibilidad|continuar este proyecto/.test(text)) return 'clarify_sustainability';
+  if (/impacto|cambio concreto|indicador/.test(text)) return 'clarify_impact';
+  if (/metricas|indicadores|avanzando bien/.test(text)) return 'clarify_metrics';
+  if (/accion concreta|tarea/.test(text)) return 'clarify_tasks';
+  if (/decision/.test(text)) return 'clarify_decisions';
+  if (/documento|one pager|pitch/.test(text)) return 'clarify_documents';
+  if (/evidencia|referencia|prueba externa/.test(text)) return 'clarify_evidence';
+  if (/oportunidad|financiacion|conexion concreta/.test(text)) return 'clarify_opportunities';
+  return 'other';
+}
+
+export function isQuestionAlreadyAnswered(intent: QuestionIntent, graph: ProjectGraph): boolean {
+  const active = (graph.knowledge?.entities ?? []).filter((entity) => entity.status !== 'superseded' && entity.status !== 'contradicted');
+  const hasKey = (...keys: string[]) => active.some((entity) => entity.key && keys.includes(entity.key));
+  const hasModule = (id: ProjectModuleId) => Boolean(graph.modules[id]?.content.trim());
+  switch (intent) {
+    case 'clarify_project_name': return !isPlaceholderTitle(graph.title);
+    case 'clarify_project_type': return Boolean(graph.knowledge?.projectType.primaryType);
+    case 'clarify_audience': return hasModule('community') || hasKey('expected_attendance', 'previous_attendance');
+    case 'clarify_location': return hasModule('context') || hasKey('artist_regional_context');
+    case 'clarify_date': return hasModule('timeline') || active.some((entity) => entity.type === 'timeline_fact');
+    case 'clarify_quantity': return hasKey('artist_requirement', 'expected_attendance');
+    case 'clarify_budget': return hasModule('budget') || active.some((entity) => entity.type === 'financial_fact');
+    case 'clarify_responsibility': return hasModule('team') || active.some((entity) => entity.type === 'responsibility');
+    default: return false;
+  }
+}
+
+function isPlaceholderTitle(title: string): boolean {
+  const value = normalizeText(title);
+  return !value || /^(proyecto sin nombre|sin titulo|untitled|nuevo proyecto|proyecto nuevo)$/.test(value);
 }
 
 export function getNextModuleToStrengthen(
