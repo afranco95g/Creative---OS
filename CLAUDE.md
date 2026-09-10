@@ -56,6 +56,14 @@ Instrucción explícita del dueño del proyecto — se conservan a propósito au
 
 Ver `.claude/agents/constructor.md`, `.claude/agents/auditor.md`, `.claude/agents/revisor.md`. Topología: `spec → constructor → auditor → revisor arbitra → constructor corrige → auditor vuelve a verificar`, hasta que el auditor reporte limpio. Los hallazgos viajan siempre con archivo+línea+escenario concreto, nunca resumidos.
 
+El orquestador de este ciclo es `/construir <ruta-a-la-spec>` (`.claude/commands/construir.md`) — corre el ciclo completo sin que haya que invocar cada agente a mano, hasta reporte limpio o un máximo de 3 vueltas.
+
+**Ningún trabajo de código arranca sin una spec en `specs/`.** Si llega una instrucción sin spec, lo primero es escribir la spec (plantilla en `specs/_plantilla.md`) y hacerla aprobar — no escribir código directamente. Una instrucción sin spec no es un atajo, es trabajo pendiente de especificar.
+
+**Línea base verificada (2026-09-10):** `npm run typecheck` pasa limpio y los 7 tests de `npm test` pasan (`Knowledge Query Builder`, `Kicks interpretation`, `Dobla y devora classification`, `Project Knowledge V2`, `Executive Engine V2.3`, `Executive Engine V2.4 Financial Authority`, `MUSCO runtime integration`). Cualquier trabajo nuevo parte de ahí: si algo se rompe, lo rompimos nosotros — no es un fallo preexistente que se pueda ignorar.
+
+**Advertencia sobre la suite de tests — cualquier agente que toque los motores debe heredar esto:** los tests `kicksInterpretation`, `doblaYDevoraClassification` y `muscoRuntimeIntegration` corresponden a tres proyectos reales específicos a los que se les cosieron los motores a mano. Pasan PORQUE el hardcodeo sigue ahí — por ejemplo `engines/turnInterpretationEngine.ts` tiene `if (/zapato|calzado/)` y una pregunta fija sobre "COP 80.000", y `kicksInterpretation.test.js` verifica justamente esa rama. Esa suite hoy protege lo que hay que desmontar. Cuando un trabajo generalice esos motores, esos tests DEBEN romperse y deben reescribirse para verificar el comportamiento general, con esos tres proyectos como ejemplos entre varios — no como el único caso. Romperlos en ese contexto es señal de progreso, no de regresión, siempre que la spec que autoriza el trabajo lo haya anticipado explícitamente en su sección "tests que van a romperse a propósito".
+
 ## Verificación
 
 ```powershell
