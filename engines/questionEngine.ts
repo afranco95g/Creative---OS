@@ -130,7 +130,7 @@ const STRATEGIC_QUESTIONS: Record<
     initial:
       '¿Qué cambio concreto te gustaría que este proyecto genere en las personas o comunidad?',
     deepen:
-      'Ya definimos que se busca reducir plástico de un solo uso. ¿Qué indicador permitiría medir esa reducción?',
+      'Ya identificamos el cambio que buscas generar. ¿Qué indicador permitiría medir ese cambio?',
   },
 
   kpis: {
