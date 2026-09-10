@@ -2,18 +2,105 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: dark; }
+/*
+ * El Culebreo — sistema visual "stencil sobre muro".
+ * Tokens nombrados por función, no por color. Ver docs/architecture si se
+ * documenta el sistema con más detalle.
+ */
+:root {
+  color-scheme: light dark;
+
+  /* Tipografía de interfaz: grotesca/monoespaciada del sistema — deliberadamente
+     sin next/font/google, para no depender de red en build ni en runtime. */
+  --font-ui: 'Helvetica Neue', Helvetica, Arial, 'Segoe UI', ui-sans-serif, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* Tema claro (default) */
+  --superficie: #F2EEE8;
+  --superficie-elevada: #E8E3DA;
+  --texto-principal: #5C1A10;
+  --texto-largo: #1A1512;
+  --acento: #E2560A;
+  --borde: #1A1512;
+
+  /* offset del efecto "doble pasada de stencil" en titulares */
+  --stencil-offset: #E2560A;
+}
+
+/* Fallback sin JS / antes de que corra el script de tema: sigue prefers-color-scheme */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --superficie: #14110F;
+    --superficie-elevada: #1E1A17;
+    --texto-principal: #FF8A1F;
+    --texto-largo: #EDE9E1;
+    --acento: #FF8A1F;
+    --borde: #EDE9E1;
+    --stencil-offset: #EDE9E1;
+  }
+}
+
+/* El toggle de tema manda siempre sobre el sistema */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --superficie: #14110F;
+  --superficie-elevada: #1E1A17;
+  --texto-principal: #FF8A1F;
+  --texto-largo: #EDE9E1;
+  --acento: #FF8A1F;
+  --borde: #EDE9E1;
+  --stencil-offset: #EDE9E1;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --superficie: #F2EEE8;
+  --superficie-elevada: #E8E3DA;
+  --texto-principal: #5C1A10;
+  --texto-largo: #1A1512;
+  --acento: #E2560A;
+  --borde: #1A1512;
+  --stencil-offset: #E2560A;
+}
+
 * { box-sizing: border-box; }
+
 html, body { height: 100%; }
+
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at 15% 5%, rgba(215,255,0,.08), transparent 25%),
-    radial-gradient(circle at 85% 20%, rgba(255,255,255,.05), transparent 20%),
-    #050505;
-  color: #f7f7f7;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--superficie);
+  color: var(--texto-largo);
+  font-family: var(--font-ui);
+  position: relative;
 }
+
+/* Textura de muro: grano fino via SVG feTurbulence inline (0 peticiones de red). */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+#__next, body > div, main { position: relative; z-index: 1; }
+
+/* Utilidad reutilizable para titulares de primer nivel: imita el desfase de
+   dos pasadas del stencil del logo. Solo para h1 / títulos de página. */
+.stencil-heading {
+  text-shadow: 2px 2px 0 var(--stencil-offset);
+}
+
+/* Sombra dura sin blur, como el borde recortado de una plantilla de stencil */
+.sombra-stencil {
+  box-shadow: 4px 4px 0 0 var(--borde);
+}
+
 .noise:before {
   content: "";
   position: fixed;

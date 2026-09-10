@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { SiteHeader } from '../../components/public/SiteHeader';
+
 import {
   listPublishedExperiences,
 } from '../../services/public/publicAgenda';
@@ -48,45 +50,26 @@ export default async function PublicAgendaPage() {
     await listPublishedExperiences();
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
-      <header className="border-b border-white/10 px-6 py-6 sm:px-8 lg:px-12">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <Link
-            href="/"
-            className="text-xl font-black tracking-[-0.04em]"
-          >
-            CULTURA ESTA
-          </Link>
+    <main className="min-h-screen bg-superficie text-texto-largo">
+      <SiteHeader
+        ctaLabel="Crear actividad"
+        ctaHref="/gestion-agenda"
+        links={[
+          { label: 'Volver al medio', href: '/' },
+        ]}
+      />
 
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/"
-              className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold"
-            >
-              Volver al medio
-            </Link>
-
-            <Link
-              href="/gestion-agenda"
-              className="rounded-full bg-[#D9FF00] px-5 py-2.5 text-sm font-bold text-black"
-            >
-              Crear actividad
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <section className="border-b border-white/10 px-6 py-20 sm:px-8 lg:px-12 lg:py-28">
+      <section className="border-b border-borde px-6 py-20 sm:px-8 lg:px-12 lg:py-28">
         <div className="mx-auto max-w-7xl">
-          <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#D9FF00]">
+          <p className="text-xs font-bold uppercase tracking-[0.28em] text-texto-principal">
             Programación cultural
           </p>
 
-          <h1 className="mt-6 max-w-6xl text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-9xl">
+          <h1 className="stencil-heading mt-6 max-w-6xl text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-9xl">
             Lugares, encuentros y experiencias para participar.
           </h1>
 
-          <p className="mt-8 max-w-3xl text-lg leading-8 text-[#A6A6A6]">
+          <p className="mt-8 max-w-3xl text-lg leading-8 text-texto-largo">
             Eventos, talleres, laboratorios, conciertos,
             convocatorias y experiencias creadas por el
             ecosistema cultural.
@@ -97,16 +80,16 @@ export default async function PublicAgendaPage() {
       <section className="mx-auto max-w-7xl px-6 py-16 lg:py-24">
         <div className="mb-9 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
               Próximas actividades
             </p>
 
             <h2 className="mt-3 text-3xl font-bold">
-              Agenda publicada
+              Calendario publicado
             </h2>
           </div>
 
-          <p className="text-sm text-[#666666]">
+          <p className="text-sm text-texto-largo">
             {experiences.length}{' '}
             {experiences.length === 1
               ? 'actividad'
@@ -115,12 +98,12 @@ export default async function PublicAgendaPage() {
         </div>
 
         {experiences.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-white/15 bg-[#0A0A0A] p-10">
+          <div className="border border-dashed border-borde bg-superficie-elevada p-10">
             <h2 className="text-2xl font-bold">
               Todavía no hay actividades publicadas
             </h2>
 
-            <p className="mt-4 text-[#777777]">
+            <p className="mt-4 text-texto-largo">
               Las experiencias aparecerán después de ser
               creadas y aprobadas por el ecosistema.
             </p>
@@ -139,7 +122,7 @@ export default async function PublicAgendaPage() {
                     key={
                       experience.id
                     }
-                    className="group flex flex-col overflow-hidden rounded-[30px] border border-white/10 bg-[#0A0A0A] transition hover:-translate-y-1 hover:border-[#D9FF00]"
+                    className="group flex flex-col overflow-hidden border border-borde bg-superficie-elevada transition hover:shadow-stencil"
                   >
                     <Link
                       href={`/agenda/${experience.slug}`}
@@ -152,11 +135,11 @@ export default async function PublicAgendaPage() {
                           alt={
                             experience.title
                           }
-                          className="aspect-[16/10] w-full object-cover"
+                          className="aspect-[16/10] w-full border-b border-borde object-cover"
                         />
                       ) : (
-                        <div className="flex aspect-[16/10] items-end bg-[#111111] p-7">
-                          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">
+                        <div className="flex aspect-[16/10] items-end border-b border-borde bg-superficie p-7">
+                          <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-principal">
                             {
                               typeLabels[
                                 experience.experienceType
@@ -169,7 +152,7 @@ export default async function PublicAgendaPage() {
                     </Link>
 
                     <div className="flex flex-1 flex-col p-7">
-                      <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#D9FF00]">
+                      <p className="text-xs font-bold uppercase tracking-[0.16em] text-texto-principal">
                         {start.toLocaleDateString(
                           'es-CO',
                           {
@@ -188,20 +171,20 @@ export default async function PublicAgendaPage() {
                       <Link
                         href={`/agenda/${experience.slug}`}
                       >
-                        <h2 className="mt-4 text-3xl font-bold tracking-[-0.035em] transition group-hover:text-[#D9FF00]">
+                        <h2 className="mt-4 text-3xl font-bold tracking-[-0.035em] transition group-hover:text-texto-principal">
                           {
                             experience.title
                           }
                         </h2>
                       </Link>
 
-                      <p className="mt-4 line-clamp-4 text-sm leading-7 text-[#929292]">
+                      <p className="mt-4 line-clamp-4 text-sm leading-7 text-texto-largo">
                         {
                           experience.summary
                         }
                       </p>
 
-                      <p className="mt-6 text-sm text-[#777777]">
+                      <p className="mt-6 text-sm text-texto-largo">
                         {[
                           experience.venueName,
                           experience.city,
@@ -210,7 +193,7 @@ export default async function PublicAgendaPage() {
                           .join(' · ')}
                       </p>
 
-                      <p className="mt-2 text-sm text-[#777777]">
+                      <p className="mt-2 text-sm text-texto-largo">
                         {start.toLocaleTimeString(
                           'es-CO',
                           {
@@ -226,7 +209,7 @@ export default async function PublicAgendaPage() {
                       <div className="mt-auto flex flex-wrap gap-3 pt-8">
                         <Link
                           href={`/agenda/${experience.slug}`}
-                          className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-[#D9FF00] hover:text-[#D9FF00]"
+                          className="border border-borde px-5 py-3 text-sm font-semibold transition hover:bg-superficie"
                         >
                           Ver actividad
                         </Link>
@@ -238,7 +221,7 @@ export default async function PublicAgendaPage() {
                             }
                             target="_blank"
                             rel="noreferrer"
-                            className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
+                            className="border border-borde bg-rojo-base px-5 py-3 text-sm font-bold text-hueso"
                           >
                             Inscribirse
                           </a>

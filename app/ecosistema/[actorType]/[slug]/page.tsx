@@ -5,6 +5,10 @@ import {
 } from 'next/navigation';
 
 import {
+  SiteHeader,
+} from '../../../../components/public/SiteHeader';
+
+import {
   getPublishedActorProjects,
   getPublishedEcosystemActor,
 } from '../../../../services/public/publicEcosystem';
@@ -139,46 +143,21 @@ export default async function PublicActorPage({
       .toUpperCase();
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
-      <header className="border-b border-white/10 px-6 py-6 sm:px-8 lg:px-12">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <Link
-            href="/"
-            className="text-xl font-black tracking-[-0.04em]"
-          >
-            CULTURA ESTA
-          </Link>
+    <main className="min-h-screen bg-superficie text-texto-largo">
+      <SiteHeader
+        ctaLabel="Crear un proyecto"
+        ctaHref="/studio?new=1"
+        links={[
+          { label: 'Explorar ecosistema', href: '/ecosistema' },
+          { label: 'Ver proyectos', href: '/proyectos' },
+        ]}
+      />
 
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/ecosistema"
-              className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold transition hover:border-white"
-            >
-              Explorar ecosistema
-            </Link>
-
-            <Link
-              href="/proyectos"
-              className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold transition hover:border-white"
-            >
-              Ver proyectos
-            </Link>
-
-            <Link
-              href="/studio?new=1"
-              className="rounded-full bg-[#D9FF00] px-5 py-2.5 text-sm font-bold text-black transition hover:bg-white"
-            >
-              Crear un proyecto
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <section className="border-b border-white/10 px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
+      <section className="border-b border-borde px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <Link
             href="/ecosistema"
-            className="text-sm text-[#777777] transition hover:text-white"
+            className="text-sm text-texto-largo transition hover:text-texto-principal"
           >
             ← Volver al ecosistema
           </Link>
@@ -191,10 +170,10 @@ export default async function PublicActorPage({
                     actor.imageUrl
                   }
                   alt={actor.name}
-                  className="aspect-square w-full max-w-[220px] rounded-full object-cover"
+                  className="aspect-square w-full max-w-[220px] border border-borde object-cover"
                 />
               ) : (
-                <div className="flex aspect-square w-full max-w-[220px] items-center justify-center rounded-full bg-[#D9FF00] text-5xl font-black text-black">
+                <div className="flex aspect-square w-full max-w-[220px] items-center justify-center border border-borde bg-rojo-base text-5xl font-black text-hueso">
                   {initials || 'CE'}
                 </div>
               )}
@@ -202,27 +181,27 @@ export default async function PublicActorPage({
 
             <div>
               <div className="flex flex-wrap items-center gap-3">
-                <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#D9FF00]">
+                <p className="text-xs font-bold uppercase tracking-[0.24em] text-texto-principal">
                   {content.eyebrow}
                 </p>
 
                 {actor.verified ? (
-                  <span className="rounded-full border border-[#D9FF00]/30 bg-[#D9FF00]/10 px-3 py-1 text-[10px] font-bold uppercase text-[#D9FF00]">
+                  <span className="border border-borde px-3 py-1 text-[10px] font-bold uppercase text-texto-principal">
                     Verificado
                   </span>
                 ) : null}
               </div>
 
-              <h1 className="mt-6 max-w-5xl text-5xl font-black leading-[0.94] tracking-[-0.055em] sm:text-7xl lg:text-8xl">
+              <h1 className="stencil-heading mt-6 max-w-5xl text-5xl font-black leading-[0.94] tracking-[-0.055em] sm:text-7xl lg:text-8xl">
                 {actor.name}
               </h1>
 
-              <p className="mt-7 max-w-4xl text-xl leading-8 text-[#D9FF00]">
+              <p className="mt-7 max-w-4xl text-xl leading-8 text-texto-principal">
                 {actor.headline}
               </p>
 
               {location ? (
-                <p className="mt-5 text-sm text-[#777777]">
+                <p className="mt-5 text-sm text-texto-largo">
                   {location}
                 </p>
               ) : null}
@@ -234,7 +213,7 @@ export default async function PublicActorPage({
                     (label) => (
                       <span
                         key={label}
-                        className="rounded-full border border-white/10 px-4 py-2 text-xs uppercase tracking-[0.12em] text-[#777777]"
+                        className="border border-borde px-4 py-2 text-xs uppercase tracking-[0.12em] text-texto-largo"
                       >
                         {formatLabel(
                           label
@@ -252,7 +231,7 @@ export default async function PublicActorPage({
       <section className="px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,760px)_320px] lg:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D9FF00]">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-texto-principal">
               Perfil
             </p>
 
@@ -260,13 +239,13 @@ export default async function PublicActorPage({
               Sobre este actor
             </h2>
 
-            <p className="mt-7 whitespace-pre-line text-lg leading-9 text-[#B0B0B0]">
+            <p className="mt-7 whitespace-pre-line text-lg leading-9 text-texto-largo">
               {actor.description ||
                 'Este perfil hace parte del ecosistema cultural y creativo de Cultura Esta.'}
             </p>
 
-            <section className="mt-16 border-t border-white/10 pt-12">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D9FF00]">
+            <section className="mt-16 border-t border-borde pt-12">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-texto-principal">
                 Proyectos
               </p>
 
@@ -276,8 +255,8 @@ export default async function PublicActorPage({
 
               {projects.length ===
               0 ? (
-                <div className="mt-8 rounded-3xl border border-dashed border-white/15 bg-[#0A0A0A] p-8">
-                  <p className="text-[#777777]">
+                <div className="mt-8 border border-dashed border-borde bg-superficie-elevada p-8">
+                  <p className="text-texto-largo">
                     Todavía no hay proyectos públicos asociados con este perfil.
                   </p>
                 </div>
@@ -321,8 +300,8 @@ export default async function PublicActorPage({
               emptyText="Sin información pública."
             />
 
-            <div className="rounded-[28px] border border-[#D9FF00]/20 bg-[#D9FF00]/5 p-6">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#D9FF00]">
+            <div className="border border-borde bg-rojo-base p-6 text-hueso">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-hueso">
                 Creative OS
               </p>
 
@@ -330,13 +309,13 @@ export default async function PublicActorPage({
                 Conecta con el ecosistema
               </h3>
 
-              <p className="mt-3 text-sm leading-7 text-[#888888]">
+              <p className="mt-3 text-sm leading-7 text-hueso">
                 Crea un proyecto y comienza a construir relaciones con personas, espacios y financiadores.
               </p>
 
               <Link
                 href="/studio?new=1"
-                className="mt-6 inline-flex rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black transition hover:bg-white"
+                className="mt-6 inline-flex border border-hueso px-5 py-3 text-sm font-bold text-hueso transition hover:bg-rojo-profundo"
               >
                 Crear proyecto
               </Link>
@@ -357,7 +336,7 @@ function ProjectCard({
   return (
     <Link
       href={`/proyectos/${project.slug}`}
-      className="group overflow-hidden rounded-[28px] border border-white/10 bg-[#0A0A0A] transition hover:border-[#D9FF00]"
+      className="group overflow-hidden border border-borde bg-superficie-elevada transition hover:shadow-stencil"
     >
       {project.coverImageUrl ? (
         <img
@@ -367,25 +346,25 @@ function ProjectCard({
           alt={
             project.headline
           }
-          className="aspect-[16/10] w-full object-cover"
+          className="aspect-[16/10] w-full border-b border-borde object-cover"
         />
       ) : (
-        <div className="aspect-[16/10] bg-[#111111]" />
+        <div className="aspect-[16/10] border-b border-borde bg-superficie" />
       )}
 
       <div className="p-6">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#D9FF00]">
+          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-texto-principal">
             {
               project.relationshipLabel
             }
           </span>
 
-          <span className="text-[#333333]">
+          <span className="text-texto-largo">
             ·
           </span>
 
-          <span className="text-[10px] uppercase tracking-[0.12em] text-[#666666]">
+          <span className="text-[10px] uppercase tracking-[0.12em] text-texto-largo">
             {categoryLabels[
               project.category
             ] ??
@@ -397,11 +376,11 @@ function ProjectCard({
           {project.headline}
         </h3>
 
-        <p className="mt-4 line-clamp-3 text-sm leading-7 text-[#888888]">
+        <p className="mt-4 line-clamp-3 text-sm leading-7 text-texto-largo">
           {project.summary}
         </p>
 
-        <p className="mt-6 text-sm font-bold transition group-hover:text-[#D9FF00]">
+        <p className="mt-6 text-sm font-bold transition group-hover:text-texto-principal">
           Ver proyecto →
         </p>
       </div>
@@ -419,13 +398,13 @@ function InformationCard({
   emptyText: string;
 }) {
   return (
-    <section className="rounded-[28px] border border-white/10 bg-[#0A0A0A] p-6">
-      <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#767676]">
+    <section className="border border-borde bg-superficie-elevada p-6">
+      <p className="text-xs font-bold uppercase tracking-[0.18em] text-texto-largo">
         {title}
       </p>
 
       {values.length === 0 ? (
-        <p className="mt-5 text-sm text-[#666666]">
+        <p className="mt-5 text-sm text-texto-largo">
           {emptyText}
         </p>
       ) : (
@@ -434,7 +413,7 @@ function InformationCard({
             (value) => (
               <span
                 key={value}
-                className="rounded-full border border-white/10 px-3 py-2 text-xs text-[#A0A0A0]"
+                className="border border-borde px-3 py-2 text-xs text-texto-largo"
               >
                 {formatLabel(
                   value

@@ -51,12 +51,12 @@ export async function HomeAgendaSection() {
   return (
     <section
       id="agenda"
-      className="border-y border-white/10 bg-white/[0.025]"
+      className="border-y border-borde bg-superficie-elevada"
     >
       <div className="mx-auto max-w-7xl px-6 py-20">
         <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr]">
           <div>
-            <p className="text-sm uppercase tracking-[0.22em] text-neutral-500">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-texto-largo">
               Ecosistema
             </p>
 
@@ -64,7 +64,7 @@ export async function HomeAgendaSection() {
               Calendario cultural
             </h2>
 
-            <p className="mt-5 max-w-md leading-7 text-neutral-400">
+            <p className="mt-5 max-w-md leading-7 text-texto-largo">
               Eventos, talleres, laboratorios, convocatorias y
               encuentros creados por los espacios, personas y
               proyectos del ecosistema.
@@ -73,14 +73,14 @@ export async function HomeAgendaSection() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/agenda"
-                className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-black"
+                className="border border-borde bg-rojo-base px-5 py-3 text-sm font-bold text-hueso transition hover:shadow-stencil"
               >
                 Ver calendario completo
               </Link>
 
               <Link
                 href="/gestion-agenda"
-                className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold"
+                className="border border-borde px-5 py-3 text-sm font-semibold transition hover:bg-superficie"
               >
                 Crear actividad
               </Link>
@@ -88,18 +88,18 @@ export async function HomeAgendaSection() {
           </div>
 
           {experiences.length === 0 ? (
-            <div className="rounded-3xl border border-dashed border-white/15 p-8">
+            <div className="border border-dashed border-borde bg-superficie p-8">
               <h3 className="text-xl font-semibold">
                 La programación está comenzando
               </h3>
 
-              <p className="mt-3 text-sm leading-7 text-neutral-500">
+              <p className="mt-3 text-sm leading-7 text-texto-largo">
                 Las actividades aparecerán aquí cuando sean
                 creadas y aprobadas por el ecosistema.
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-white/10 border-y border-white/10">
+            <div className="divide-y divide-borde border-y border-borde">
               {experiences.map(
                 (experience) => {
                   const start =
@@ -125,7 +125,7 @@ export async function HomeAgendaSection() {
                             )}
                         </div>
 
-                        <div className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+                        <div className="text-xs font-semibold uppercase tracking-[0.18em] text-texto-largo">
                           {start.toLocaleDateString(
                             'es-CO',
                             {
@@ -137,7 +137,7 @@ export async function HomeAgendaSection() {
                       </div>
 
                       <div>
-                        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+                        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-texto-largo">
                           {
                             typeLabels[
                               experience.experienceType
@@ -150,14 +150,14 @@ export async function HomeAgendaSection() {
                           href={`/agenda/${experience.slug}`}
                           className="group"
                         >
-                          <h3 className="mt-2 text-xl font-semibold transition group-hover:text-[#D9FF00]">
+                          <h3 className="mt-2 text-xl font-semibold transition group-hover:text-texto-principal">
                             {
                               experience.title
                             }
                           </h3>
                         </Link>
 
-                        <p className="mt-2 text-sm text-neutral-400">
+                        <p className="mt-2 text-sm text-texto-largo">
                           {[
                             experience.venueName,
                             experience.city,
@@ -169,7 +169,7 @@ export async function HomeAgendaSection() {
 
                       <Link
                         href={`/agenda/${experience.slug}`}
-                        className="justify-self-start rounded-full border border-white/15 px-4 py-2 text-sm transition hover:border-[#D9FF00] hover:text-[#D9FF00] sm:justify-self-end"
+                        className="justify-self-start border border-borde px-4 py-2 text-sm transition hover:bg-superficie sm:justify-self-end"
                       >
                         Ver actividad
                       </Link>

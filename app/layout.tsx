@@ -10,6 +10,8 @@ import {
   WorkspaceAuthBridge,
 } from '../components/workspace/WorkspaceAuthBridge';
 
+import { themeInitScript } from '../lib/theme';
+
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -33,7 +35,15 @@ export default function RootLayout({
   children,
 }: RootLayoutProps) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
+      <head>
+        {/* Fija data-theme antes del primer paint: evita el flash de tema incorrecto. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(${themeInitScript.toString()})();`,
+          }}
+        />
+      </head>
       <body>
         <WorkspaceAuthBridge>
           {children}

@@ -5,6 +5,10 @@ import {
 } from 'next/navigation';
 
 import {
+  SiteHeader,
+} from '../../../components/public/SiteHeader';
+
+import {
   ExperienceRegistrationPanel,
 } from '../../../components/agenda/ExperienceRegistrationPanel';
 
@@ -103,53 +107,28 @@ export default async function PublicExperiencePage({
       .join(' · ');
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
-      <header className="border-b border-white/10 px-6 py-6 sm:px-8 lg:px-12">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <Link
-            href="/"
-            className="text-xl font-black tracking-[-0.04em]"
-          >
-            CULTURA ESTA
-          </Link>
-
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/agenda"
-              className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold transition hover:border-white"
-            >
-              Ver agenda
-            </Link>
-
-            <Link
-              href="/gestion-agenda"
-              className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold transition hover:border-white"
-            >
-              Crear actividad
-            </Link>
-
-            <Link
-              href="/studio?new=1"
-              className="rounded-full bg-[#D9FF00] px-5 py-2.5 text-sm font-bold text-black transition hover:bg-white"
-            >
-              Crear proyecto
-            </Link>
-          </div>
-        </div>
-      </header>
+    <main className="min-h-screen bg-superficie text-texto-largo">
+      <SiteHeader
+        ctaLabel="Crear proyecto"
+        ctaHref="/studio?new=1"
+        links={[
+          { label: 'Ver calendario', href: '/agenda' },
+          { label: 'Crear actividad', href: '/gestion-agenda' },
+        ]}
+      />
 
       <article>
-        <section className="border-b border-white/10 px-6 py-14 sm:px-8 lg:px-12 lg:py-20">
+        <section className="border-b border-borde px-6 py-14 sm:px-8 lg:px-12 lg:py-20">
           <div className="mx-auto max-w-7xl">
             <Link
               href="/agenda"
-              className="text-sm text-[#777777] transition hover:text-white"
+              className="text-sm text-texto-largo transition hover:text-texto-principal"
             >
               ← Volver a la agenda
             </Link>
 
             <div className="mt-12 flex flex-wrap items-center gap-3">
-              <span className="rounded-full bg-[#D9FF00] px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-black">
+              <span className="border border-borde bg-rojo-base px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-hueso">
                 {typeLabels[
                   experience.experienceType
                 ] ??
@@ -157,17 +136,17 @@ export default async function PublicExperiencePage({
               </span>
 
               {experience.city ? (
-                <span className="rounded-full border border-white/15 px-4 py-2 text-xs text-[#A6A6A6]">
+                <span className="border border-borde px-4 py-2 text-xs text-texto-largo">
                   {experience.city}
                 </span>
               ) : null}
             </div>
 
-            <h1 className="mt-9 max-w-6xl text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-9xl">
+            <h1 className="stencil-heading mt-9 max-w-6xl text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-9xl">
               {experience.title}
             </h1>
 
-            <p className="mt-9 max-w-4xl text-xl leading-9 text-[#B0B0B0]">
+            <p className="mt-9 max-w-4xl text-xl leading-9 text-texto-largo">
               {experience.summary}
             </p>
           </div>
@@ -175,7 +154,7 @@ export default async function PublicExperiencePage({
 
         {experience.coverImageUrl ? (
           <section className="px-6 pt-10 sm:px-8 lg:px-12">
-            <div className="mx-auto max-w-7xl overflow-hidden rounded-[36px] border border-white/10 bg-[#0A0A0A]">
+            <div className="mx-auto max-w-7xl overflow-hidden border border-borde bg-superficie-elevada">
               <img
                 src={
                   experience.coverImageUrl
@@ -192,8 +171,8 @@ export default async function PublicExperiencePage({
         <section className="px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[320px_minmax(0,760px)] lg:justify-between">
             <aside>
-              <div className="sticky top-8 rounded-[30px] border border-white/10 bg-[#0A0A0A] p-7">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">
+              <div className="sticky top-8 border border-borde bg-superficie-elevada p-7">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-principal">
                   Información
                 </p>
 
@@ -261,7 +240,7 @@ export default async function PublicExperiencePage({
             </aside>
 
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D9FF00]">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-texto-principal">
                 La experiencia
               </p>
 
@@ -282,7 +261,7 @@ export default async function PublicExperiencePage({
                           0,
                           20
                         )}`}
-                        className="text-lg leading-9 text-[#B0B0B0]"
+                        className="text-lg leading-9 text-texto-largo"
                       >
                         {paragraph}
                       </p>
@@ -290,28 +269,28 @@ export default async function PublicExperiencePage({
                   )}
                 </div>
               ) : (
-                <p className="mt-8 text-lg leading-9 text-[#B0B0B0]">
+                <p className="mt-8 text-lg leading-9 text-texto-largo">
                   {experience.summary}
                 </p>
               )}
 
               {experience.project ? (
-                <section className="mt-16 border-t border-white/10 pt-12">
-                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D9FF00]">
+                <section className="mt-16 border-t border-borde pt-12">
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-texto-principal">
                     Proyecto relacionado
                   </p>
 
                   <Link
                     href={`/proyectos/${experience.project.slug}`}
-                    className="group mt-7 block rounded-[30px] border border-white/10 bg-[#0A0A0A] p-7 transition hover:border-[#D9FF00]"
+                    className="group mt-7 block border border-borde bg-superficie-elevada p-7 transition hover:shadow-stencil"
                   >
-                    <h3 className="text-3xl font-bold tracking-[-0.035em] transition group-hover:text-[#D9FF00]">
+                    <h3 className="text-3xl font-bold tracking-[-0.035em] transition group-hover:text-texto-principal">
                       {
                         experience.project.headline
                       }
                     </h3>
 
-                    <p className="mt-5 text-sm leading-7 text-[#888888]">
+                    <p className="mt-5 text-sm leading-7 text-texto-largo">
                       {
                         experience.project.summary
                       }
@@ -325,22 +304,22 @@ export default async function PublicExperiencePage({
               ) : null}
 
               {experience.hostSpace ? (
-                <section className="mt-12 border-t border-white/10 pt-12">
-                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D9FF00]">
+                <section className="mt-12 border-t border-borde pt-12">
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-texto-principal">
                     Espacio anfitrión
                   </p>
 
                   <Link
                     href={`/ecosistema/espacios/${experience.hostSpace.slug}`}
-                    className="group mt-7 block rounded-[30px] border border-white/10 bg-[#0A0A0A] p-7 transition hover:border-[#D9FF00]"
+                    className="group mt-7 block border border-borde bg-superficie-elevada p-7 transition hover:shadow-stencil"
                   >
-                    <h3 className="text-3xl font-bold tracking-[-0.035em] transition group-hover:text-[#D9FF00]">
+                    <h3 className="text-3xl font-bold tracking-[-0.035em] transition group-hover:text-texto-principal">
                       {
                         experience.hostSpace.name
                       }
                     </h3>
 
-                    <p className="mt-5 text-sm leading-7 text-[#888888]">
+                    <p className="mt-5 text-sm leading-7 text-texto-largo">
                       {experience.hostSpace.description ||
                         'Espacio anfitrión dentro del ecosistema cultural y creativo.'}
                     </p>
@@ -352,16 +331,16 @@ export default async function PublicExperiencePage({
                 </section>
               ) : null}
 
-              <section className="mt-16 rounded-[30px] border border-[#D9FF00]/20 bg-[#D9FF00]/5 p-7 md:p-9">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">
-                  Cultura Esta
+              <section className="mt-16 border border-borde bg-rojo-base p-7 text-hueso md:p-9">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-hueso">
+                  El Culebreo
                 </p>
 
                 <h2 className="mt-5 text-3xl font-bold tracking-[-0.035em]">
                   También puedes activar el ecosistema
                 </h2>
 
-                <p className="mt-5 max-w-2xl text-base leading-8 text-[#A0A0A0]">
+                <p className="mt-5 max-w-2xl text-base leading-8 text-hueso">
                   Crea una actividad, relaciónala con un proyecto
                   y conéctala con uno de los espacios del
                   ecosistema cultural.
@@ -370,14 +349,14 @@ export default async function PublicExperiencePage({
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link
                     href="/gestion-agenda"
-                    className="rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black transition hover:bg-white"
+                    className="border border-hueso px-6 py-3 text-sm font-bold text-hueso transition hover:bg-rojo-profundo"
                   >
                     Crear actividad
                   </Link>
 
                   <Link
                     href="/studio?new=1"
-                    className="rounded-full border border-white/15 px-6 py-3 text-sm font-semibold"
+                    className="border border-hueso px-6 py-3 text-sm font-semibold text-hueso transition hover:bg-rojo-profundo"
                   >
                     Crear proyecto
                   </Link>
@@ -402,12 +381,12 @@ function InformationItem({
     string;
 }) {
   return (
-    <div className="mt-7 border-t border-white/10 pt-6">
-      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#666666]">
+    <div className="mt-7 border-t border-borde pt-6">
+      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-texto-largo">
         {label}
       </p>
 
-      <p className="mt-3 text-sm font-semibold leading-6 text-white">
+      <p className="mt-3 text-sm font-semibold leading-6 text-texto-principal">
         {value}
       </p>
     </div>

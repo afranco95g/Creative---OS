@@ -17,6 +17,8 @@ import {
   supabase,
 } from '@/lib/supabase/client';
 
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
+
 type OnboardingPath =
   | 'person'
   | 'space'
@@ -288,31 +290,35 @@ function RegisterContent() {
 
   if (successMessage) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#050505] px-6 py-16 text-white">
-        <section className="w-full max-w-xl rounded-[32px] border border-white/10 bg-[#0A0A0A] p-8 md:p-10">
-          <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#D9FF00]">
+      <main className="relative flex min-h-screen items-center justify-center bg-superficie px-6 py-16 text-texto-largo">
+        <div className="absolute right-6 top-6">
+          <ThemeToggle />
+        </div>
+
+        <section className="w-full max-w-xl border border-borde bg-superficie-elevada p-8 shadow-stencil md:p-10">
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-texto-principal">
             Cultura Esta
           </p>
 
-          <h1 className="mt-6 text-4xl font-bold leading-tight">
+          <h1 className="stencil-heading mt-6 text-4xl font-bold leading-tight">
             Revisa tu correo
           </h1>
 
-          <p className="mt-5 text-lg leading-8 text-[#A6A6A6]">
+          <p className="mt-5 text-lg leading-8 text-texto-largo">
             {successMessage}
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href={`/login?redirect=${encodeURIComponent(safeRedirect)}`}
-              className="rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black"
+              className="border border-borde bg-rojo-base px-6 py-3 text-sm font-bold text-hueso transition hover:shadow-stencil"
             >
               Ir a iniciar sesión
             </Link>
 
             <Link
               href="/"
-              className="rounded-full border border-white/15 px-6 py-3 text-sm font-semibold"
+              className="border border-borde px-6 py-3 text-sm font-semibold transition hover:bg-superficie"
             >
               Volver al medio
             </Link>
@@ -323,25 +329,29 @@ function RegisterContent() {
   }
 
   return (
-    <main className="min-h-screen bg-[#050505] px-6 py-12 text-white">
+    <main className="relative min-h-screen bg-superficie px-6 py-12 text-texto-largo">
+      <div className="absolute right-6 top-6">
+        <ThemeToggle />
+      </div>
+
       <div className="mx-auto max-w-7xl">
         <Link
           href="/"
-          className="text-sm text-[#888888] transition hover:text-white"
+          className="text-sm text-texto-largo transition hover:text-texto-principal"
         >
           ← Volver al medio
         </Link>
 
         <header className="mt-10 max-w-4xl">
-          <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#D9FF00]">
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-texto-principal">
             Únete al ecosistema
           </p>
 
-          <h1 className="mt-6 text-5xl font-bold leading-[0.98] tracking-[-0.04em] md:text-7xl">
+          <h1 className="stencil-heading mt-6 text-5xl font-bold leading-[0.98] tracking-[-0.04em] md:text-7xl">
             ¿Qué quieres registrar?
           </h1>
 
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-[#A6A6A6]">
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-texto-largo">
             Crea una cuenta para participar directamente como
             persona, espacio, marca, agencia u organización. Cada
             actor tendrá herramientas adaptadas a su función dentro
@@ -356,7 +366,7 @@ function RegisterContent() {
           className="mt-12 space-y-10"
         >
           <section>
-            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-[#767676]">
+            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-texto-largo">
               1. Tipo de cuenta
             </p>
 
@@ -382,18 +392,18 @@ function RegisterContent() {
                         setErrorMessage('');
                       }}
                       className={[
-                        'min-h-[320px] rounded-3xl border p-6 text-left transition',
+                        'min-h-[320px] border p-6 text-left transition',
                         isSelected
-                          ? 'border-[#D9FF00] bg-[#D9FF00] text-black'
-                          : 'border-white/10 bg-[#0A0A0A] hover:border-white/30',
+                          ? 'border-borde bg-rojo-base text-hueso'
+                          : 'border-borde bg-superficie-elevada hover:shadow-stencil-sm',
                       ].join(' ')}
                     >
                       <p
                         className={[
                           'text-xs font-bold uppercase tracking-[0.2em]',
                           isSelected
-                            ? 'text-black/55'
-                            : 'text-[#767676]',
+                            ? 'text-hueso'
+                            : 'text-texto-largo',
                         ].join(' ')}
                       >
                         {
@@ -411,8 +421,8 @@ function RegisterContent() {
                         className={[
                           'mt-4 text-sm leading-6',
                           isSelected
-                            ? 'text-black/70'
-                            : 'text-[#A6A6A6]',
+                            ? 'text-hueso'
+                            : 'text-texto-largo',
                         ].join(' ')}
                       >
                         {
@@ -424,8 +434,8 @@ function RegisterContent() {
                         className={[
                           'mt-6 text-xs leading-5',
                           isSelected
-                            ? 'text-black/55'
-                            : 'text-[#666666]',
+                            ? 'text-hueso'
+                            : 'text-texto-largo',
                         ].join(' ')}
                       >
                         {
@@ -438,9 +448,9 @@ function RegisterContent() {
               )}
             </div>
 
-            <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.025] px-5 py-4">
-              <p className="text-sm leading-6 text-[#8A8A8A]">
-                <strong className="text-white">
+            <div className="mt-4 border border-borde bg-superficie-elevada px-5 py-4">
+              <p className="text-sm leading-6 text-texto-largo">
+                <strong className="text-texto-principal">
                   Equipo editorial:
                 </strong>{' '}
                 periodistas y administradores del medio reciben sus
@@ -450,9 +460,9 @@ function RegisterContent() {
             </div>
           </section>
 
-          <section className="rounded-[32px] border border-white/10 bg-[#0A0A0A] p-7 md:p-9">
+          <section className="border border-borde bg-superficie-elevada p-7 md:p-9">
             <div className="flex flex-col gap-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#767676]">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-texto-largo">
                 2. Datos de acceso
               </p>
 
@@ -460,7 +470,7 @@ function RegisterContent() {
                 {selectedOption.title}
               </h2>
 
-              <p className="max-w-3xl text-sm leading-7 text-[#888888]">
+              <p className="max-w-3xl text-sm leading-7 text-texto-largo">
                 La cuenta se creará inicialmente como borrador. Podrás
                 completar su información y solicitar publicación desde
                 Mi Ecosistema.
@@ -573,13 +583,13 @@ function RegisterContent() {
             </div>
 
             {errorMessage ? (
-              <div className="mt-6 rounded-2xl border border-red-500/30 bg-red-500/10 px-5 py-4 text-sm leading-6 text-red-300">
+              <div className="mt-6 border border-rojo-base bg-rojo-base px-5 py-4 text-sm leading-6 text-hueso">
                 {errorMessage}
               </div>
             ) : null}
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="max-w-xl text-xs leading-5 text-[#666666]">
+              <p className="max-w-xl text-xs leading-5 text-texto-largo">
                 Después del registro podrás completar perfil,
                 descripción, ubicación, imágenes, capacidades,
                 intereses y demás información correspondiente al tipo
@@ -591,7 +601,7 @@ function RegisterContent() {
                 disabled={
                   isLoading
                 }
-                className="rounded-full bg-[#D9FF00] px-8 py-4 font-bold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                className="border border-borde bg-rojo-base px-8 py-4 font-bold text-hueso transition hover:shadow-stencil disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isLoading
                   ? 'Creando cuenta...'
@@ -601,11 +611,11 @@ function RegisterContent() {
           </section>
         </form>
 
-        <p className="mt-8 text-center text-sm text-[#777777]">
+        <p className="mt-8 text-center text-sm text-texto-largo">
           ¿Ya tienes una cuenta?{' '}
           <Link
             href={`/login?redirect=${encodeURIComponent(safeRedirect)}`}
-            className="font-semibold text-white hover:text-[#D9FF00]"
+            className="font-semibold transition hover:text-texto-principal"
           >
             Inicia sesión
           </Link>
@@ -639,7 +649,7 @@ function Field({
     <div>
       <label
         htmlFor={id}
-        className="mb-2 block text-sm font-medium text-[#BDBDBD]"
+        className="mb-2 block text-sm font-medium text-texto-largo"
       >
         {label}
       </label>
@@ -650,4 +660,4 @@ function Field({
 }
 
 const inputClassName =
-  'w-full rounded-2xl border border-white/10 bg-[#111111] px-5 py-4 text-white outline-none transition placeholder:text-[#555555] focus:border-[#D9FF00]';
+  'w-full border border-borde bg-superficie px-5 py-4 text-texto-largo outline-none transition placeholder:text-texto-largo/60 focus:border-acento';

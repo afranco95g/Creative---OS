@@ -20,6 +20,8 @@ import {
   supabase,
 } from '@/lib/supabase/client';
 
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
+
 function LoginContent() {
   const router = useRouter();
 
@@ -90,25 +92,29 @@ function LoginContent() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#050505] px-6 py-16 text-white">
+    <main className="relative flex min-h-screen items-center justify-center bg-superficie px-6 py-16 text-texto-largo">
+      <div className="absolute right-6 top-6">
+        <ThemeToggle />
+      </div>
+
       <section className="w-full max-w-md">
         <Link
           href="/"
-          className="text-sm text-[#888888] transition hover:text-white"
+          className="text-sm text-texto-largo transition hover:text-texto-principal"
         >
           ← Volver a Cultura Esta
         </Link>
 
-        <div className="mt-8 rounded-[32px] border border-white/10 bg-[#0A0A0A] p-8 shadow-2xl md:p-10">
-          <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#D9FF00]">
+        <div className="mt-8 border border-borde bg-superficie-elevada p-8 shadow-stencil md:p-10">
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-texto-principal">
             Cultura Esta
           </p>
 
-          <h1 className="mt-5 text-4xl font-bold leading-tight">
+          <h1 className="stencil-heading mt-5 text-4xl font-bold leading-tight">
             Entrar al ecosistema
           </h1>
 
-          <p className="mt-4 leading-relaxed text-[#8A8A8A]">
+          <p className="mt-4 leading-relaxed text-texto-largo">
             Accede a tus proyectos, perfiles, espacios,
             organizaciones y conexiones dentro de Cultura Esta.
           </p>
@@ -122,7 +128,7 @@ function LoginContent() {
             <div>
               <label
                 htmlFor="email"
-                className="mb-2 block text-sm font-medium text-[#BDBDBD]"
+                className="mb-2 block text-sm font-medium text-texto-largo"
               >
                 Correo electrónico
               </label>
@@ -139,14 +145,14 @@ function LoginContent() {
                 placeholder="correo@ejemplo.com"
                 autoComplete="email"
                 required
-                className="w-full rounded-2xl border border-white/10 bg-[#111111] px-5 py-4 text-white outline-none transition placeholder:text-[#555555] focus:border-[#D9FF00]"
+                className="w-full border border-borde bg-superficie px-5 py-4 text-texto-largo outline-none transition placeholder:text-texto-largo/60 focus:border-acento"
               />
             </div>
 
             <div>
               <label
                 htmlFor="password"
-                className="mb-2 block text-sm font-medium text-[#BDBDBD]"
+                className="mb-2 block text-sm font-medium text-texto-largo"
               >
                 Contraseña
               </label>
@@ -163,12 +169,12 @@ function LoginContent() {
                 placeholder="Tu contraseña"
                 autoComplete="current-password"
                 required
-                className="w-full rounded-2xl border border-white/10 bg-[#111111] px-5 py-4 text-white outline-none transition placeholder:text-[#555555] focus:border-[#D9FF00]"
+                className="w-full border border-borde bg-superficie px-5 py-4 text-texto-largo outline-none transition placeholder:text-texto-largo/60 focus:border-acento"
               />
             </div>
 
             {errorMessage ? (
-              <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm leading-relaxed text-red-300">
+              <div className="border border-rojo-base bg-rojo-base px-4 py-3 text-sm leading-relaxed text-hueso">
                 {errorMessage}
               </div>
             ) : null}
@@ -176,7 +182,7 @@ function LoginContent() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-full bg-[#D9FF00] px-6 py-4 font-bold text-black transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full border border-borde bg-rojo-base px-6 py-4 font-bold text-hueso transition hover:shadow-stencil disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isLoading
                 ? 'Ingresando...'
@@ -184,20 +190,20 @@ function LoginContent() {
             </button>
           </form>
 
-          <div className="mt-8 border-t border-white/10 pt-7 text-center">
-            <p className="text-sm text-[#777777]">
+          <div className="mt-8 border-t border-borde pt-7 text-center">
+            <p className="text-sm text-texto-largo">
               ¿Todavía no haces parte del ecosistema?
             </p>
 
             <Link
               href={`/registro?redirect=${encodeURIComponent(safeRedirect)}`}
-              className="mt-3 inline-flex font-semibold text-white transition hover:text-[#D9FF00]"
+              className="mt-3 inline-flex font-semibold transition hover:text-texto-principal"
             >
               Crear una cuenta →
             </Link>
           </div>
 
-          <p className="mt-7 text-center text-xs leading-relaxed text-[#555555]">
+          <p className="mt-7 text-center text-xs leading-relaxed text-texto-largo">
             Los permisos editoriales y administrativos son asignados
             internamente. No pueden seleccionarse durante el registro.
           </p>

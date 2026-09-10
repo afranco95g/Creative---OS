@@ -49,29 +49,29 @@ export function PlatformShell({
   backLabel = 'Volver a Mi Ecosistema',
 }: PlatformShellProps) {
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
-      <header className="border-b border-white/10 bg-[#080808] px-6 py-5 sm:px-8 lg:px-10">
+    <main className="min-h-screen bg-superficie text-texto-largo">
+      <header className="border-b border-borde bg-superficie-elevada px-6 py-5 sm:px-8 lg:px-10">
         <div className="mx-auto flex max-w-[1600px] flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-3">
             <Link
               href={backHref}
-              className="w-fit text-sm text-[#777777] transition hover:text-white"
+              className="w-fit text-sm text-texto-largo transition hover:opacity-70"
             >
               ← {backLabel}
             </Link>
 
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D9FF00]">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-texto-largo">
                 Cultura Esta
               </p>
 
               {entityType ? (
                 <>
-                  <span className="text-[#333333]">
+                  <span className="text-texto-largo">
                     /
                   </span>
 
-                  <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#777777]">
+                  <span className="text-xs font-semibold uppercase tracking-[0.16em] text-texto-largo">
                     {entityType}
                   </span>
                 </>
@@ -88,10 +88,10 @@ export function PlatformShell({
       </header>
 
       <div className="mx-auto grid max-w-[1600px] lg:min-h-[calc(100vh-116px)] lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside className="border-b border-white/10 bg-[#080808] px-6 py-7 lg:border-b-0 lg:border-r lg:px-7 lg:py-9">
+        <aside className="border-b border-borde bg-superficie-elevada px-6 py-7 lg:border-b-0 lg:border-r lg:px-7 lg:py-9">
           {entityName ? (
-            <div className="border-b border-white/10 pb-7">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#666666]">
+            <div className="border-b border-borde pb-7">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-texto-largo">
                 Identidad activa
               </p>
 
@@ -102,7 +102,7 @@ export function PlatformShell({
               {entityHref ? (
                 <Link
                   href={entityHref}
-                  className="mt-3 inline-flex text-xs font-semibold text-[#D9FF00] transition hover:text-white"
+                  className="mt-3 inline-flex text-xs font-semibold text-texto-largo underline transition hover:opacity-70"
                 >
                   Ver perfil público →
                 </Link>
@@ -127,10 +127,10 @@ export function PlatformShell({
                           : undefined
                       }
                       className={[
-                        'flex min-h-12 items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-sm font-semibold transition',
+                        'flex min-h-12 items-center justify-between gap-3 border px-4 py-3 text-sm font-semibold transition',
                         item.isActive
-                          ? 'border-[#D9FF00]/30 bg-[#D9FF00]/10 text-[#D9FF00]'
-                          : 'border-transparent text-[#888888] hover:border-white/10 hover:bg-white/[0.03] hover:text-white',
+                          ? 'border-borde bg-superficie text-texto-principal'
+                          : 'border-transparent text-texto-largo hover:border-borde hover:bg-superficie',
                       ].join(' ')}
                     >
                       <span>
@@ -138,7 +138,7 @@ export function PlatformShell({
                       </span>
 
                       {item.badge ? (
-                        <span className="rounded-full border border-current/20 px-2 py-0.5 text-[10px]">
+                        <span className="border border-borde px-2 py-0.5 text-[10px]">
                           {item.badge}
                         </span>
                       ) : null}
@@ -146,10 +146,10 @@ export function PlatformShell({
                   ) : (
                     <div
                       className={[
-                        'flex min-h-12 items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-sm font-semibold',
+                        'flex min-h-12 items-center justify-between gap-3 border px-4 py-3 text-sm font-semibold',
                         item.isActive
-                          ? 'border-[#D9FF00]/30 bg-[#D9FF00]/10 text-[#D9FF00]'
-                          : 'border-transparent text-[#4F4F4F]',
+                          ? 'border-borde bg-superficie text-texto-principal'
+                          : 'border-transparent text-texto-largo/60',
                       ].join(' ')}
                     >
                       <span>
@@ -157,7 +157,7 @@ export function PlatformShell({
                       </span>
 
                       {item.badge ? (
-                        <span className="rounded-full border border-current/20 px-2 py-0.5 text-[10px]">
+                        <span className="border border-borde px-2 py-0.5 text-[10px]">
                           {item.badge}
                         </span>
                       ) : item.isDisabled ? (
@@ -173,7 +173,7 @@ export function PlatformShell({
           </nav>
 
           {sidebarFooter ? (
-            <div className="mt-8 border-t border-white/10 pt-7">
+            <div className="mt-8 border-t border-borde pt-7">
               {sidebarFooter}
             </div>
           ) : null}
@@ -181,7 +181,7 @@ export function PlatformShell({
 
         <section className="min-w-0 px-6 py-8 sm:px-8 lg:px-10 lg:py-10 xl:px-12">
           <div className="mb-9">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D9FF00]">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-texto-largo">
               {eyebrow}
             </p>
 
@@ -190,7 +190,7 @@ export function PlatformShell({
             </h1>
 
             {description ? (
-              <p className="mt-4 max-w-3xl text-base leading-8 text-[#999999]">
+              <p className="mt-4 max-w-3xl text-base leading-8 text-texto-largo">
                 {description}
               </p>
             ) : null}

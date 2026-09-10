@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import {
+  SiteHeader,
+} from '../components/public/SiteHeader';
+import {
   HomeAgendaSection,
 } from '../components/public/HomeAgendaSection';
 import { HomepageEditorialSections } from '../components/public/HomepageEditorialSections';
@@ -21,39 +24,6 @@ import type {
   PublicProjectSummary,
 } from '../services/public/publicProjects';
 import { listPublicHomepageSections } from '../services/public/publicEditorial';
-
-const upcomingActivities = [
-  {
-    day: '24',
-    month: 'JUL',
-    title:
-      'Laboratorio de creación audiovisual',
-    type:
-      'Taller',
-    location:
-      'Taller 108 · Bogotá',
-  },
-  {
-    day: '27',
-    month: 'JUL',
-    title:
-      'Sesión abierta de dibujo',
-    type:
-      'Actividad',
-    location:
-      'Taller La Tata · Bogotá',
-  },
-  {
-    day: '02',
-    month: 'AGO',
-    title:
-      'Encuentro de productores independientes',
-    type:
-      'Encuentro',
-    location:
-      'Estación 2600 · Bogotá',
-  },
-];
 
 const stories = [
   {
@@ -147,89 +117,34 @@ export default async function HomePage() {
   ];
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-white">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-neutral-950/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-5 px-6 py-5">
-          <Link
-            href="/"
-            className="shrink-0 text-lg font-black tracking-[-0.04em]"
-          >
-            CULTURA ESTA
-          </Link>
-
-          <nav className="hidden items-center gap-7 text-sm text-neutral-300 lg:flex">
-            <a
-              href="#historias"
-              className="transition hover:text-white"
-            >
-              Historias
-            </a>
-
-            <a
-              href="#agenda"
-              className="transition hover:text-white"
-            >
-              Agenda
-            </a>
-
-            <a
-              href="#ecosistema"
-              className="transition hover:text-white"
-            >
-              Ecosistema
-            </a>
-
-            <Link
-              href="/proyectos"
-              className="transition hover:text-white"
-            >
-              Proyectos
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/mi-ecosistema"
-              className="hidden rounded-full border border-white/20 px-5 py-2 text-sm font-medium transition hover:bg-white hover:text-black xl:inline-flex"
-            >
-              Mi Ecosistema
-            </Link>
-
-            <Link
-              href="/studio"
-              className="hidden rounded-full border border-white/20 px-5 py-2 text-sm font-medium transition hover:bg-white hover:text-black sm:inline-flex"
-            >
-              Entrar al Studio
-            </Link>
-
-            <Link
-              href="/studio?new=1"
-              className="rounded-full bg-[#D9FF00] px-5 py-2 text-sm font-bold text-black transition hover:bg-white"
-            >
-              Crear un proyecto
-            </Link>
-          </div>
-        </div>
-      </header>
+    <main className="min-h-screen bg-superficie text-texto-largo">
+      <SiteHeader
+        links={[
+          { label: 'Historias', href: '#historias' },
+          { label: 'Calendario', href: '#agenda' },
+          { label: 'Ecosistema', href: '#ecosistema' },
+          { label: 'Proyectos', href: '/proyectos' },
+        ]}
+      />
 
       <HomepageEditorialSections />
 
-      {!hasEditorialHero ? <section className="border-b border-white/10">
+      {!hasEditorialHero ? <section className="border-b border-borde">
         <div className="mx-auto grid min-h-[76vh] max-w-7xl items-end gap-10 px-6 py-16 lg:grid-cols-[1.3fr_0.7fr] lg:py-24">
           <div>
-            <p className="mb-6 text-sm font-semibold uppercase tracking-[0.24em] text-neutral-400">
+            <p className="mb-6 text-sm font-semibold uppercase tracking-[0.24em] text-texto-largo">
               Cultura, ciudad y ecosistemas creativos
             </p>
 
-            <h1 className="max-w-5xl text-5xl font-black leading-[0.92] tracking-[-0.06em] sm:text-7xl lg:text-8xl">
+            <h1 className="stencil-heading max-w-5xl text-5xl font-black leading-[0.92] tracking-[-0.06em] sm:text-7xl lg:text-8xl">
               La cultura no está escondida.
 
-              <span className="block text-neutral-500">
+              <span className="block text-texto-largo">
                 Está sucediendo.
               </span>
             </h1>
 
-            <p className="mt-8 max-w-2xl text-lg leading-8 text-neutral-300">
+            <p className="mt-8 max-w-2xl text-lg leading-8 text-texto-largo">
               Un medio para descubrir artistas, proyectos,
               espacios, talleres, eventos y procesos que
               están construyendo el ecosistema cultural.
@@ -238,22 +153,22 @@ export default async function HomePage() {
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
                 href="/proyectos"
-                className="rounded-full bg-white px-6 py-3 text-sm font-bold text-black transition hover:bg-[#D9FF00]"
+                className="border border-borde bg-rojo-base px-6 py-3 text-sm font-bold uppercase tracking-[0.04em] text-hueso transition hover:shadow-stencil"
               >
                 Explorar proyectos
               </Link>
 
               <Link
                 href="/ecosistema"
-                className="rounded-full border border-white/20 px-6 py-3 text-sm font-semibold transition hover:border-white"
+                className="border border-borde px-6 py-3 text-sm font-semibold uppercase tracking-[0.04em] transition hover:bg-superficie-elevada"
               >
                 Conocer el ecosistema
               </Link>
             </div>
           </div>
 
-          <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-7">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500">
+          <article className="border border-borde bg-superficie-elevada p-7">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-texto-largo">
               Esta semana
             </p>
 
@@ -261,7 +176,7 @@ export default async function HomePage() {
               La ciudad como estudio creativo
             </h2>
 
-            <p className="mt-4 leading-7 text-neutral-400">
+            <p className="mt-4 leading-7 text-texto-largo">
               Visitamos espacios independientes donde artistas,
               productores y comunidades desarrollan nuevas
               formas de trabajar juntos.
@@ -269,7 +184,7 @@ export default async function HomePage() {
 
             <a
               href="#historias"
-              className="mt-8 inline-flex text-sm font-semibold underline decoration-neutral-600 underline-offset-8"
+              className="mt-8 inline-flex text-sm font-semibold underline decoration-borde underline-offset-8"
             >
               Leer historia
             </a>
@@ -283,7 +198,7 @@ export default async function HomePage() {
       >
         <div className="mb-10 flex items-end justify-between gap-6">
           <div>
-            <p className="text-sm uppercase tracking-[0.22em] text-neutral-500">
+            <p className="text-sm uppercase tracking-[0.22em] text-texto-principal">
               Medio
             </p>
 
@@ -292,7 +207,7 @@ export default async function HomePage() {
             </h2>
           </div>
 
-          <span className="hidden text-sm text-neutral-500 sm:block">
+          <span className="hidden text-sm text-texto-largo sm:block">
             Relatos del ecosistema →
           </span>
         </div>
@@ -305,9 +220,9 @@ export default async function HomePage() {
             ) => (
               <article
                 key={story.title}
-                className="group flex min-h-96 flex-col justify-end rounded-3xl border border-white/10 bg-gradient-to-b from-neutral-800 to-neutral-950 p-7"
+                className="group flex min-h-96 flex-col justify-end border border-borde bg-superficie-elevada p-7"
               >
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-400">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-texto-principal">
                   {story.category}
                 </span>
 
@@ -315,11 +230,11 @@ export default async function HomePage() {
                   {story.title}
                 </h3>
 
-                <p className="mt-4 leading-7 text-neutral-400">
+                <p className="mt-4 leading-7 text-texto-largo">
                   {story.description}
                 </p>
 
-                <span className="mt-8 text-sm font-medium text-neutral-300 transition group-hover:translate-x-1">
+                <span className="mt-8 text-sm font-medium text-texto-largo transition group-hover:translate-x-1">
                   Leer historia{' '}
                   {index + 1} →
                 </span>
@@ -331,15 +246,15 @@ export default async function HomePage() {
 
       <HomeAgendaSection />
 
-      <section className="border-y border-white/10 bg-[#0a0a0a]">
+      <section className="border-y border-borde bg-rojo-base">
         <div className="mx-auto max-w-7xl px-6 py-20">
-          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#D9FF00]">Haz parte del ecosistema</p>
-          <h2 className="mt-4 max-w-4xl text-4xl font-black tracking-[-0.04em] sm:text-5xl">¿Ya tienes un proyecto? Aplica al ecosistema.</h2>
-          <p className="mt-5 max-w-3xl text-lg leading-8 text-neutral-400">Presenta una actividad, taller, evento, experiencia, producto cultural, proyecto artístico o activación que ya tenga suficiente estructura.</p>
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-neutral-500">Aplicar permite solicitar conexiones, recursos, conocimientos, espacios, colaboradores, financiación, distribución o acompañamiento. No publica automáticamente el proyecto ni garantiza su aprobación.</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-hueso">Haz parte del ecosistema</p>
+          <h2 className="mt-4 max-w-4xl text-4xl font-black tracking-[-0.04em] text-hueso sm:text-5xl">¿Ya tienes un proyecto? Aplica al ecosistema.</h2>
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-hueso">Presenta una actividad, taller, evento, experiencia, producto cultural, proyecto artístico o activación que ya tenga suficiente estructura.</p>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-hueso">Aplicar permite solicitar conexiones, recursos, conocimientos, espacios, colaboradores, financiación, distribución o acompañamiento. No publica automáticamente el proyecto ni garantiza su aprobación.</p>
           <div className="mt-9 grid gap-4 md:grid-cols-2">
-            <Link href="/studio?new=1" className="rounded-3xl border border-white/15 p-6 transition hover:border-white"><strong className="text-xl">Desarrollar una idea</strong><span className="mt-2 block text-neutral-400">Trabaja con el Productor Ejecutivo desde el inicio.</span></Link>
-            <Link href="/aplicar" className="rounded-3xl bg-[#D9FF00] p-6 text-black"><strong className="text-xl">Aplicar con un proyecto existente</strong><span className="mt-2 block text-black/70">Presenta una propuesta que ya está en marcha o consolidada.</span></Link>
+            <Link href="/studio?new=1" className="border border-hueso p-6 text-hueso transition hover:bg-rojo-profundo"><strong className="text-xl">Desarrollar una idea</strong><span className="mt-2 block text-hueso">Trabaja con el Productor Ejecutivo desde el inicio.</span></Link>
+            <Link href="/aplicar" className="border border-borde bg-hueso p-6 text-tinta"><strong className="text-xl">Aplicar con un proyecto existente</strong><span className="mt-2 block text-tinta">Presenta una propuesta que ya está en marcha o consolidada.</span></Link>
           </div>
         </div>
       </section>
@@ -350,7 +265,7 @@ export default async function HomePage() {
       >
         <div className="flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-sm uppercase tracking-[0.22em] text-[#D9FF00]">
+            <p className="text-sm uppercase tracking-[0.22em] text-texto-principal">
               Personas y conexiones
             </p>
 
@@ -358,16 +273,16 @@ export default async function HomePage() {
               El ecosistema que hace posible la cultura
             </h2>
 
-            <p className="mt-5 max-w-3xl leading-7 text-neutral-400">
+            <p className="mt-5 max-w-3xl leading-7 text-texto-largo">
               Personas, espacios, marcas y organizaciones
               conectadas a proyectos y procesos creativos
-              publicados por Cultura Esta.
+              publicados por El Culebreo.
             </p>
           </div>
 
           <Link
             href="/ecosistema"
-            className="self-start rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-[#D9FF00] hover:text-[#D9FF00]"
+            className="self-start border border-borde px-5 py-3 text-sm font-semibold transition hover:bg-superficie-elevada"
           >
             Explorar todo el ecosistema
           </Link>
@@ -397,12 +312,12 @@ export default async function HomePage() {
         </div>
 
         {ecosystemPreview.length === 0 ? (
-          <div className="mt-10 rounded-3xl border border-dashed border-white/15 bg-white/[0.02] p-9">
+          <div className="mt-10 border border-dashed border-borde bg-superficie-elevada p-9">
             <h3 className="text-2xl font-bold">
               El directorio público está comenzando
             </h3>
 
-            <p className="mt-4 max-w-3xl leading-7 text-neutral-400">
+            <p className="mt-4 max-w-3xl leading-7 text-texto-largo">
               Los perfiles aparecerán aquí después de ser
               revisados y publicados por el administrador del
               ecosistema.
@@ -410,7 +325,7 @@ export default async function HomePage() {
 
             <Link
               href="/ecosistema"
-              className="mt-7 inline-flex rounded-full border border-white/15 px-5 py-3 text-sm font-semibold"
+              className="mt-7 inline-flex border border-borde px-5 py-3 text-sm font-semibold"
             >
               Ver directorio público
             </Link>
@@ -441,18 +356,18 @@ export default async function HomePage() {
             alt={
               featuredPerson.name
             }
-            className="min-h-[520px] w-full rounded-3xl object-cover"
+            className="min-h-[520px] w-full border border-borde object-cover"
           />
         ) : (
-          <div className="flex min-h-[520px] items-end rounded-3xl bg-gradient-to-br from-neutral-700 via-neutral-900 to-black p-9">
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#D9FF00]">
-              Cultura Esta · Persona
+          <div className="flex min-h-[520px] items-end border border-borde bg-superficie-elevada p-9">
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-texto-principal">
+              El Culebreo · Persona
             </p>
           </div>
         )}
 
-        <div className="flex flex-col justify-center rounded-3xl border border-white/10 p-8 lg:p-12">
-          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-neutral-500">
+        <div className="flex flex-col justify-center border border-borde p-8 lg:p-12">
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-texto-largo">
             Artista de la semana
           </p>
 
@@ -462,22 +377,22 @@ export default async function HomePage() {
                 {featuredPerson.name}
               </h2>
 
-              <p className="mt-5 text-lg font-semibold leading-8 text-[#D9FF00]">
+              <p className="mt-5 text-lg font-semibold leading-8 text-texto-principal">
                 {
                   featuredPerson.headline
                 }
               </p>
 
-              <p className="mt-6 max-w-xl text-lg leading-8 text-neutral-400">
+              <p className="mt-6 max-w-xl text-lg leading-8 text-texto-largo">
                 {featuredPerson.description ||
-                  'Una voz activa dentro del ecosistema cultural y creativo de Cultura Esta.'}
+                  'Una voz activa dentro del ecosistema cultural y creativo de El Culebreo.'}
               </p>
 
               <Link
                 href={getPublicActorHref(
                   featuredPerson
                 )}
-                className="mt-9 self-start rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-[#D9FF00]"
+                className="mt-9 self-start border border-borde bg-rojo-base px-6 py-3 text-sm font-semibold text-hueso transition hover:shadow-stencil"
               >
                 Conocer el perfil
               </Link>
@@ -489,7 +404,7 @@ export default async function HomePage() {
                 territorio y memoria
               </h2>
 
-              <p className="mt-6 max-w-xl text-lg leading-8 text-neutral-400">
+              <p className="mt-6 max-w-xl text-lg leading-8 text-texto-largo">
                 Cada semana destacamos una voz del ecosistema:
                 su proceso, sus preguntas, su trayectoria y
                 las comunidades con las que trabaja.
@@ -497,7 +412,7 @@ export default async function HomePage() {
 
               <Link
                 href="/ecosistema"
-                className="mt-9 self-start rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-[#D9FF00]"
+                className="mt-9 self-start border border-borde bg-rojo-base px-6 py-3 text-sm font-semibold text-hueso transition hover:shadow-stencil"
               >
                 Explorar personas
               </Link>
@@ -517,9 +432,9 @@ export default async function HomePage() {
             }
           />
         ) : (
-          <article className="grid overflow-hidden rounded-3xl border border-white/10 bg-white text-black lg:grid-cols-[1.1fr_0.9fr]">
+          <article className="grid overflow-hidden border border-borde bg-superficie-elevada lg:grid-cols-[1.1fr_0.9fr]">
             <div className="p-8 sm:p-12 lg:p-16">
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-neutral-500">
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-texto-largo">
                 Proyecto de la semana
               </p>
 
@@ -527,38 +442,38 @@ export default async function HomePage() {
                 Los proyectos del ecosistema aparecerán aquí
               </h2>
 
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-neutral-600">
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-texto-largo">
                 Los proyectos deben ser desarrollados con
                 Creative OS, aceptados por el ecosistema y
-                aprobados editorialmente por Cultura Esta.
+                aprobados editorialmente por El Culebreo.
               </p>
 
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link
                   href="/proyectos"
-                  className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white"
+                  className="border border-borde bg-rojo-base px-6 py-3 text-sm font-semibold text-hueso"
                 >
                   Ver proyectos
                 </Link>
 
                 <Link
                   href="/studio?new=1"
-                  className="rounded-full border border-black/20 px-6 py-3 text-sm font-semibold text-black"
+                  className="border border-borde px-6 py-3 text-sm font-semibold"
                 >
                   Crear un proyecto
                 </Link>
               </div>
             </div>
 
-            <div className="min-h-96 bg-gradient-to-br from-neutral-300 via-neutral-500 to-neutral-900" />
+            <div className="min-h-96 border-l border-borde bg-superficie" />
           </article>
         )}
       </section>
 
-      <section className="border-t border-white/10 bg-white/[0.025]">
+      <section className="border-t border-borde bg-superficie-elevada">
         <div className="mx-auto grid max-w-7xl gap-8 px-6 py-20 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#D9FF00]">
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-texto-principal">
               Creative OS
             </p>
 
@@ -567,7 +482,7 @@ export default async function HomePage() {
               un proyecto.
             </h2>
 
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-neutral-400">
+            <p className="mt-5 max-w-3xl text-lg leading-8 text-texto-largo">
               Convierte una inspiración, necesidad u
               oportunidad en una estructura de producción
               conectada con personas, espacios y
@@ -577,50 +492,50 @@ export default async function HomePage() {
 
           <Link
             href="/studio?new=1"
-            className="self-start rounded-full bg-[#D9FF00] px-7 py-4 text-sm font-bold text-black transition hover:bg-white lg:self-center"
+            className="self-start border border-borde bg-rojo-base px-7 py-4 text-sm font-bold text-hueso transition hover:shadow-stencil lg:self-center"
           >
             Construir un proyecto
           </Link>
         </div>
       </section>
 
-      <footer className="border-t border-white/10">
+      <footer className="border-t border-borde">
         <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-bold">
-              Cultura Esta
+              El Culebreo
             </p>
 
-            <p className="mt-2 text-sm text-neutral-500">
+            <p className="mt-2 text-sm text-texto-largo">
               Un medio conectado a un ecosistema creativo.
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-5 text-sm text-neutral-400">
+          <div className="flex flex-wrap gap-5 text-sm text-texto-largo">
             <Link
               href="/proyectos"
-              className="transition hover:text-white"
+              className="transition hover:text-texto-principal"
             >
               Proyectos
             </Link>
 
             <Link
               href="/ecosistema"
-              className="transition hover:text-white"
+              className="transition hover:text-texto-principal"
             >
               Ecosistema
             </Link>
 
             <Link
               href="/mi-ecosistema"
-              className="transition hover:text-white"
+              className="transition hover:text-texto-principal"
             >
               Mi Ecosistema
             </Link>
 
             <Link
               href="/studio"
-              className="transition hover:text-white"
+              className="transition hover:text-texto-principal"
             >
               Acceder al Studio →
             </Link>
@@ -638,9 +553,9 @@ function FeaturedProject({
     PublicProjectSummary;
 }) {
   return (
-    <article className="grid overflow-hidden rounded-3xl border border-white/10 bg-white text-black lg:grid-cols-[1.1fr_0.9fr]">
+    <article className="grid overflow-hidden border border-borde bg-superficie-elevada lg:grid-cols-[1.1fr_0.9fr]">
       <div className="p-8 sm:p-12 lg:p-16">
-        <p className="text-sm font-semibold uppercase tracking-[0.22em] text-neutral-500">
+        <p className="text-sm font-semibold uppercase tracking-[0.22em] text-texto-largo">
           Proyecto de la semana
         </p>
 
@@ -648,14 +563,14 @@ function FeaturedProject({
           {project.headline}
         </h2>
 
-        <p className="mt-6 max-w-2xl text-lg leading-8 text-neutral-600">
+        <p className="mt-6 max-w-2xl text-lg leading-8 text-texto-largo">
           {project.summary ||
             project.description}
         </p>
 
         <div className="mt-7 flex flex-wrap gap-2">
           {project.city ? (
-            <span className="rounded-full border border-black/10 px-4 py-2 text-xs font-semibold">
+            <span className="border border-borde px-4 py-2 text-xs font-semibold">
               {project.city}
             </span>
           ) : null}
@@ -668,7 +583,7 @@ function FeaturedProject({
                   key={
                     discipline
                   }
-                  className="rounded-full border border-black/10 px-4 py-2 text-xs font-semibold"
+                  className="border border-borde px-4 py-2 text-xs font-semibold"
                 >
                   {discipline}
                 </span>
@@ -678,7 +593,7 @@ function FeaturedProject({
 
         <Link
           href={`/proyectos/${project.slug}`}
-          className="mt-9 inline-flex rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#D9FF00] hover:text-black"
+          className="mt-9 inline-flex border border-borde bg-rojo-base px-6 py-3 text-sm font-semibold text-hueso transition hover:shadow-stencil"
         >
           Ver proyecto
         </Link>
@@ -692,10 +607,10 @@ function FeaturedProject({
           alt={
             project.headline
           }
-          className="min-h-96 h-full w-full object-cover"
+          className="min-h-96 h-full w-full border-l border-borde object-cover"
         />
       ) : (
-        <div className="min-h-96 bg-gradient-to-br from-neutral-300 via-neutral-500 to-neutral-900" />
+        <div className="min-h-96 border-l border-borde bg-superficie" />
       )}
     </article>
   );
@@ -733,7 +648,7 @@ function HomeActorCard({
       href={getPublicActorHref(
         actor
       )}
-      className="group flex min-h-[360px] flex-col rounded-3xl border border-white/10 bg-white/[0.025] p-7 transition hover:-translate-y-1 hover:border-[#D9FF00]"
+      className="group flex min-h-[360px] flex-col border border-borde bg-superficie-elevada p-7 transition hover:shadow-stencil"
     >
       <div className="flex items-start justify-between gap-4">
         {actor.imageUrl ? (
@@ -744,15 +659,15 @@ function HomeActorCard({
             alt={
               actor.name
             }
-            className="h-16 w-16 rounded-full object-cover"
+            className="h-16 w-16 border border-borde object-cover"
           />
         ) : (
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#D9FF00] text-lg font-black text-black">
+          <div className="flex h-16 w-16 items-center justify-center border border-borde bg-rojo-base text-lg font-black text-hueso">
             {initials || 'CE'}
           </div>
         )}
 
-        <span className="rounded-full border border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] text-neutral-500">
+        <span className="border border-borde px-3 py-1.5 text-[10px] uppercase tracking-[0.12em] text-texto-largo">
           {
             actorTypeLabels[
               actor.actorType
@@ -765,11 +680,11 @@ function HomeActorCard({
         {actor.name}
       </h3>
 
-      <p className="mt-3 text-sm font-semibold text-[#D9FF00]">
+      <p className="mt-3 text-sm font-semibold text-texto-principal">
         {actor.headline}
       </p>
 
-      <p className="mt-5 line-clamp-3 text-sm leading-7 text-neutral-400">
+      <p className="mt-5 line-clamp-3 text-sm leading-7 text-texto-largo">
         {actor.description ||
           'Perfil del ecosistema cultural y creativo.'}
       </p>
@@ -782,7 +697,7 @@ function HomeActorCard({
               (label) => (
                 <span
                   key={label}
-                  className="rounded-full border border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.1em] text-neutral-500"
+                  className="border border-borde px-3 py-1.5 text-[10px] uppercase tracking-[0.1em] text-texto-largo"
                 >
                   {formatLabel(
                     label
@@ -794,12 +709,12 @@ function HomeActorCard({
       ) : null}
 
       <div className="mt-auto pt-7">
-        <p className="text-xs text-neutral-600">
+        <p className="text-xs text-texto-largo">
           {location ||
             'Ubicación sin definir'}
         </p>
 
-        <p className="mt-5 text-sm font-semibold transition group-hover:text-[#D9FF00]">
+        <p className="mt-5 text-sm font-semibold transition group-hover:text-texto-principal">
           Conocer perfil →
         </p>
       </div>
@@ -818,12 +733,12 @@ function HomeMetric({
     string;
 }) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-white/[0.025] p-5">
-      <p className="text-3xl font-black text-[#D9FF00]">
+    <article className="border border-borde bg-superficie-elevada p-5">
+      <p className="text-3xl font-black text-texto-principal">
         {value}
       </p>
 
-      <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-neutral-500">
+      <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-texto-largo">
         {label}
       </p>
     </article>
