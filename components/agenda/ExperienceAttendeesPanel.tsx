@@ -202,7 +202,7 @@ export function ExperienceAttendeesPanel({
 
       <div className="mt-8 flex items-end justify-between gap-4">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
             Participantes
           </p>
 
@@ -216,33 +216,33 @@ export function ExperienceAttendeesPanel({
           onClick={() => {
             void loadAttendees();
           }}
-          className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold"
+          className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold"
         >
           Actualizar
         </button>
       </div>
 
       {errorMessage ? (
-        <div className="mt-6 rounded-2xl border border-red-400/20 bg-red-400/10 p-4 text-sm text-red-200">
+        <div className="mt-6 rounded-2xl border border-borde bg-rojo-base p-4 text-sm text-hueso">
           {errorMessage}
         </div>
       ) : null}
 
       {successMessage ? (
-        <div className="mt-6 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4 text-sm text-emerald-200">
+        <div className="mt-6 rounded-2xl border border-borde bg-superficie-elevada p-4 text-sm text-texto-principal">
           {successMessage}
         </div>
       ) : null}
 
       {isLoading ? (
-        <div className="mt-7 h-64 animate-pulse rounded-3xl bg-[#111111]" />
+        <div className="mt-7 h-64 animate-pulse rounded-3xl bg-superficie-elevada" />
       ) : attendees.length === 0 ? (
-        <div className="mt-7 rounded-3xl border border-dashed border-white/15 bg-[#0A0A0A] p-9">
+        <div className="mt-7 rounded-3xl border border-dashed border-borde/15 bg-superficie-elevada p-9">
           <h3 className="text-xl font-semibold">
             Todavía no hay inscripciones
           </h3>
 
-          <p className="mt-3 text-sm text-[#777777]">
+          <p className="mt-3 text-sm text-texto-largo">
             Las personas aparecerán aquí cuando reserven
             un cupo desde la ficha pública.
           </p>
@@ -260,12 +260,12 @@ export function ExperienceAttendeesPanel({
                   key={
                     attendee.registrationId
                   }
-                  className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-6"
+                  className="rounded-3xl border border-borde/10 bg-superficie-elevada p-6"
                 >
                   <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
                     <div>
                       <div className="flex flex-wrap items-center gap-3">
-                        <span className="rounded-full border border-[#D9FF00]/20 bg-[#D9FF00]/10 px-3 py-1 text-[10px] font-bold uppercase text-[#D9FF00]">
+                        <span className="rounded-full border border-acento/20 bg-acento/10 px-3 py-1 text-[10px] font-bold uppercase text-texto-principal">
                           {
                             statusLabels[
                               attendee.status
@@ -273,7 +273,7 @@ export function ExperienceAttendeesPanel({
                           }
                         </span>
 
-                        <span className="font-mono text-xs text-[#666666]">
+                        <span className="font-mono text-xs text-texto-largo">
                           {
                             attendee.ticketCode
                           }
@@ -286,21 +286,21 @@ export function ExperienceAttendeesPanel({
                         }
                       </h3>
 
-                      <p className="mt-2 text-sm text-[#999999]">
+                      <p className="mt-2 text-sm text-texto-largo">
                         {
                           attendee.attendeeEmail
                         }
                       </p>
 
                       {attendee.attendeePhone ? (
-                        <p className="mt-1 text-sm text-[#777777]">
+                        <p className="mt-1 text-sm text-texto-largo">
                           {
                             attendee.attendeePhone
                           }
                         </p>
                       ) : null}
 
-                      <p className="mt-3 text-xs text-[#666666]">
+                      <p className="mt-3 text-xs text-texto-largo">
                         {
                           attendee.attendeesCount
                         }{' '}
@@ -324,7 +324,7 @@ export function ExperienceAttendeesPanel({
                               );
                             }}
                             disabled={isWorking}
-                            className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black disabled:opacity-50"
+                            className="rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso disabled:opacity-50"
                           >
                             Marcar asistencia
                           </button>
@@ -338,7 +338,7 @@ export function ExperienceAttendeesPanel({
                               );
                             }}
                             disabled={isWorking}
-                            className="rounded-full border border-red-400/30 px-5 py-3 text-sm font-semibold text-red-300 disabled:opacity-50"
+                            className="rounded-full border border-borde px-5 py-3 text-sm font-semibold text-rojo-base disabled:opacity-50"
                           >
                             Cancelar
                           </button>
@@ -356,7 +356,7 @@ export function ExperienceAttendeesPanel({
                             );
                           }}
                           disabled={isWorking}
-                          className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold disabled:opacity-50"
+                          className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold disabled:opacity-50"
                         >
                           Deshacer asistencia
                         </button>
@@ -373,7 +373,7 @@ export function ExperienceAttendeesPanel({
                             );
                           }}
                           disabled={isWorking}
-                          className="rounded-full bg-white px-5 py-3 text-sm font-bold text-black disabled:opacity-50"
+                          className="rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso disabled:opacity-50"
                         >
                           Reactivar
                         </button>
@@ -398,12 +398,12 @@ function Metric({
   label: string;
 }) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#0A0A0A] p-5">
-      <p className="text-3xl font-black text-[#D9FF00]">
+    <article className="rounded-2xl border border-borde/10 bg-superficie-elevada p-5">
+      <p className="text-3xl font-black text-texto-principal">
         {value}
       </p>
 
-      <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-[#777777]">
+      <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-texto-largo">
         {label}
       </p>
     </article>

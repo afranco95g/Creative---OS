@@ -129,16 +129,16 @@ export function SessionHandoffPanel({
   }
 
   return (
-    <section className="rounded-3xl border border-[#232323] bg-[#101010] p-7">
-      <p className="text-xs uppercase tracking-[0.2em] text-[#767676]">
+    <section className="rounded-3xl border border-borde bg-superficie-elevada p-7">
+      <p className="text-xs uppercase tracking-[0.2em] text-texto-largo">
         Session Handoff
       </p>
 
-      <h2 className="mt-3 text-2xl font-semibold text-white">
+      <h2 className="mt-3 text-2xl font-semibold text-texto-largo">
         Preparar continuidad
       </h2>
 
-      <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#A6A6A6]">
+      <p className="mt-3 max-w-3xl text-sm leading-relaxed text-texto-largo">
         Define qué debe entender la siguiente persona,
         equipo o inteligencia antes de continuar el
         proyecto.
@@ -173,13 +173,13 @@ export function SessionHandoffPanel({
         />
 
         {repeatedContent && (
-          <div className="rounded-2xl border border-[#5B321D] bg-[#21130D] px-5 py-4">
-            <p className="text-sm font-semibold text-[#FFB68A]">
+          <div className="rounded-2xl border border-borde bg-superficie-elevada px-5 py-4">
+            <p className="text-sm font-semibold text-naranja">
               La pregunta principal y el resultado esperado
               no pueden ser iguales.
             </p>
 
-            <p className="mt-2 text-xs leading-relaxed text-[#C98D6C]">
+            <p className="mt-2 text-xs leading-relaxed text-texto-largo">
               La pregunta explica qué necesitas resolver. El
               resultado esperado describe qué debe producir
               la siguiente sesión.
@@ -188,7 +188,7 @@ export function SessionHandoffPanel({
         )}
 
         <label className="block">
-          <span className="mb-2 block text-xs uppercase tracking-[0.18em] text-[#767676]">
+          <span className="mb-2 block text-xs uppercase tracking-[0.18em] text-texto-largo">
             Destino
           </span>
 
@@ -199,7 +199,7 @@ export function SessionHandoffPanel({
                 event.target.value as ContextDestination
               )
             }
-            className="w-full rounded-2xl border border-[#232323] bg-[#151515] px-5 py-4 text-sm text-white outline-none transition focus:border-[#D9FF00]"
+            className="w-full rounded-2xl border border-borde bg-superficie px-5 py-4 text-sm text-texto-largo outline-none transition focus:border-acento"
           >
             {DESTINATIONS.map((item) => (
               <option
@@ -242,7 +242,7 @@ export function SessionHandoffPanel({
           <button
             type="submit"
             disabled={!formIsValid}
-            className="rounded-full bg-[#D9FF00] px-5 py-2.5 text-sm font-bold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-full bg-rojo-base px-5 py-2.5 text-sm font-bold text-hueso transition hover:shadow-stencil disabled:cursor-not-allowed disabled:opacity-40"
           >
             Exportar handoff en Markdown
           </button>
@@ -251,14 +251,14 @@ export function SessionHandoffPanel({
             type="button"
             onClick={handleJsonExport}
             disabled={!formIsValid}
-            className="rounded-full border border-[#333333] bg-[#151515] px-5 py-2.5 text-sm font-semibold text-white transition hover:border-[#D9FF00] disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-full border border-borde bg-superficie px-5 py-2.5 text-sm font-semibold text-texto-largo transition hover:border-acento disabled:cursor-not-allowed disabled:opacity-40"
           >
             Exportar handoff en JSON
           </button>
         </div>
 
         {!formIsValid && !repeatedContent && (
-          <p className="text-xs text-[#767676]">
+          <p className="text-xs text-texto-largo">
             Completa los tres campos marcados como
             obligatorios para activar la exportación.
           </p>
@@ -285,10 +285,10 @@ function Field({
 }: FieldProps) {
   return (
     <label className="block">
-      <span className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-[#767676]">
+      <span className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-texto-largo">
         {label}
 
-        <span className="normal-case tracking-normal text-[#555555]">
+        <span className="normal-case tracking-normal text-texto-largo">
           {required ? 'Obligatorio' : 'Opcional'}
         </span>
       </span>
@@ -300,7 +300,7 @@ function Field({
           onChange(event.target.value)
         }
         placeholder={placeholder}
-        className="w-full rounded-2xl border border-[#232323] bg-[#151515] px-5 py-4 text-sm text-white outline-none transition placeholder:text-[#5F5F5F] focus:border-[#D9FF00]"
+        className="w-full rounded-2xl border border-borde bg-superficie px-5 py-4 text-sm text-texto-largo outline-none transition placeholder:text-texto-largo focus:border-acento"
       />
     </label>
   );
@@ -321,10 +321,10 @@ function TextAreaField({
 }: TextAreaFieldProps) {
   return (
     <label className="block">
-      <span className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-[#767676]">
+      <span className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-texto-largo">
         {label}
 
-        <span className="normal-case tracking-normal text-[#555555]">
+        <span className="normal-case tracking-normal text-texto-largo">
           Opcional
         </span>
       </span>
@@ -335,7 +335,7 @@ function TextAreaField({
           onChange(event.target.value)
         }
         placeholder={placeholder}
-        className="min-h-[110px] w-full resize-none rounded-2xl border border-[#232323] bg-[#151515] px-5 py-4 text-sm leading-relaxed text-white outline-none transition placeholder:text-[#5F5F5F] focus:border-[#D9FF00]"
+        className="min-h-[110px] w-full resize-none rounded-2xl border border-borde bg-superficie px-5 py-4 text-sm leading-relaxed text-texto-largo outline-none transition placeholder:text-texto-largo focus:border-acento"
       />
     </label>
   );

@@ -33,13 +33,13 @@ export default function LogoutButton() {
         type="button"
         onClick={handleLogout}
         disabled={isLoading}
-        className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/40 disabled:cursor-not-allowed disabled:opacity-50"
+        className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold text-texto-largo transition hover:border-borde/40 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {isLoading ? 'Cerrando sesión...' : 'Cerrar sesión'}
       </button>
 
       {errorMessage ? (
-        <p className="text-xs text-red-300">
+        <p className="text-xs text-rojo-base">
           {errorMessage}
         </p>
       ) : null}

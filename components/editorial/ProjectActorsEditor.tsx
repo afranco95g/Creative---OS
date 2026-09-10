@@ -274,8 +274,8 @@ export function ProjectActorsEditor({
   }
 
   return (
-    <section className="rounded-[32px] border border-white/10 bg-[#0A0A0A] p-7 md:p-9">
-      <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+    <section className="rounded-[32px] border border-borde/10 bg-superficie-elevada p-7 md:p-9">
+      <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
         Ecosistema del proyecto
       </p>
 
@@ -283,7 +283,7 @@ export function ProjectActorsEditor({
         Personas, espacios y apoyos
       </h2>
 
-      <p className="mt-4 max-w-3xl text-sm leading-7 text-[#888888]">
+      <p className="mt-4 max-w-3xl text-sm leading-7 text-texto-largo">
         Conecta la historia editorial con los actores
         que participan, reciben, producen o financian
         el proyecto.
@@ -306,8 +306,8 @@ export function ProjectActorsEditor({
             className={[
               'rounded-full border px-5 py-2.5 text-sm font-semibold transition',
               activeType === type
-                ? 'border-[#D9FF00] bg-[#D9FF00] text-black'
-                : 'border-white/15 text-white hover:border-white',
+                ? 'border-acento bg-rojo-base text-hueso'
+                : 'border-borde/15 text-texto-largo hover:border-borde',
             ].join(' ')}
           >
             {typeLabels[type]}
@@ -316,14 +316,14 @@ export function ProjectActorsEditor({
       </div>
 
       {isLoading ? (
-        <div className="mt-8 h-52 animate-pulse rounded-3xl bg-[#111111]" />
+        <div className="mt-8 h-52 animate-pulse rounded-3xl bg-superficie-elevada" />
       ) : visibleOptions.length === 0 ? (
-        <div className="mt-8 rounded-3xl border border-dashed border-white/15 p-7">
+        <div className="mt-8 rounded-3xl border border-dashed border-borde/15 p-7">
           <p className="font-semibold">
             No hay actores disponibles
           </p>
 
-          <p className="mt-2 text-sm text-[#777777]">
+          <p className="mt-2 text-sm text-texto-largo">
             Primero debe existir al menos un actor de este tipo dentro del ecosistema.
           </p>
         </div>
@@ -343,8 +343,8 @@ export function ProjectActorsEditor({
                   className={[
                     'rounded-2xl border p-5 transition',
                     isSelected
-                      ? 'border-[#D9FF00]/40 bg-[#D9FF00]/5'
-                      : 'border-white/10 bg-[#111111]',
+                      ? 'border-acento/40 bg-acento/5'
+                      : 'border-borde/10 bg-superficie-elevada',
                   ].join(' ')}
                 >
                   <div className="flex items-start gap-4">
@@ -358,8 +358,8 @@ export function ProjectActorsEditor({
                       className={[
                         'mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded border text-xs font-bold',
                         isSelected
-                          ? 'border-[#D9FF00] bg-[#D9FF00] text-black'
-                          : 'border-white/20 text-transparent',
+                          ? 'border-acento bg-rojo-base text-hueso'
+                          : 'border-borde/20 text-transparent',
                       ].join(' ')}
                     >
                       ✓
@@ -367,25 +367,25 @@ export function ProjectActorsEditor({
 
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-semibold text-white">
+                        <h3 className="font-semibold text-texto-largo">
                           {option.name}
                         </h3>
 
-                        <span className="rounded-full border border-white/10 px-2.5 py-1 text-[9px] uppercase tracking-[0.12em] text-[#666666]">
+                        <span className="rounded-full border border-borde/10 px-2.5 py-1 text-[9px] uppercase tracking-[0.12em] text-texto-largo">
                           {option.status}
                         </span>
                       </div>
 
-                      <p className="mt-2 text-sm leading-6 text-[#777777]">
+                      <p className="mt-2 text-sm leading-6 text-texto-largo">
                         {option.subtitle}
                       </p>
                     </div>
                   </div>
 
                   {link ? (
-                    <div className="mt-5 space-y-4 border-t border-white/10 pt-5">
+                    <div className="mt-5 space-y-4 border-t border-borde/10 pt-5">
                       <div>
-                        <label className="text-xs text-[#777777]">
+                        <label className="text-xs text-texto-largo">
                           Relación con el proyecto
                         </label>
 
@@ -399,11 +399,11 @@ export function ProjectActorsEditor({
                               event.target.value
                             )
                           }
-                          className="mt-2 w-full rounded-xl border border-white/10 bg-[#080808] px-4 py-3 text-sm text-white outline-none focus:border-[#D9FF00]"
+                          className="mt-2 w-full rounded-xl border border-borde/10 bg-superficie-elevada px-4 py-3 text-sm text-texto-largo outline-none focus:border-acento"
                         />
                       </div>
 
-                      <label className="flex items-center gap-3 text-sm text-[#999999]">
+                      <label className="flex items-center gap-3 text-sm text-texto-largo">
                         <input
                           type="checkbox"
                           checked={
@@ -429,19 +429,19 @@ export function ProjectActorsEditor({
       )}
 
       {successMessage ? (
-        <div className="mt-6 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-5 py-4 text-sm text-emerald-200">
+        <div className="mt-6 rounded-2xl border border-borde bg-superficie-elevada px-5 py-4 text-sm text-texto-principal">
           {successMessage}
         </div>
       ) : null}
 
       {errorMessage ? (
-        <div className="mt-6 rounded-2xl border border-red-400/20 bg-red-400/10 px-5 py-4 text-sm text-red-200">
+        <div className="mt-6 rounded-2xl border border-borde bg-rojo-base px-5 py-4 text-sm text-hueso">
           {errorMessage}
         </div>
       ) : null}
 
       <div className="mt-7 flex items-center justify-between gap-4">
-        <p className="text-xs text-[#666666]">
+        <p className="text-xs text-texto-largo">
           {links.length}{' '}
           {links.length === 1
             ? 'actor vinculado'
@@ -454,7 +454,7 @@ export function ProjectActorsEditor({
             void handleSave();
           }}
           disabled={isSaving}
-          className="rounded-full bg-white px-6 py-3 text-sm font-bold text-black transition hover:bg-[#D9FF00] disabled:opacity-50"
+          className="rounded-full bg-rojo-base px-6 py-3 text-sm font-bold text-hueso transition hover:bg-rojo-base disabled:opacity-50"
         >
           {isSaving
             ? 'Guardando...'

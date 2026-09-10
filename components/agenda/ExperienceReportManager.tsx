@@ -303,13 +303,13 @@ export function ExperienceReportManager({
 
   if (isLoading) {
     return (
-      <div className="h-96 animate-pulse rounded-3xl bg-[#111111]" />
+      <div className="h-96 animate-pulse rounded-3xl bg-superficie-elevada" />
     );
   }
 
   if (!workspace) {
     return (
-      <div className="rounded-3xl border border-red-400/20 bg-red-400/10 p-6 text-red-200">
+      <div className="rounded-3xl border border-borde bg-rojo-base p-6 text-hueso">
         {errorMessage ||
           'No fue posible cargar el reporte.'}
       </div>
@@ -331,12 +331,12 @@ export function ExperienceReportManager({
         <div>
           <Link
             href="/gestion-agenda"
-            className="text-sm text-[#777777] transition hover:text-white"
+            className="text-sm text-texto-largo transition hover:text-texto-largo"
           >
             ← Volver a gestión de agenda
           </Link>
 
-          <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-[#D9FF00]">
+          <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-texto-principal">
             Resultados e impacto
           </p>
 
@@ -344,13 +344,13 @@ export function ExperienceReportManager({
             {workspace.experienceTitle}
           </h1>
 
-          <p className="mt-5 max-w-3xl text-base leading-8 text-[#999999]">
+          <p className="mt-5 max-w-3xl text-base leading-8 text-texto-largo">
             Documenta los resultados, aprendizajes,
             recursos y evidencias generados por la actividad.
           </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <span className="rounded-full border border-[#D9FF00]/20 bg-[#D9FF00]/10 px-4 py-2 text-xs font-bold uppercase text-[#D9FF00]">
+            <span className="rounded-full border border-acento/20 bg-acento/10 px-4 py-2 text-xs font-bold uppercase text-texto-principal">
               {
                 statusLabels[
                   workspace.reportStatus
@@ -358,7 +358,7 @@ export function ExperienceReportManager({
               }
             </span>
 
-            <span className="text-sm text-[#777777]">
+            <span className="text-sm text-texto-largo">
               {new Date(
                 workspace.startsAt
               ).toLocaleDateString(
@@ -381,7 +381,7 @@ export function ExperienceReportManager({
         <div className="flex flex-wrap gap-3">
           <Link
             href={`/agenda/${workspace.experienceSlug}`}
-            className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold"
+            className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold"
           >
             Ver actividad
           </Link>
@@ -390,7 +390,7 @@ export function ExperienceReportManager({
           'published' ? (
             <Link
               href={`/reportes/experiencias/${workspace.experienceSlug}`}
-              className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
+              className="rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso"
             >
               Ver reporte público
             </Link>
@@ -399,19 +399,19 @@ export function ExperienceReportManager({
       </header>
 
       {errorMessage ? (
-        <div className="mt-8 rounded-2xl border border-red-400/20 bg-red-400/10 p-4 text-sm text-red-200">
+        <div className="mt-8 rounded-2xl border border-borde bg-rojo-base p-4 text-sm text-hueso">
           {errorMessage}
         </div>
       ) : null}
 
       {successMessage ? (
-        <div className="mt-8 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4 text-sm text-emerald-200">
+        <div className="mt-8 rounded-2xl border border-borde bg-superficie-elevada p-4 text-sm text-texto-principal">
           {successMessage}
         </div>
       ) : null}
 
       <section className="mt-10">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
           Información automática
         </p>
 
@@ -543,8 +543,8 @@ export function ExperienceReportManager({
           }
         />
 
-        <section className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-7">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#767676]">
+        <section className="rounded-3xl border border-borde/10 bg-superficie-elevada p-7">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-texto-largo">
             Información financiera
           </p>
 
@@ -576,12 +576,12 @@ export function ExperienceReportManager({
             />
           </div>
 
-          <div className="mt-6 border-t border-white/10 pt-6">
-            <p className="text-xs uppercase tracking-[0.16em] text-[#666666]">
+          <div className="mt-6 border-t border-borde/10 pt-6">
+            <p className="text-xs uppercase tracking-[0.16em] text-texto-largo">
               Balance estimado
             </p>
 
-            <p className="mt-3 text-3xl font-black text-[#D9FF00]">
+            <p className="mt-3 text-3xl font-black text-texto-principal">
               {formatCop(
                 parseMoney(
                   revenueCop
@@ -594,7 +594,7 @@ export function ExperienceReportManager({
           </div>
         </section>
 
-        <section className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-7">
+        <section className="rounded-3xl border border-borde/10 bg-superficie-elevada p-7">
           <label
             htmlFor="report-evidence"
             className="text-lg font-bold"
@@ -602,7 +602,7 @@ export function ExperienceReportManager({
             Evidencias
           </label>
 
-          <p className="mt-2 text-sm leading-6 text-[#777777]">
+          <p className="mt-2 text-sm leading-6 text-texto-largo">
             Escribe una URL por línea: fotografías,
             videos, publicaciones, documentos o carpetas.
           </p>
@@ -626,12 +626,12 @@ export function ExperienceReportManager({
         </section>
 
         {workspace.reviewNote ? (
-          <div className="rounded-3xl border border-yellow-400/20 bg-yellow-400/10 p-6">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-yellow-200">
+          <div className="rounded-3xl border border-borde bg-superficie-elevada p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-naranja">
               Nota de revisión
             </p>
 
-            <p className="mt-3 leading-7 text-yellow-100/80">
+            <p className="mt-3 leading-7 text-texto-largo">
               {
                 workspace.reviewNote
               }
@@ -646,7 +646,7 @@ export function ExperienceReportManager({
               disabled={
                 isWorking
               }
-              className="rounded-full bg-white px-6 py-3 text-sm font-bold text-black transition hover:bg-[#D9FF00] disabled:opacity-50"
+              className="rounded-full bg-rojo-base px-6 py-3 text-sm font-bold text-hueso transition hover:bg-rojo-base disabled:opacity-50"
             >
               {isWorking
                 ? 'Guardando...'
@@ -665,7 +665,7 @@ export function ExperienceReportManager({
                 disabled={
                   isWorking
                 }
-                className="rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black disabled:opacity-50"
+                className="rounded-full bg-rojo-base px-6 py-3 text-sm font-bold text-hueso disabled:opacity-50"
               >
                 Enviar a revisión
               </button>
@@ -677,8 +677,8 @@ export function ExperienceReportManager({
       {workspace.canReview &&
       workspace.reportStatus ===
         'submitted' ? (
-        <section className="mt-12 rounded-3xl border border-[#D9FF00]/20 bg-[#D9FF00]/5 p-7">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">
+        <section className="mt-12 rounded-3xl border border-acento/20 bg-acento/5 p-7">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-principal">
             Revisión administrativa
           </p>
 
@@ -711,7 +711,7 @@ export function ExperienceReportManager({
               disabled={
                 isWorking
               }
-              className="rounded-full border border-red-400/30 px-5 py-3 font-semibold text-red-300 disabled:opacity-50"
+              className="rounded-full border border-borde px-5 py-3 font-semibold text-rojo-base disabled:opacity-50"
             >
               Devolver
             </button>
@@ -726,7 +726,7 @@ export function ExperienceReportManager({
               disabled={
                 isWorking
               }
-              className="rounded-full bg-[#D9FF00] px-5 py-3 font-bold text-black disabled:opacity-50"
+              className="rounded-full bg-rojo-base px-5 py-3 font-bold text-hueso disabled:opacity-50"
             >
               Publicar reporte
             </button>
@@ -752,12 +752,12 @@ function ReportField({
   disabled: boolean;
 }) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-7">
+    <section className="rounded-3xl border border-borde/10 bg-superficie-elevada p-7">
       <label className="text-lg font-bold">
         {label}
       </label>
 
-      <p className="mt-2 text-sm leading-6 text-[#777777]">
+      <p className="mt-2 text-sm leading-6 text-texto-largo">
         {description}
       </p>
 
@@ -813,7 +813,7 @@ function MoneyField({
         disabled={
           disabled
         }
-        className="mt-3 w-full rounded-2xl border border-white/10 bg-[#111111] px-5 py-4 outline-none focus:border-[#D9FF00]"
+        className="mt-3 w-full rounded-2xl border border-borde/10 bg-superficie-elevada px-5 py-4 outline-none focus:border-acento"
       />
     </div>
   );
@@ -829,12 +829,12 @@ function Metric({
     string;
 }) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#0A0A0A] p-5">
-      <p className="text-3xl font-black text-[#D9FF00]">
+    <article className="rounded-2xl border border-borde/10 bg-superficie-elevada p-5">
+      <p className="text-3xl font-black text-texto-principal">
         {value}
       </p>
 
-      <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-[#777777]">
+      <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-texto-largo">
         {label}
       </p>
     </article>
@@ -906,4 +906,4 @@ function getErrorMessage(
 }
 
 const textareaClassName =
-  'mt-5 w-full resize-y rounded-2xl border border-white/10 bg-[#111111] px-5 py-4 leading-7 text-white outline-none transition focus:border-[#D9FF00] disabled:opacity-60';
+  'mt-5 w-full resize-y rounded-2xl border border-borde/10 bg-superficie-elevada px-5 py-4 leading-7 text-texto-largo outline-none transition focus:border-acento disabled:opacity-60';

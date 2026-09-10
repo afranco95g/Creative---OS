@@ -123,16 +123,16 @@ export default function StudioPage() {
 
   if (!workspaceState) {
     return (
-      <main className="min-h-screen bg-[#050505] px-8 py-12 text-white">
+      <main className="min-h-screen bg-superficie px-8 py-12 text-texto-largo">
         <div className="mx-auto max-w-7xl">
-          <div className="h-5 w-48 animate-pulse rounded bg-[#232323]" />
+          <div className="h-5 w-48 animate-pulse rounded bg-borde" />
 
-          <div className="mt-5 h-16 w-3/5 animate-pulse rounded bg-[#151515]" />
+          <div className="mt-5 h-16 w-3/5 animate-pulse rounded bg-superficie" />
 
           <div className="mt-12 grid gap-6 lg:grid-cols-2">
-            <div className="h-56 animate-pulse rounded-3xl bg-[#101010]" />
+            <div className="h-56 animate-pulse rounded-3xl bg-superficie-elevada" />
 
-            <div className="h-56 animate-pulse rounded-3xl bg-[#101010]" />
+            <div className="h-56 animate-pulse rounded-3xl bg-superficie-elevada" />
           </div>
         </div>
       </main>

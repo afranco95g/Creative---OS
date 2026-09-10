@@ -223,32 +223,32 @@ function ProjectContinuityWorkspace({
   }
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
-      <header className="border-b border-[#232323] bg-[#080808] px-6 py-7 sm:px-8">
+    <main className="min-h-screen bg-superficie text-texto-largo">
+      <header className="border-b border-borde bg-superficie-elevada px-6 py-7 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
             <div>
               <div className="flex flex-wrap items-center gap-3 text-sm">
                 <Link
                   href={`/studio/projects/${project.id}`}
-                  className="text-[#767676] transition hover:text-white"
+                  className="text-texto-largo transition hover:text-texto-largo"
                 >
                   ← Volver a la Mesa de Producción
                 </Link>
 
-                <span className="text-[#333333]">
+                <span className="text-borde">
                   /
                 </span>
 
                 <Link
                   href="/studio"
-                  className="text-[#767676] transition hover:text-white"
+                  className="text-texto-largo transition hover:text-texto-largo"
                 >
                   Executive Workspace
                 </Link>
               </div>
 
-              <p className="mt-8 text-xs font-semibold uppercase tracking-[0.24em] text-[#D9FF00]">
+              <p className="mt-8 text-xs font-semibold uppercase tracking-[0.24em] text-texto-principal">
                 Inteligencia y continuidad
               </p>
 
@@ -256,7 +256,7 @@ function ProjectContinuityWorkspace({
                 {project.graph.title}
               </h1>
 
-              <p className="mt-4 max-w-3xl text-base leading-7 text-[#A6A6A6]">
+              <p className="mt-4 max-w-3xl text-base leading-7 text-texto-largo">
                 Conserva las decisiones importantes,
                 prepara el contexto del proyecto y
                 transfiere el trabajo sin perder su
@@ -320,7 +320,7 @@ function ProjectContinuityWorkspace({
 
         <section>
           <div className="mb-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#767676]">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-texto-largo">
               Puente de contexto
             </p>
 
@@ -328,7 +328,7 @@ function ProjectContinuityWorkspace({
               Continuar sin perder información
             </h2>
 
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[#A6A6A6]">
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-texto-largo">
               Creative OS puede empaquetar el estado
               completo del proyecto o preparar una
               entrega dirigida a otra persona, equipo,
@@ -363,8 +363,8 @@ function ProjectContinuityWorkspace({
           </div>
         </section>
 
-        <section className="rounded-3xl border border-[#232323] bg-[#101010] p-7">
-          <p className="text-xs uppercase tracking-[0.2em] text-[#767676]">
+        <section className="rounded-3xl border border-borde bg-superficie-elevada p-7">
+          <p className="text-xs uppercase tracking-[0.2em] text-texto-largo">
             Cómo funciona
           </p>
 
@@ -405,12 +405,12 @@ function SummaryMetric({
   value: string;
 }) {
   return (
-    <article className="rounded-2xl border border-[#232323] bg-[#101010] p-4 text-center">
-      <p className="text-2xl font-semibold text-[#D9FF00]">
+    <article className="rounded-2xl border border-borde bg-superficie-elevada p-4 text-center">
+      <p className="text-2xl font-semibold text-texto-principal">
         {value}
       </p>
 
-      <p className="mt-2 text-[10px] uppercase leading-4 tracking-[0.12em] text-[#767676]">
+      <p className="mt-2 text-[10px] uppercase leading-4 tracking-[0.12em] text-texto-largo">
         {label}
       </p>
     </article>
@@ -427,8 +427,8 @@ function InformationCard({
   description: string;
 }) {
   return (
-    <article className="rounded-2xl border border-[#232323] bg-[#151515] p-5">
-      <p className="text-xs font-semibold text-[#D9FF00]">
+    <article className="rounded-2xl border border-borde bg-superficie p-5">
+      <p className="text-xs font-semibold text-texto-principal">
         {number}
       </p>
 
@@ -436,7 +436,7 @@ function InformationCard({
         {title}
       </h3>
 
-      <p className="mt-2 text-sm leading-6 text-[#8A8A8A]">
+      <p className="mt-2 text-sm leading-6 text-texto-largo">
         {description}
       </p>
     </article>
@@ -445,18 +445,18 @@ function InformationCard({
 
 function ContinuityLoading() {
   return (
-    <main className="min-h-screen bg-[#050505] px-8 py-12 text-white">
+    <main className="min-h-screen bg-superficie px-8 py-12 text-texto-largo">
       <div className="mx-auto max-w-7xl">
-        <div className="h-4 w-52 animate-pulse rounded bg-[#232323]" />
+        <div className="h-4 w-52 animate-pulse rounded bg-borde" />
 
-        <div className="mt-7 h-14 w-2/3 animate-pulse rounded bg-[#151515]" />
+        <div className="mt-7 h-14 w-2/3 animate-pulse rounded bg-superficie" />
 
-        <div className="mt-12 h-96 animate-pulse rounded-3xl bg-[#101010]" />
+        <div className="mt-12 h-96 animate-pulse rounded-3xl bg-superficie-elevada" />
 
         <div className="mt-8 grid gap-6 xl:grid-cols-2">
-          <div className="h-80 animate-pulse rounded-3xl bg-[#101010]" />
+          <div className="h-80 animate-pulse rounded-3xl bg-superficie-elevada" />
 
-          <div className="h-80 animate-pulse rounded-3xl bg-[#101010]" />
+          <div className="h-80 animate-pulse rounded-3xl bg-superficie-elevada" />
         </div>
       </div>
     </main>
@@ -469,9 +469,9 @@ function ProjectNotFound({
   projectId: string;
 }) {
   return (
-    <main className="min-h-screen bg-[#050505] px-8 py-12 text-white">
-      <div className="mx-auto max-w-3xl rounded-3xl border border-[#232323] bg-[#101010] p-8">
-        <p className="text-xs uppercase tracking-[0.2em] text-[#767676]">
+    <main className="min-h-screen bg-superficie px-8 py-12 text-texto-largo">
+      <div className="mx-auto max-w-3xl rounded-3xl border border-borde bg-superficie-elevada p-8">
+        <p className="text-xs uppercase tracking-[0.2em] text-texto-largo">
           Creative OS
         </p>
 
@@ -479,26 +479,26 @@ function ProjectNotFound({
           Proyecto no encontrado
         </h1>
 
-        <p className="mt-4 leading-7 text-[#A6A6A6]">
+        <p className="mt-4 leading-7 text-texto-largo">
           No se encontró un proyecto asociado al
           identificador:
         </p>
 
-        <code className="mt-3 block overflow-x-auto rounded-xl bg-[#080808] px-4 py-3 text-sm text-[#D9FF00]">
+        <code className="mt-3 block overflow-x-auto rounded-xl bg-superficie-elevada px-4 py-3 text-sm text-texto-principal">
           {projectId}
         </code>
 
         <div className="mt-7 flex flex-wrap gap-3">
           <Link
             href="/"
-            className="rounded-full border border-[#333333] px-6 py-3 text-sm font-semibold text-white"
+            className="rounded-full border border-borde px-6 py-3 text-sm font-semibold text-texto-largo"
           >
             Ir al medio
           </Link>
 
           <Link
             href="/studio"
-            className="rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black"
+            className="rounded-full bg-rojo-base px-6 py-3 text-sm font-bold text-hueso"
           >
             Volver al estudio
           </Link>

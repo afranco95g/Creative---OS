@@ -206,31 +206,31 @@ export function ProjectEditorialForm({
 
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-[#050505] px-6 py-12 text-white">
+      <main className="min-h-screen bg-superficie px-6 py-12 text-texto-largo">
         <div className="mx-auto max-w-6xl">
-          <div className="h-4 w-48 animate-pulse rounded bg-[#222222]" />
+          <div className="h-4 w-48 animate-pulse rounded bg-borde" />
 
-          <div className="mt-8 h-16 w-3/4 animate-pulse rounded bg-[#111111]" />
+          <div className="mt-8 h-16 w-3/4 animate-pulse rounded bg-superficie-elevada" />
 
-          <div className="mt-10 h-[600px] animate-pulse rounded-[32px] bg-[#0A0A0A]" />
+          <div className="mt-10 h-[600px] animate-pulse rounded-[32px] bg-superficie-elevada" />
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#050505] px-6 py-10 text-white sm:px-8 lg:px-12">
+    <main className="min-h-screen bg-superficie px-6 py-10 text-texto-largo sm:px-8 lg:px-12">
       <div className="mx-auto max-w-6xl">
         <header className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <Link
               href="/revision-editorial"
-              className="text-sm text-[#777777] transition hover:text-white"
+              className="text-sm text-texto-largo transition hover:text-texto-largo"
             >
               ← Volver a revisión editorial
             </Link>
 
-            <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-[#D9FF00]">
+            <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-texto-principal">
               El Culebreo · Medio
             </p>
 
@@ -238,7 +238,7 @@ export function ProjectEditorialForm({
               Ficha editorial
             </h1>
 
-            <p className="mt-5 max-w-3xl text-base leading-8 text-[#999999]">
+            <p className="mt-5 max-w-3xl text-base leading-8 text-texto-largo">
               Convierte la estructura interna del
               proyecto en una historia pública clara,
               contextualizada y legible para la
@@ -247,12 +247,12 @@ export function ProjectEditorialForm({
           </div>
 
           {profile ? (
-            <div className="rounded-2xl border border-white/10 bg-[#0A0A0A] px-5 py-4">
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#666666]">
+            <div className="rounded-2xl border border-borde/10 bg-superficie-elevada px-5 py-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-texto-largo">
                 Estado editorial
               </p>
 
-              <p className="mt-2 text-sm font-semibold text-[#D9FF00]">
+              <p className="mt-2 text-sm font-semibold text-texto-principal">
                 {getStatusLabel(
                   profile.status
                 )}
@@ -262,13 +262,13 @@ export function ProjectEditorialForm({
         </header>
 
         {errorMessage ? (
-          <div className="mt-8 rounded-2xl border border-red-400/20 bg-red-400/10 px-5 py-4 text-sm leading-6 text-red-200">
+          <div className="mt-8 rounded-2xl border border-borde bg-rojo-base px-5 py-4 text-sm leading-6 text-hueso">
             {errorMessage}
           </div>
         ) : null}
 
         {successMessage ? (
-          <div className="mt-8 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-5 py-4 text-sm leading-6 text-emerald-200">
+          <div className="mt-8 rounded-2xl border border-borde bg-superficie-elevada px-5 py-4 text-sm leading-6 text-texto-principal">
             {successMessage}
           </div>
         ) : null}
@@ -277,8 +277,8 @@ export function ProjectEditorialForm({
           onSubmit={handleSubmit}
           className="mt-10 space-y-6"
         >
-          <section className="rounded-[32px] border border-white/10 bg-[#0A0A0A] p-7 md:p-9">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+          <section className="rounded-[32px] border border-borde/10 bg-superficie-elevada p-7 md:p-9">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
               Identidad editorial
             </p>
 
@@ -308,8 +308,8 @@ export function ProjectEditorialForm({
                 label="URL pública"
                 htmlFor="editorial-slug"
               >
-                <div className="flex overflow-hidden rounded-2xl border border-white/10 bg-[#111111] focus-within:border-[#D9FF00]">
-                  <span className="flex items-center border-r border-white/10 px-4 text-sm text-[#666666]">
+                <div className="flex overflow-hidden rounded-2xl border border-borde/10 bg-superficie-elevada focus-within:border-acento">
+                  <span className="flex items-center border-r border-borde/10 px-4 text-sm text-texto-largo">
                     /proyectos/
                   </span>
 
@@ -321,7 +321,7 @@ export function ProjectEditorialForm({
                         event.target.value
                       )
                     }
-                    className="min-w-0 flex-1 bg-transparent px-4 py-4 text-white outline-none"
+                    className="min-w-0 flex-1 bg-transparent px-4 py-4 text-texto-largo outline-none"
                   />
                 </div>
               </Field>
@@ -348,8 +348,8 @@ export function ProjectEditorialForm({
             </div>
           </section>
 
-          <section className="rounded-[32px] border border-white/10 bg-[#0A0A0A] p-7 md:p-9">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+          <section className="rounded-[32px] border border-borde/10 bg-superficie-elevada p-7 md:p-9">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
               Relato
             </p>
 
@@ -380,8 +380,8 @@ export function ProjectEditorialForm({
             </div>
           </section>
 
-          <section className="rounded-[32px] border border-white/10 bg-[#0A0A0A] p-7 md:p-9">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+          <section className="rounded-[32px] border border-borde/10 bg-superficie-elevada p-7 md:p-9">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
               Contexto visual y territorial
             </p>
 
@@ -419,7 +419,7 @@ export function ProjectEditorialForm({
                   className={inputClassName}
                 />
 
-                <p className="mt-2 text-xs text-[#666666]">
+                <p className="mt-2 text-xs text-texto-largo">
                   Separa cada disciplina con
                   una coma.
                 </p>
@@ -462,7 +462,7 @@ export function ProjectEditorialForm({
             </div>
 
             {coverImageUrl ? (
-              <div className="mt-8 overflow-hidden rounded-3xl border border-white/10 bg-[#111111]">
+              <div className="mt-8 overflow-hidden rounded-3xl border border-borde/10 bg-superficie-elevada">
                 <img
                   src={coverImageUrl}
                   alt="Vista previa de la portada"
@@ -474,13 +474,13 @@ export function ProjectEditorialForm({
 <ProjectActorsEditor
   projectId={projectId}
 />
-          <div className="flex flex-col gap-4 rounded-[28px] border border-[#D9FF00]/20 bg-[#D9FF00]/5 p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 rounded-[28px] border border-acento/20 bg-acento/5 p-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="font-semibold text-white">
+              <p className="font-semibold text-texto-largo">
                 Guardar o marcar como lista
               </p>
 
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#888888]">
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-texto-largo">
                 La publicación final seguirá
                 dependiendo del administrador
                 del medio.
@@ -491,7 +491,7 @@ export function ProjectEditorialForm({
               <button
                 type="submit"
                 disabled={isSaving}
-                className="rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:border-white disabled:opacity-50"
+                className="rounded-full border border-borde/15 px-6 py-3 text-sm font-semibold text-texto-largo transition hover:border-borde disabled:opacity-50"
               >
                 Guardar borrador
               </button>
@@ -504,7 +504,7 @@ export function ProjectEditorialForm({
                   );
                 }}
                 disabled={isSaving}
-                className="rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black transition hover:bg-white disabled:opacity-50"
+                className="rounded-full bg-rojo-base px-6 py-3 text-sm font-bold text-hueso transition hover:bg-rojo-base disabled:opacity-50"
               >
                 {isSaving
                   ? 'Guardando...'
@@ -531,7 +531,7 @@ function Field({
     <div>
       <label
         htmlFor={htmlFor}
-        className="mb-2 block text-sm font-medium text-[#BDBDBD]"
+        className="mb-2 block text-sm font-medium text-texto-largo"
       >
         {label}
       </label>
@@ -565,7 +565,7 @@ function getErrorMessage(
 }
 
 const inputClassName =
-  'w-full rounded-2xl border border-white/10 bg-[#111111] px-5 py-4 text-white outline-none transition placeholder:text-[#555555] focus:border-[#D9FF00]';
+  'w-full rounded-2xl border border-borde/10 bg-superficie-elevada px-5 py-4 text-texto-largo outline-none transition placeholder:text-texto-largo focus:border-acento';
 
 const textareaClassName =
-  'w-full resize-y rounded-2xl border border-white/10 bg-[#111111] px-5 py-4 leading-7 text-white outline-none transition placeholder:text-[#555555] focus:border-[#D9FF00]';
+  'w-full resize-y rounded-2xl border border-borde/10 bg-superficie-elevada px-5 py-4 leading-7 text-texto-largo outline-none transition placeholder:text-texto-largo focus:border-acento';

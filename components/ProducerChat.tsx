@@ -53,21 +53,21 @@ export function ProducerChat({
   return (
     <section className="mx-auto grid max-w-[1280px] grid-cols-[1fr_340px] gap-10">
       <div className="min-h-screen pb-40">
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-[#0b0b0b] p-4">
-          <p className="max-w-2xl text-sm leading-6 text-[#999]">Aplicar solicita conexiones o acompañamiento con un snapshot autorizado. No detiene el desarrollo ni publica automáticamente el proyecto.</p>
-          <Link href="/mi-ecosistema" className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black">Aplicar al ecosistema</Link>
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-borde/10 bg-superficie-elevada p-4">
+          <p className="max-w-2xl text-sm leading-6 text-texto-largo">Aplicar solicita conexiones o acompañamiento con un snapshot autorizado. No detiene el desarrollo ni publica automáticamente el proyecto.</p>
+          <Link href="/mi-ecosistema" className="rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso">Aplicar al ecosistema</Link>
         </div>
         {messages.length === 0 ? (
           <div className="pt-24">
-            <p className="mb-4 text-sm uppercase tracking-[0.25em] text-[#D9FF00]">
+            <p className="mb-4 text-sm uppercase tracking-[0.25em] text-texto-principal">
               Productor Ejecutivo
             </p>
 
-            <h1 className="max-w-4xl text-6xl font-semibold tracking-tight text-white">
+            <h1 className="max-w-4xl text-6xl font-semibold tracking-tight text-texto-largo">
               ¿Qué quieres construir hoy?
             </h1>
 
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#B5B5B5]">
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-texto-largo">
               Cuéntame tu idea como la tienes en la cabeza. Creative OS la
               convertirá en un proyecto organizado, con objetivos, tareas,
               documentos, presupuesto, cronograma y próximos pasos.
@@ -78,7 +78,7 @@ export function ProducerChat({
             {messages.map((message) =>
               message.role === 'user' ? (
                 <div key={message.id} className="flex justify-end">
-                  <div className="max-w-[720px] rounded-3xl bg-[#151515] px-6 py-5 text-lg leading-relaxed text-white">
+                  <div className="max-w-[720px] rounded-3xl bg-superficie px-6 py-5 text-lg leading-relaxed text-texto-largo">
                     {message.content}
                   </div>
                 </div>
@@ -94,21 +94,21 @@ export function ProducerChat({
         {financialProposal ? <FinancialProposalCard proposal={financialProposal} onAccept={onAcceptFinancialProposal}/> : null}
 
         <form onSubmit={handleSubmit} className="sticky bottom-8 mt-10">
-          <div className="rounded-3xl border border-[#232323] bg-[#101010]/95 p-4 shadow-2xl backdrop-blur">
+          <div className="rounded-3xl border border-borde bg-superficie-elevada/95 p-4 shadow-2xl backdrop-blur">
             <textarea
               value={input}
               onChange={(event) => setInput(event.target.value)}
               placeholder="Describe tu idea, responde la pregunta o agrega nueva información..."
-              className="min-h-[96px] w-full resize-none bg-transparent p-3 text-base text-white outline-none placeholder:text-[#666666]"
+              className="min-h-[96px] w-full resize-none bg-transparent p-3 text-base text-texto-largo outline-none placeholder:text-texto-largo"
             />
 
-            <div className="flex items-center justify-between border-t border-[#232323] pt-4">
+            <div className="flex items-center justify-between border-t border-borde pt-4">
               <div>
-                <p className={`text-xs ${sync.status === 'error' ? 'text-red-300' : sync.status === 'offline' ? 'text-amber-300' : 'text-[#767676]'}`}>{sync.message || 'Una frase es suficiente para seguir avanzando.'}</p>
-                {sync.status === 'error' ? <button type="button" onClick={() => persistenceCoordinator.retry()} className="mt-1 text-xs text-[#D9FF00] underline">Reintentar</button> : null}
+                <p className={`text-xs ${sync.status === 'error' ? 'text-rojo-base' : sync.status === 'offline' ? 'text-naranja' : 'text-texto-largo'}`}>{sync.message || 'Una frase es suficiente para seguir avanzando.'}</p>
+                {sync.status === 'error' ? <button type="button" onClick={() => persistenceCoordinator.retry()} className="mt-1 text-xs text-texto-principal underline">Reintentar</button> : null}
               </div>
 
-              <button className="rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black transition hover:bg-white">
+              <button className="rounded-full bg-rojo-base px-6 py-3 text-sm font-bold text-hueso transition hover:shadow-stencil">
                 Continuar proyecto
               </button>
             </div>
@@ -133,19 +133,19 @@ function ProducerResponseCard({
   if (!response) return null;
 
   return (
-    <div className="max-w-[780px] rounded-3xl border border-[#232323] bg-[#101010] p-7">
+    <div className="max-w-[780px] rounded-3xl border border-borde bg-superficie-elevada p-7">
       <div className="space-y-6">
         <div>
-          <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#767676]">
+          <p className="mb-2 text-xs uppercase tracking-[0.2em] text-texto-largo">
             Lo que entendí
           </p>
-          <p className="text-lg leading-relaxed text-white">
+          <p className="text-lg leading-relaxed text-texto-largo">
             {response.understood}
           </p>
         </div>
 
         <div>
-          <p className="mb-3 text-xs uppercase tracking-[0.2em] text-[#767676]">
+          <p className="mb-3 text-xs uppercase tracking-[0.2em] text-texto-largo">
             Lo que ya quedó organizado
           </p>
 
@@ -153,7 +153,7 @@ function ProducerResponseCard({
             {response.organized.map((item) => (
               <span
                 key={item}
-                className="rounded-full border border-[#284221] bg-[#102010] px-3 py-1 text-sm text-[#6EEB83]"
+                className="rounded-full border border-borde bg-superficie-elevada px-3 py-1 text-sm text-emerald-700"
               >
                 ✓ {item}
               </span>
@@ -162,7 +162,7 @@ function ProducerResponseCard({
         </div>
 
         <div>
-          <p className="mb-3 text-xs uppercase tracking-[0.2em] text-[#767676]">
+          <p className="mb-3 text-xs uppercase tracking-[0.2em] text-texto-largo">
             Lo que falta fortalecer
           </p>
 
@@ -170,7 +170,7 @@ function ProducerResponseCard({
             {response.gaps.map((item) => (
               <span
                 key={item}
-                className="rounded-full border border-[#4A3D16] bg-[#201A08] px-3 py-1 text-sm text-[#FFC857]"
+                className="rounded-full border border-borde bg-superficie-elevada px-3 py-1 text-sm text-naranja"
               >
                 {item}
               </span>
@@ -178,28 +178,28 @@ function ProducerResponseCard({
           </div>
         </div>
 
-        <div className="border-t border-[#232323] pt-6">
-          <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[#767676]">
+        <div className="border-t border-borde pt-6">
+          <p className="mb-2 text-xs uppercase tracking-[0.2em] text-texto-largo">
             Siguiente pregunta
           </p>
 
-          <p className="text-2xl font-medium leading-snug text-[#D9FF00]">
+          <p className="text-2xl font-medium leading-snug text-texto-principal">
             {response.nextQuestion}
           </p>
           {response.nextQuestionOptions?.length ? (
             <div className="mt-4 flex flex-wrap gap-2">
-              {response.nextQuestionOptions.map((option) => <button key={option} type="button" onClick={() => onChoose(option)} className="rounded-full border border-white/15 px-3 py-2 text-left text-xs text-[#cfcfcf] hover:border-[#D9FF00]">{option}</button>)}
+              {response.nextQuestionOptions.map((option) => <button key={option} type="button" onClick={() => onChoose(option)} className="rounded-full border border-borde/15 px-3 py-2 text-left text-xs text-texto-largo hover:border-acento">{option}</button>)}
             </div>
           ) : null}
-          <div className="mt-4 flex flex-wrap gap-3 text-xs text-[#888]">
-            {['Cambiar pregunta', 'Ver un ejemplo', '¿Por qué me preguntas esto?', 'Dejar pendiente', 'Cambiar de área'].map((action) => <button key={action} type="button" onClick={() => onChoose(action)} className="hover:text-white">{action}</button>)}
+          <div className="mt-4 flex flex-wrap gap-3 text-xs text-texto-largo">
+            {['Cambiar pregunta', 'Ver un ejemplo', '¿Por qué me preguntas esto?', 'Dejar pendiente', 'Cambiar de área'].map((action) => <button key={action} type="button" onClick={() => onChoose(action)} className="hover:text-texto-largo">{action}</button>)}
           </div>
         </div>
         {response.interpretation?.financialSignals.length ? (
-          <div className="border-t border-[#232323] pt-6">
-            <p className="text-xs uppercase tracking-[0.2em] text-[#767676]">Datos económicos detectados</p>
-            <div className="mt-3 space-y-2">{response.interpretation.financialSignals.map((signal) => <p key={signal.id} className="text-sm text-[#bbb]">{signal.concept}: {signal.amount === null ? 'pendiente' : `COP ${signal.amount.toLocaleString('es-CO')}`} · {signal.status}</p>)}</div>
-            {response.interpretation.financialSignals.some((signal) => signal.requiresConfirmation) ? <p className="mt-4 text-sm text-[#D9FF00]">Detecté datos económicos y necesidades futuras. Revísalos antes de incorporarlos definitivamente al presupuesto.</p> : null}
+          <div className="border-t border-borde pt-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-texto-largo">Datos económicos detectados</p>
+            <div className="mt-3 space-y-2">{response.interpretation.financialSignals.map((signal) => <p key={signal.id} className="text-sm text-texto-largo">{signal.concept}: {signal.amount === null ? 'pendiente' : `COP ${signal.amount.toLocaleString('es-CO')}`} · {signal.status}</p>)}</div>
+            {response.interpretation.financialSignals.some((signal) => signal.requiresConfirmation) ? <p className="mt-4 text-sm text-texto-principal">Detecté datos económicos y necesidades futuras. Revísalos antes de incorporarlos definitivamente al presupuesto.</p> : null}
           </div>
         ) : null}
       </div>
@@ -210,13 +210,13 @@ function ProducerResponseCard({
 function ConfirmationCard({request,entity,pendingCount,onResolve,onCorrect}:{request:ConfirmationRequest;entity?:ProjectKnowledgeEntity;pendingCount:number;onResolve:(id:string,status:'accepted'|'rejected'|'dismissed')=>void;onCorrect:(id:string,correction:string)=>void}){
   const [editing,setEditing]=useState(false),[correction,setCorrection]=useState('');
   const understood=entity?describeKnowledge(entity):request.question;
-  return <section className="mt-8 max-w-[780px] rounded-3xl border border-[#4A3D16] bg-[#151207] p-6">
-    <div className="flex items-center justify-between gap-4"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#FFC857]">Quiero confirmar algo</p><span className="text-xs text-[#8f8465]">{pendingCount} {pendingCount===1?'cosa':'cosas'} por confirmar</span></div>
-    <p className="mt-4 text-xs uppercase tracking-[0.16em] text-[#81775d]">Entendí que</p><p className="mt-2 text-lg leading-7 text-white">{understood}</p><p className="mt-3 text-sm leading-6 text-[#b7aa83]">{request.question}</p>
-    {editing?<div className="mt-5"><textarea aria-label="Corrección de la interpretación" value={correction} onChange={event=>setCorrection(event.target.value)} placeholder="Escribe la información correcta…" className="min-h-24 w-full rounded-2xl border border-white/10 bg-black/40 p-4 text-sm outline-none focus:border-[#FFC857]"/><div className="mt-3 flex gap-2"><button type="button" disabled={!correction.trim()} onClick={()=>{onCorrect(request.id,correction.trim());setEditing(false);setCorrection('');}} className="rounded-full bg-[#FFC857] px-4 py-2 text-sm font-bold text-black disabled:opacity-40">Guardar corrección</button><button type="button" onClick={()=>setEditing(false)} className="rounded-full border border-white/15 px-4 py-2 text-sm">Cancelar</button></div></div>:<div className="mt-5 flex flex-wrap gap-2"><button type="button" onClick={()=>onResolve(request.id,'accepted')} className="rounded-full bg-[#D9FF00] px-4 py-2 text-sm font-bold text-black">Confirmar</button><button type="button" onClick={()=>setEditing(true)} className="rounded-full border border-[#FFC857]/40 px-4 py-2 text-sm text-[#FFC857]">Corregir</button><button type="button" onClick={()=>onResolve(request.id,'rejected')} className="rounded-full border border-white/15 px-4 py-2 text-sm">No es correcto</button><button type="button" onClick={()=>onResolve(request.id,'dismissed')} className="rounded-full px-4 py-2 text-sm text-[#888]">Después</button></div>}
+  return <section className="mt-8 max-w-[780px] rounded-3xl border border-borde bg-superficie p-6">
+    <div className="flex items-center justify-between gap-4"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-naranja">Quiero confirmar algo</p><span className="text-xs text-texto-largo">{pendingCount} {pendingCount===1?'cosa':'cosas'} por confirmar</span></div>
+    <p className="mt-4 text-xs uppercase tracking-[0.16em] text-texto-largo">Entendí que</p><p className="mt-2 text-lg leading-7 text-texto-largo">{understood}</p><p className="mt-3 text-sm leading-6 text-texto-largo">{request.question}</p>
+    {editing?<div className="mt-5"><textarea aria-label="Corrección de la interpretación" value={correction} onChange={event=>setCorrection(event.target.value)} placeholder="Escribe la información correcta…" className="min-h-24 w-full rounded-2xl border border-borde/10 bg-black/40 p-4 text-sm outline-none focus:border-naranja"/><div className="mt-3 flex gap-2"><button type="button" disabled={!correction.trim()} onClick={()=>{onCorrect(request.id,correction.trim());setEditing(false);setCorrection('');}} className="rounded-full bg-naranja px-4 py-2 text-sm font-bold text-hueso disabled:opacity-40">Guardar corrección</button><button type="button" onClick={()=>setEditing(false)} className="rounded-full border border-borde/15 px-4 py-2 text-sm">Cancelar</button></div></div>:<div className="mt-5 flex flex-wrap gap-2"><button type="button" onClick={()=>onResolve(request.id,'accepted')} className="rounded-full bg-rojo-base px-4 py-2 text-sm font-bold text-hueso">Confirmar</button><button type="button" onClick={()=>setEditing(true)} className="rounded-full border border-naranja/40 px-4 py-2 text-sm text-naranja">Corregir</button><button type="button" onClick={()=>onResolve(request.id,'rejected')} className="rounded-full border border-borde/15 px-4 py-2 text-sm">No es correcto</button><button type="button" onClick={()=>onResolve(request.id,'dismissed')} className="rounded-full px-4 py-2 text-sm text-texto-largo">Después</button></div>}
   </section>;
 }
 
-function ConsistencyCard({issue,onResolve}:{issue:ConsistencyIssue;onResolve:(id:string,status:'acknowledged'|'dismissed')=>void}){return <section className={`mt-6 max-w-[780px] rounded-3xl border p-6 ${issue.severity==='critical'?'border-red-500/35 bg-red-950/20':'border-amber-500/25 bg-amber-950/10'}`}><p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-300">Encontré algo para revisar</p><h3 className="mt-3 text-lg font-semibold">{issue.title}</h3><p className="mt-2 text-sm leading-6 text-[#c0b9aa]">{issue.explanation}</p><div className="mt-5 flex flex-wrap gap-2"><button type="button" onClick={()=>onResolve(issue.id,'acknowledged')} className="rounded-full bg-white px-4 py-2 text-sm font-bold text-black">Revisar ahora</button><button type="button" onClick={()=>onResolve(issue.id,'dismissed')} className="rounded-full border border-white/15 px-4 py-2 text-sm">Continuar de todas formas</button></div></section>}
+function ConsistencyCard({issue,onResolve}:{issue:ConsistencyIssue;onResolve:(id:string,status:'acknowledged'|'dismissed')=>void}){return <section className="mt-6 max-w-[780px] rounded-3xl border border-borde bg-superficie-elevada p-6"><p className={`text-xs font-semibold uppercase tracking-[0.2em] ${issue.severity==='critical'?'text-rojo-base':'text-naranja'}`}>Encontré algo para revisar</p><h3 className="mt-3 text-lg font-semibold">{issue.title}</h3><p className="mt-2 text-sm leading-6 text-texto-largo">{issue.explanation}</p><div className="mt-5 flex flex-wrap gap-2"><button type="button" onClick={()=>onResolve(issue.id,'acknowledged')} className="rounded-full bg-rojo-base px-4 py-2 text-sm font-bold text-hueso">Revisar ahora</button><button type="button" onClick={()=>onResolve(issue.id,'dismissed')} className="rounded-full border border-borde px-4 py-2 text-sm">Continuar de todas formas</button></div></section>}
 
 function describeKnowledge(entity:ProjectKnowledgeEntity){if(typeof entity.value==='object'&&!Array.isArray(entity.value)){const value=entity.value as Record<string,unknown>;if(typeof value.amount==='number')return `${entity.label}: COP ${value.amount.toLocaleString('es-CO')}${value.unit?` por ${String(value.unit)}`:''}.`;if(value.actor&&value.responsibility)return `${String(value.actor)} será responsable de ${String(value.responsibility)}.`;}return `${entity.label}: ${String(entity.value)}.`;}

@@ -12,10 +12,10 @@ export function PageHeader({
   actions,
 }: PageHeaderProps) {
   return (
-    <header className="flex flex-col gap-6 border-b border-neutral-800 pb-8 md:flex-row md:items-end md:justify-between">
+    <header className="flex flex-col gap-6 border-b border-borde pb-8 md:flex-row md:items-end md:justify-between">
       <div className="max-w-3xl">
         {eyebrow && (
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-lime-400">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-texto-principal">
             {eyebrow}
           </p>
         )}
@@ -25,7 +25,7 @@ export function PageHeader({
         </h1>
 
         {description && (
-          <p className="mt-4 text-lg leading-relaxed text-neutral-400">
+          <p className="mt-4 text-lg leading-relaxed text-texto-largo">
             {description}
           </p>
         )}

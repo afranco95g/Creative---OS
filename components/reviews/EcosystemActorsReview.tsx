@@ -201,18 +201,18 @@ export function EcosystemActorsReview() {
   }
 
   return (
-    <main className="min-h-screen bg-[#050505] px-6 py-10 text-white sm:px-8 lg:px-12">
+    <main className="min-h-screen bg-superficie px-6 py-10 text-texto-largo sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
         <header className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <Link
               href="/mi-ecosistema"
-              className="text-sm text-[#777777] transition hover:text-white"
+              className="text-sm text-texto-largo transition hover:text-texto-largo"
             >
               ← Volver a Mi Ecosistema
             </Link>
 
-            <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-[#D9FF00]">
+            <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-texto-principal">
               Administración del ecosistema
             </p>
 
@@ -220,7 +220,7 @@ export function EcosystemActorsReview() {
               Publicación de actores
             </h1>
 
-            <p className="mt-5 max-w-3xl text-base leading-8 text-[#999999]">
+            <p className="mt-5 max-w-3xl text-base leading-8 text-texto-largo">
               Revisa las personas, espacios y financiadores antes
               de hacer sus perfiles visibles dentro del ecosistema
               público de El Culebreo.
@@ -230,7 +230,7 @@ export function EcosystemActorsReview() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/ecosistema"
-              className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-white"
+              className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold transition hover:border-borde"
             >
               Ver ecosistema público
             </Link>
@@ -241,7 +241,7 @@ export function EcosystemActorsReview() {
                 void loadActors();
               }}
               disabled={isLoading}
-              className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black disabled:opacity-50"
+              className="rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso disabled:opacity-50"
             >
               Actualizar actores
             </button>
@@ -249,13 +249,13 @@ export function EcosystemActorsReview() {
         </header>
 
         {errorMessage ? (
-          <div className="mt-8 rounded-2xl border border-red-400/20 bg-red-400/10 px-5 py-4 text-sm text-red-200">
+          <div className="mt-8 rounded-2xl border border-borde bg-rojo-base px-5 py-4 text-sm text-hueso">
             {errorMessage}
           </div>
         ) : null}
 
         {successMessage ? (
-          <div className="mt-8 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-5 py-4 text-sm text-emerald-200">
+          <div className="mt-8 rounded-2xl border border-borde bg-superficie-elevada px-5 py-4 text-sm text-texto-principal">
             {successMessage}
           </div>
         ) : null}
@@ -289,8 +289,8 @@ export function EcosystemActorsReview() {
                     'rounded-full border px-5 py-3 text-sm font-semibold transition',
                     activeType ===
                     actorType
-                      ? 'border-[#D9FF00] bg-[#D9FF00] text-black'
-                      : 'border-white/15 text-white hover:border-white',
+                      ? 'border-acento bg-rojo-base text-hueso'
+                      : 'border-borde/15 text-texto-largo hover:border-borde',
                   ].join(' ')}
                 >
                   {typeLabels[
@@ -305,12 +305,12 @@ export function EcosystemActorsReview() {
 
         {isLoading ? (
           <div className="mt-8 grid gap-5 md:grid-cols-2">
-            <div className="h-80 animate-pulse rounded-3xl bg-[#101010]" />
-            <div className="h-80 animate-pulse rounded-3xl bg-[#101010]" />
+            <div className="h-80 animate-pulse rounded-3xl bg-superficie-elevada" />
+            <div className="h-80 animate-pulse rounded-3xl bg-superficie-elevada" />
           </div>
         ) : visibleActors.length ===
           0 ? (
-          <div className="mt-8 rounded-3xl border border-dashed border-white/15 bg-[#0A0A0A] p-10">
+          <div className="mt-8 rounded-3xl border border-dashed border-borde/15 bg-superficie-elevada p-10">
             <h2 className="text-2xl font-semibold">
               No hay actores de este tipo
             </h2>
@@ -375,10 +375,10 @@ function ActorReviewCard({
       .join(', ');
 
   return (
-    <article className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-6">
+    <article className="rounded-3xl border border-borde/10 bg-superficie-elevada p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <span className="rounded-full border border-[#D9FF00]/20 bg-[#D9FF00]/10 px-3 py-1 text-[10px] font-bold uppercase text-[#D9FF00]">
+          <span className="rounded-full border border-acento/20 bg-acento/10 px-3 py-1 text-[10px] font-bold uppercase text-texto-principal">
             {
               statusLabels[
                 actor.status
@@ -390,12 +390,12 @@ function ActorReviewCard({
             {actor.name}
           </h2>
 
-          <p className="mt-2 text-sm font-semibold text-[#D9FF00]">
+          <p className="mt-2 text-sm font-semibold text-texto-principal">
             {actor.headline}
           </p>
         </div>
 
-        <span className="text-xs uppercase text-[#666666]">
+        <span className="text-xs uppercase text-texto-largo">
           {
             typeLabels[
               actor.actorType
@@ -404,12 +404,12 @@ function ActorReviewCard({
         </span>
       </div>
 
-      <p className="mt-5 line-clamp-4 text-sm leading-7 text-[#888888]">
+      <p className="mt-5 line-clamp-4 text-sm leading-7 text-texto-largo">
         {actor.description ||
           'Este perfil todavía no tiene una descripción pública.'}
       </p>
 
-      <p className="mt-5 text-xs text-[#555555]">
+      <p className="mt-5 text-xs text-texto-largo">
         {location ||
           'Ubicación sin definir'}
       </p>
@@ -430,8 +430,8 @@ function ActorReviewCard({
           className={[
             'rounded-full border px-4 py-2 text-xs font-semibold transition disabled:opacity-50',
             actor.verified
-              ? 'border-[#D9FF00] text-[#D9FF00]'
-              : 'border-white/15 text-[#888888]',
+              ? 'border-acento text-texto-principal'
+              : 'border-borde/15 text-texto-largo',
           ].join(' ')}
         >
           {actor.verified
@@ -454,8 +454,8 @@ function ActorReviewCard({
           className={[
             'rounded-full border px-4 py-2 text-xs font-semibold transition disabled:opacity-50',
             actor.featured
-              ? 'border-[#D9FF00] text-[#D9FF00]'
-              : 'border-white/15 text-[#888888]',
+              ? 'border-acento text-texto-principal'
+              : 'border-borde/15 text-texto-largo',
           ].join(' ')}
         >
           {actor.featured
@@ -464,7 +464,7 @@ function ActorReviewCard({
         </button>
       </div>
 
-      <div className="mt-7 grid grid-cols-2 gap-3 border-t border-white/10 pt-6">
+      <div className="mt-7 grid grid-cols-2 gap-3 border-t border-borde/10 pt-6">
         {actor.status ===
         'published' ? (
           <button
@@ -479,7 +479,7 @@ function ActorReviewCard({
               );
             }}
             disabled={isWorking}
-            className="rounded-full border border-white/15 px-4 py-3 text-sm font-semibold disabled:opacity-50"
+            className="rounded-full border border-borde/15 px-4 py-3 text-sm font-semibold disabled:opacity-50"
           >
             Volver a borrador
           </button>
@@ -496,7 +496,7 @@ function ActorReviewCard({
               );
             }}
             disabled={isWorking}
-            className="rounded-full bg-[#D9FF00] px-4 py-3 text-sm font-bold text-black disabled:opacity-50"
+            className="rounded-full bg-rojo-base px-4 py-3 text-sm font-bold text-hueso disabled:opacity-50"
           >
             {isWorking
               ? 'Publicando...'
@@ -516,7 +516,7 @@ function ActorReviewCard({
             );
           }}
           disabled={isWorking}
-          className="rounded-full border border-red-400/30 px-4 py-3 text-sm font-semibold text-red-300 disabled:opacity-50"
+          className="rounded-full border border-borde px-4 py-3 text-sm font-semibold text-rojo-base disabled:opacity-50"
         >
           Archivar
         </button>

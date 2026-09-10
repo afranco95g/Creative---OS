@@ -62,44 +62,44 @@ export default async function AdminPage() {
   );
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
-      <header className="border-b border-white/10">
+    <main className="min-h-screen bg-superficie text-texto-largo">
+      <header className="border-b border-borde/10">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-5 md:px-8">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#D9FF00]">EL CULEBREO</p>
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-texto-principal">EL CULEBREO</p>
             <p className="mt-1 text-lg font-semibold">{isSuperadmin ? 'Dirección del ecosistema' : 'Administración'}</p>
           </div>
           <div className="flex items-center gap-3">
-            <Link href="/" className="border border-white/15 px-4 py-2 text-sm font-semibold hover:border-white/40">Ver portada</Link>
+            <Link href="/" className="border border-borde/15 px-4 py-2 text-sm font-semibold hover:border-borde/40">Ver portada</Link>
             <LogoutButton />
           </div>
         </div>
       </header>
 
       <section className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
-        <div className="flex flex-col justify-between gap-6 border-b border-white/10 pb-10 md:flex-row md:items-end">
+        <div className="flex flex-col justify-between gap-6 border-b border-borde/10 pb-10 md:flex-row md:items-end">
           <div className="max-w-3xl">
-            <div className="flex items-center gap-2 text-[#D9FF00]"><ShieldCheck size={18} /><span className="text-xs font-bold uppercase tracking-[0.24em]">{role.replaceAll('_', ' ')}</span></div>
+            <div className="flex items-center gap-2 text-texto-principal"><ShieldCheck size={18} /><span className="text-xs font-bold uppercase tracking-[0.24em]">{role.replaceAll('_', ' ')}</span></div>
             <h1 className="mt-5 text-4xl font-bold md:text-5xl">{isSuperadmin ? 'Resumen ejecutivo' : 'Herramientas autorizadas'}</h1>
-            <p className="mt-4 text-[#999]">Sesión activa: {access.profile?.full_name || access.profile?.email}</p>
+            <p className="mt-4 text-texto-largo">Sesión activa: {access.profile?.full_name || access.profile?.email}</p>
           </div>
-          {overview?.error ? <p className="max-w-md border-l-2 border-amber-400 pl-4 text-sm text-amber-200">Aplica la migración 026 para activar los indicadores estratégicos.</p> : null}
+          {overview?.error ? <p className="max-w-md border-l-2 border-naranja pl-4 text-sm text-naranja">Aplica la migración 026 para activar los indicadores estratégicos.</p> : null}
         </div>
 
         {isSuperadmin && overview ? (
-          <div className="grid border-b border-white/10 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid border-b border-borde/10 sm:grid-cols-2 lg:grid-cols-4">
             {metricLabels.map(([key, label]) => (
-              <div key={key} className="border-white/10 py-7 sm:border-r sm:px-6 sm:first:pl-0">
-                <p className="text-3xl font-bold text-[#D9FF00]">{String(overview.data[key])}</p>
-                <p className="mt-2 text-sm text-[#888]">{label}</p>
+              <div key={key} className="border-borde/10 py-7 sm:border-r sm:px-6 sm:first:pl-0">
+                <p className="text-3xl font-bold text-texto-principal">{String(overview.data[key])}</p>
+                <p className="mt-2 text-sm text-texto-largo">{label}</p>
               </div>
             ))}
           </div>
         ) : null}
 
         {isSuperadmin ? (
-          <section className="border-b border-white/10 py-9">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D9FF00]">Qué debería atender hoy</p>
+          <section className="border-b border-borde/10 py-9">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-texto-principal">Qué debería atender hoy</p>
             <div className="mt-5 grid gap-3 md:grid-cols-3">
               <Priority label="Aplicaciones sin revisar" value={overview?.data.pendingApplications ?? 0} href="/revision-ecosistema" />
               <Priority label="Publicaciones pendientes" value={overview?.data.pendingEditorial ?? 0} href="/admin/stories" />
@@ -108,18 +108,18 @@ export default async function AdminPage() {
           </section>
         ) : null}
 
-        <div className="grid gap-px bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-px bg-borde/10 sm:grid-cols-2 lg:grid-cols-3">
           {visibleModules.map((module) => {
             const Icon = module.icon;
             return (
-              <article key={module.title} className="min-h-52 bg-[#080808] p-6">
-                <Icon size={22} className="text-[#D9FF00]" />
+              <article key={module.title} className="min-h-52 bg-superficie-elevada p-6">
+                <Icon size={22} className="text-texto-principal" />
                 <h2 className="mt-6 text-xl font-semibold">{module.title}</h2>
-                <p className="mt-3 min-h-12 text-sm leading-6 text-[#888]">{module.description}</p>
+                <p className="mt-3 min-h-12 text-sm leading-6 text-texto-largo">{module.description}</p>
                 {'disabled' in module && module.disabled ? (
-                  <span className="mt-6 inline-block text-xs font-bold uppercase tracking-[0.16em] text-[#666]">En preparación</span>
+                  <span className="mt-6 inline-block text-xs font-bold uppercase tracking-[0.16em] text-texto-largo">En preparación</span>
                 ) : (
-                  <Link href={module.href} className="mt-6 inline-block font-semibold text-[#D9FF00] hover:text-white">Abrir módulo →</Link>
+                  <Link href={module.href} className="mt-6 inline-block font-semibold text-texto-principal hover:text-texto-largo">Abrir módulo →</Link>
                 )}
               </article>
             );
@@ -131,5 +131,5 @@ export default async function AdminPage() {
 }
 
 function Priority({ label, value, href }: { label: string; value: number; href: string }) {
-  return <Link href={href} className="flex items-center justify-between border border-white/10 bg-[#090909] p-5 hover:border-[#D9FF00]/60"><span className="text-sm text-[#aaa]">{label}</span><strong className="text-2xl">{value}</strong></Link>;
+  return <Link href={href} className="flex items-center justify-between border border-borde/10 bg-superficie-elevada p-5 hover:border-acento/60"><span className="text-sm text-texto-largo">{label}</span><strong className="text-2xl">{value}</strong></Link>;
 }

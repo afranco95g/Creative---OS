@@ -31,11 +31,11 @@ export default async function PeoplePage() {
 
       {people.length === 0 ? (
         <Card className="p-8">
-          <h2 className="text-lg font-semibold text-white">
+          <h2 className="text-lg font-semibold text-texto-largo">
             Todavía no hay personas registradas
           </h2>
 
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-neutral-400">
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-texto-largo">
             Cuando se creen perfiles dentro del ecosistema,
             aparecerán en este espacio.
           </p>
@@ -70,17 +70,17 @@ export default async function PeoplePage() {
                 className="p-6"
               >
                 <div className="flex items-start gap-4">
-                  <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#D9FF00] text-lg font-bold text-black">
+                  <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-rojo-base text-lg font-bold text-hueso">
                     {name.charAt(0).toUpperCase()}
                   </div>
 
                   <div className="min-w-0">
-                    <h2 className="truncate text-lg font-semibold text-white">
+                    <h2 className="truncate text-lg font-semibold text-texto-largo">
                       {name}
                     </h2>
 
                     {slug ? (
-                      <p className="mt-1 truncate text-sm text-neutral-500">
+                      <p className="mt-1 truncate text-sm text-texto-largo">
                         @{slug}
                       </p>
                     ) : null}
@@ -88,11 +88,11 @@ export default async function PeoplePage() {
                 </div>
 
                 {biography ? (
-                  <p className="mt-5 line-clamp-3 text-sm leading-relaxed text-neutral-400">
+                  <p className="mt-5 line-clamp-3 text-sm leading-relaxed text-texto-largo">
                     {biography}
                   </p>
                 ) : (
-                  <p className="mt-5 text-sm text-neutral-600">
+                  <p className="mt-5 text-sm text-texto-largo">
                     Sin biografía registrada.
                   </p>
                 )}

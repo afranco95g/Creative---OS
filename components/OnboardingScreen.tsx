@@ -42,15 +42,15 @@ export function OnboardingScreen({
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#050505] px-6 py-12 text-white">
+    <main className="flex min-h-screen items-center justify-center bg-superficie px-6 py-12 text-texto-largo">
       <section className="w-full max-w-3xl">
-        <p className="mb-5 text-sm font-bold uppercase tracking-[0.28em] text-[#D9FF00]">
+        <p className="mb-5 text-sm font-bold uppercase tracking-[0.28em] text-texto-principal">
           Creative OS
         </p>
 
         {step === 1 ? (
           <form onSubmit={handleCreativeFocusSubmit}>
-            <p className="text-sm uppercase tracking-[0.2em] text-[#767676]">
+            <p className="text-sm uppercase tracking-[0.2em] text-texto-largo">
               Bienvenido a tu estudio
             </p>
 
@@ -58,7 +58,7 @@ export function OnboardingScreen({
               Antes de crear proyectos, quiero entender cómo piensas.
             </h1>
 
-            <p className="mt-6 max-w-2xl text-xl leading-relaxed text-[#A6A6A6]">
+            <p className="mt-6 max-w-2xl text-xl leading-relaxed text-texto-largo">
               Cuéntame qué tipo de cosas disfrutas construir. No necesitas
               elegir una categoría ni escribir de forma técnica.
             </p>
@@ -67,14 +67,14 @@ export function OnboardingScreen({
               value={creativeFocus}
               onChange={(event) => setCreativeFocus(event.target.value)}
               placeholder="Por ejemplo: experiencias culturales, películas, marcas, productos, eventos, proyectos sociales..."
-              className="mt-10 min-h-[180px] w-full resize-none rounded-3xl border border-[#232323] bg-[#101010] p-6 text-lg leading-relaxed text-white outline-none transition placeholder:text-[#5F5F5F] focus:border-[#D9FF00]"
+              className="mt-10 min-h-[180px] w-full resize-none rounded-3xl border border-borde bg-superficie-elevada p-6 text-lg leading-relaxed text-texto-largo outline-none transition placeholder:text-texto-largo focus:border-acento"
             />
 
             <div className="mt-6 flex justify-end">
               <button
                 type="submit"
                 disabled={!creativeFocus.trim()}
-                className="rounded-full bg-[#D9FF00] px-7 py-3 text-sm font-bold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-full bg-rojo-base px-7 py-3 text-sm font-bold text-hueso transition hover:shadow-stencil disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Continuar
               </button>
@@ -85,12 +85,12 @@ export function OnboardingScreen({
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="mb-8 text-sm text-[#A6A6A6] transition hover:text-white"
+              className="mb-8 text-sm text-texto-largo transition hover:text-texto-largo"
             >
               ← Volver
             </button>
 
-            <p className="text-sm uppercase tracking-[0.2em] text-[#767676]">
+            <p className="text-sm uppercase tracking-[0.2em] text-texto-largo">
               Configurar el estudio
             </p>
 
@@ -98,7 +98,7 @@ export function OnboardingScreen({
               Ahora sí, ¿cómo quieres que te llame?
             </h1>
 
-            <p className="mt-6 max-w-2xl text-xl leading-relaxed text-[#A6A6A6]">
+            <p className="mt-6 max-w-2xl text-xl leading-relaxed text-texto-largo">
               Estos datos nos permiten crear tu espacio de producción.
             </p>
 
@@ -132,7 +132,7 @@ export function OnboardingScreen({
               <button
                 type="submit"
                 disabled={!name.trim() || !email.trim()}
-                className="rounded-full bg-[#D9FF00] px-7 py-3 text-sm font-bold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-full bg-rojo-base px-7 py-3 text-sm font-bold text-hueso transition hover:shadow-stencil disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Abrir mi estudio
               </button>
@@ -163,7 +163,7 @@ function Field({
 }: FieldProps) {
   return (
     <label className="block">
-      <span className="mb-2 block text-xs uppercase tracking-[0.18em] text-[#767676]">
+      <span className="mb-2 block text-xs uppercase tracking-[0.18em] text-texto-largo">
         {label}
       </span>
 
@@ -173,7 +173,7 @@ function Field({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-2xl border border-[#232323] bg-[#101010] px-5 py-4 text-base text-white outline-none transition placeholder:text-[#5F5F5F] focus:border-[#D9FF00]"
+        className="w-full rounded-2xl border border-borde bg-superficie-elevada px-5 py-4 text-base text-texto-largo outline-none transition placeholder:text-texto-largo focus:border-acento"
       />
     </label>
   );

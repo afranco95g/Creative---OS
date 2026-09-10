@@ -29,23 +29,23 @@ export default async function EcosystemDashboardPage() {
             href={entity.route}
             className="group"
           >
-            <Card className="h-full p-6 transition-all duration-200 group-hover:border-neutral-600 group-hover:bg-neutral-900">
+            <Card className="h-full p-6 transition-all duration-200 group-hover:border-borde group-hover:bg-superficie-elevada">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-neutral-500">
+                  <p className="text-sm text-texto-largo">
                     {entity.plural}
                   </p>
 
-                  <p className="mt-3 text-4xl font-semibold text-white">
+                  <p className="mt-3 text-4xl font-semibold text-texto-largo">
                     {entity.count}
                   </p>
 
-                  <p className="mt-2 text-sm text-neutral-600">
+                  <p className="mt-2 text-sm text-texto-largo">
                     {entity.subtitle}
                   </p>
                 </div>
 
-                <span className="text-neutral-600 transition-colors group-hover:text-white">
+                <span className="text-texto-largo transition-colors group-hover:text-texto-largo">
                   →
                 </span>
               </div>
@@ -55,11 +55,11 @@ export default async function EcosystemDashboardPage() {
       </section>
 
       <Card className="p-6">
-        <h2 className="text-xl font-semibold text-white">
+        <h2 className="text-xl font-semibold text-texto-largo">
           Actividad reciente
         </h2>
 
-        <p className="mt-3 text-sm leading-relaxed text-neutral-500">
+        <p className="mt-3 text-sm leading-relaxed text-texto-largo">
           Aquí aparecerán los cambios más recientes realizados por el equipo dentro del ecosistema.
         </p>
       </Card>

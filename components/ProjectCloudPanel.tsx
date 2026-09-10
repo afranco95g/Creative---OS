@@ -274,24 +274,24 @@ export function ProjectCloudPanel() {
   }
 
   return (
-    <section className="mt-6 rounded-3xl border border-[#D9FF00]/20 bg-[#D9FF00]/5 p-6">
+    <section className="mt-6 border border-borde bg-superficie-elevada p-6">
       <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
         <div className="max-w-2xl">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
             Proyectos y cuenta
           </p>
 
-          <h3 className="mt-3 text-xl font-semibold text-white">
+          <h3 className="mt-3 text-xl font-semibold text-texto-largo">
             Creative OS conectado con el ecosistema
           </h3>
 
-          <p className="mt-3 text-sm leading-7 text-[#A6A6A6]">
+          <p className="mt-3 text-sm leading-7 text-texto-largo">
             Los proyectos vinculados permanecen privados hasta que
             su propietario prepare y envíe una aplicación segura al
             ecosistema.
           </p>
 
-          <p className="mt-3 text-xs leading-5 text-[#777777]">
+          <p className="mt-3 text-xs leading-5 text-texto-largo">
             Vincular o actualizar un proyecto no lo publica, no lo
             postula y no comparte su información sensible.
           </p>
@@ -328,7 +328,7 @@ export function ProjectCloudPanel() {
             localProjects.length ===
               0
           }
-          className="rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
+          className="border border-borde bg-texto-largo px-6 py-3 text-sm font-bold text-superficie transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSyncing
             ? 'Actualizando proyectos...'
@@ -341,27 +341,27 @@ export function ProjectCloudPanel() {
             void refreshProjects();
           }}
           disabled={isLoading}
-          className="rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:border-white disabled:opacity-50"
+          className="border border-borde px-6 py-3 text-sm font-semibold text-texto-largo transition hover:bg-superficie disabled:opacity-50"
         >
           Actualizar estado
         </button>
       </div>
 
       {successMessage ? (
-        <div className="mt-5 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-5 py-4 text-sm leading-6 text-emerald-200">
+        <div className="mt-5 border border-emerald-700/40 bg-emerald-700/10 px-5 py-4 text-sm leading-6 text-emerald-700">
           {successMessage}
         </div>
       ) : null}
 
       {errorMessage ? (
-        <div className="mt-5 rounded-2xl border border-red-400/20 bg-red-400/10 px-5 py-4 text-sm leading-6 text-red-200">
+        <div className="mt-5 border border-rojo-base/40 bg-rojo-base/10 px-5 py-4 text-sm leading-6 text-rojo-base">
           {errorMessage}
         </div>
       ) : null}
 
       {cloudProjects.length > 0 ? (
-        <div className="mt-7 border-t border-white/10 pt-6">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#767676]">
+        <div className="mt-7 border-t border-borde pt-6">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-texto-largo">
             Proyectos vinculados
           </p>
 
@@ -443,11 +443,11 @@ function CloudProjectCard({
       'publication_rejected';
 
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#101010] p-5">
+    <article className="border border-borde bg-superficie p-5">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <div className="max-w-2xl">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded-full border border-[#D9FF00]/20 bg-[#D9FF00]/10 px-3 py-1 text-[10px] font-bold uppercase text-[#D9FF00]">
+            <span className="border border-borde px-3 py-1 text-[10px] font-bold uppercase text-texto-largo">
               {
                 workflowLabels[
                   project
@@ -456,18 +456,18 @@ function CloudProjectCard({
               }
             </span>
 
-            <span className="text-xs capitalize text-[#777777]">
+            <span className="text-xs capitalize text-texto-largo">
               {project.category}
               {' · '}
               {project.progress}%
             </span>
           </div>
 
-          <h4 className="mt-4 text-xl font-semibold text-white">
+          <h4 className="mt-4 text-xl font-semibold text-texto-largo">
             {project.title}
           </h4>
 
-          <p className="mt-3 text-sm leading-6 text-[#888888]">
+          <p className="mt-3 text-sm leading-6 text-texto-largo">
             {
               workflowDescriptions[
                 project
@@ -503,7 +503,7 @@ function CloudProjectCard({
                 onPrepareApplication
               }
               disabled={isWorking}
-              className="rounded-full bg-white px-5 py-3 text-sm font-bold text-black transition hover:bg-[#D9FF00] disabled:opacity-50"
+              className="border border-borde px-5 py-3 text-sm font-bold text-texto-largo transition hover:bg-superficie-elevada disabled:opacity-50"
             >
               Preparar aplicación
             </button>
@@ -516,7 +516,7 @@ function CloudProjectCard({
                 onSubmitToMedia
               }
               disabled={isWorking}
-              className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black transition hover:bg-white disabled:opacity-50"
+              className="border border-borde bg-texto-largo px-5 py-3 text-sm font-bold text-superficie transition hover:opacity-80 disabled:opacity-50"
             >
               {isWorking
                 ? 'Postulando...'
@@ -537,12 +537,12 @@ function ReviewNote({
   value: string;
 }) {
   return (
-    <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
-      <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#666666]">
+    <div className="mt-4 border border-borde bg-superficie-elevada px-4 py-3">
+      <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-texto-largo">
         {label}
       </p>
 
-      <p className="mt-2 text-sm leading-6 text-[#A6A6A6]">
+      <p className="mt-2 text-sm leading-6 text-texto-largo">
         {value}
       </p>
     </div>
@@ -557,12 +557,12 @@ function Metric({
   label: string;
 }) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#101010] p-4 text-center">
-      <p className="text-2xl font-bold text-[#D9FF00]">
+    <article className="border border-borde bg-superficie p-4 text-center">
+      <p className="text-2xl font-bold text-texto-largo">
         {value}
       </p>
 
-      <p className="mt-2 text-[10px] uppercase leading-4 tracking-[0.12em] text-[#777777]">
+      <p className="mt-2 text-[10px] uppercase leading-4 tracking-[0.12em] text-texto-largo">
         {label}
       </p>
     </article>

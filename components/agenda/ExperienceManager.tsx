@@ -380,18 +380,18 @@ export function ExperienceManager() {
   }
 
   return (
-    <main className="min-h-screen bg-[#050505] px-6 py-10 text-white sm:px-8 lg:px-12">
+    <main className="min-h-screen bg-superficie px-6 py-10 text-texto-largo sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
         <header className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <Link
               href="/mi-ecosistema"
-              className="text-sm text-[#777777] transition hover:text-white"
+              className="text-sm text-texto-largo transition hover:text-texto-largo"
             >
               ← Volver a Mi Ecosistema
             </Link>
 
-            <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-[#D9FF00]">
+            <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-texto-principal">
               Programación cultural
             </p>
 
@@ -399,7 +399,7 @@ export function ExperienceManager() {
               Gestión de agenda
             </h1>
 
-            <p className="mt-5 max-w-3xl text-base leading-8 text-[#999999]">
+            <p className="mt-5 max-w-3xl text-base leading-8 text-texto-largo">
               Crea y administra eventos,
               talleres, clases, laboratorios,
               activaciones, convocatorias y
@@ -409,28 +409,28 @@ export function ExperienceManager() {
 
           <Link
             href="/agenda"
-            className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-white"
+            className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold transition hover:border-borde"
           >
             Ver agenda pública
           </Link>
         </header>
 
         {errorMessage ? (
-          <div className="mt-8 rounded-2xl border border-red-400/20 bg-red-400/10 px-5 py-4 text-sm text-red-200">
+          <div className="mt-8 rounded-2xl border border-borde bg-rojo-base px-5 py-4 text-sm text-hueso">
             {errorMessage}
           </div>
         ) : null}
 
         {successMessage ? (
-          <div className="mt-8 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-5 py-4 text-sm text-emerald-200">
+          <div className="mt-8 rounded-2xl border border-borde bg-superficie-elevada px-5 py-4 text-sm text-texto-principal">
             {successMessage}
           </div>
         ) : null}
 
-        <section className="mt-10 rounded-[32px] border border-white/10 bg-[#0A0A0A] p-7 md:p-9">
+        <section className="mt-10 rounded-[32px] border border-borde/10 bg-superficie-elevada p-7 md:p-9">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
                 {editingExperienceId
                   ? 'Editar experiencia'
                   : 'Nueva experiencia'}
@@ -447,7 +447,7 @@ export function ExperienceManager() {
               <button
                 type="button"
                 onClick={resetForm}
-                className="self-start rounded-full border border-white/15 px-5 py-3 text-sm font-semibold"
+                className="self-start rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold"
               >
                 Cancelar edición
               </button>
@@ -541,7 +541,7 @@ export function ExperienceManager() {
                 )}
               </select>
 
-              <p className="mt-2 text-xs text-[#666666]">
+              <p className="mt-2 text-xs text-texto-largo">
                 Puedes relacionar la
                 actividad con uno de tus
                 proyectos o con un proyecto
@@ -580,7 +580,7 @@ export function ExperienceManager() {
                 )}
               </select>
 
-              <p className="mt-2 text-xs text-[#666666]">
+              <p className="mt-2 text-xs text-texto-largo">
                 Solo aparecen espacios
                 publicados o disponibles para
                 administración.
@@ -777,7 +777,7 @@ export function ExperienceManager() {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black transition hover:bg-white disabled:opacity-50"
+                className="rounded-full bg-rojo-base px-6 py-3 text-sm font-bold text-hueso transition hover:bg-rojo-base disabled:opacity-50"
               >
                 {isSaving
                   ? 'Guardando...'
@@ -791,7 +791,7 @@ export function ExperienceManager() {
                   type="button"
                   onClick={resetForm}
                   disabled={isSaving}
-                  className="rounded-full border border-white/15 px-6 py-3 text-sm font-semibold disabled:opacity-50"
+                  className="rounded-full border border-borde/15 px-6 py-3 text-sm font-semibold disabled:opacity-50"
                 >
                   Cancelar
                 </button>
@@ -803,7 +803,7 @@ export function ExperienceManager() {
         <section className="mt-14">
           <div className="flex items-end justify-between gap-5">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
                 Programación
               </p>
 
@@ -817,16 +817,16 @@ export function ExperienceManager() {
               onClick={() => {
                 void loadData();
               }}
-              className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold"
+              className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold"
             >
               Actualizar
             </button>
           </div>
 
           {isLoading ? (
-            <div className="mt-7 h-72 animate-pulse rounded-3xl bg-[#111111]" />
+            <div className="mt-7 h-72 animate-pulse rounded-3xl bg-superficie-elevada" />
           ) : experiences.length === 0 ? (
-            <div className="mt-7 rounded-3xl border border-dashed border-white/15 p-8 text-[#777777]">
+            <div className="mt-7 rounded-3xl border border-dashed border-borde/15 p-8 text-texto-largo">
               Todavía no hay experiencias
               registradas.
             </div>
@@ -929,7 +929,7 @@ function ExperienceCard({
     );
 
   return (
-    <article className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-6">
+    <article className="rounded-3xl border border-borde/10 bg-superficie-elevada p-6">
       {experience.coverImageUrl ? (
         <img
           src={
@@ -942,7 +942,7 @@ function ExperienceCard({
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <span className="rounded-full border border-[#D9FF00]/20 bg-[#D9FF00]/10 px-3 py-1 text-[10px] font-bold uppercase text-[#D9FF00]">
+          <span className="rounded-full border border-acento/20 bg-acento/10 px-3 py-1 text-[10px] font-bold uppercase text-texto-principal">
             {
               statusLabels[
                 experience.status
@@ -954,7 +954,7 @@ function ExperienceCard({
             {experience.title}
           </h3>
 
-          <p className="mt-2 text-xs uppercase tracking-[0.14em] text-[#777777]">
+          <p className="mt-2 text-xs uppercase tracking-[0.14em] text-texto-largo">
             {
               typeLabels[
                 experience.experienceType
@@ -963,7 +963,7 @@ function ExperienceCard({
           </p>
         </div>
 
-        <p className="text-right text-sm text-[#777777]">
+        <p className="text-right text-sm text-texto-largo">
           {startDate.toLocaleDateString(
             'es-CO',
             {
@@ -985,12 +985,12 @@ function ExperienceCard({
         </p>
       </div>
 
-      <p className="mt-5 text-sm leading-7 text-[#999999]">
+      <p className="mt-5 text-sm leading-7 text-texto-largo">
         {experience.summary ||
           'Sin resumen.'}
       </p>
 
-      <p className="mt-4 text-xs text-[#666666]">
+      <p className="mt-4 text-xs text-texto-largo">
         {[
           experience.venueName,
           experience.city,
@@ -1000,8 +1000,8 @@ function ExperienceCard({
       </p>
 
       {projectName ? (
-        <div className="mt-5 rounded-2xl border border-white/10 bg-[#111111] px-4 py-3">
-          <p className="text-[10px] uppercase tracking-[0.14em] text-[#666666]">
+        <div className="mt-5 rounded-2xl border border-borde/10 bg-superficie-elevada px-4 py-3">
+          <p className="text-[10px] uppercase tracking-[0.14em] text-texto-largo">
             Proyecto relacionado
           </p>
 
@@ -1012,8 +1012,8 @@ function ExperienceCard({
       ) : null}
 
       {spaceName ? (
-        <div className="mt-3 rounded-2xl border border-white/10 bg-[#111111] px-4 py-3">
-          <p className="text-[10px] uppercase tracking-[0.14em] text-[#666666]">
+        <div className="mt-3 rounded-2xl border border-borde/10 bg-superficie-elevada px-4 py-3">
+          <p className="text-[10px] uppercase tracking-[0.14em] text-texto-largo">
             Espacio anfitrión
           </p>
 
@@ -1023,18 +1023,18 @@ function ExperienceCard({
         </div>
       ) : null}
 
-      <p className="mt-5 text-xs text-[#555555]">
+      <p className="mt-5 text-xs text-texto-largo">
         Creado por{' '}
         {experience.ownerName}
       </p>
 
       {experience.reviewNote ? (
-        <div className="mt-5 rounded-2xl border border-white/10 bg-[#111111] p-4">
-          <p className="text-[10px] uppercase tracking-[0.14em] text-[#666666]">
+        <div className="mt-5 rounded-2xl border border-borde/10 bg-superficie-elevada p-4">
+          <p className="text-[10px] uppercase tracking-[0.14em] text-texto-largo">
             Nota de revisión
           </p>
 
-          <p className="mt-2 text-sm text-[#999999]">
+          <p className="mt-2 text-sm text-texto-largo">
             {experience.reviewNote}
           </p>
         </div>
@@ -1047,7 +1047,7 @@ function ExperienceCard({
             onEdit(experience)
           }
           disabled={isWorking}
-          className="mt-6 rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-[#D9FF00] hover:text-[#D9FF00] disabled:opacity-50"
+          className="mt-6 rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold transition hover:border-acento hover:text-acento disabled:opacity-50"
         >
           Editar actividad
         </button>
@@ -1068,7 +1068,7 @@ function ExperienceCard({
             );
           }}
           disabled={isWorking}
-          className="ml-3 mt-6 rounded-full bg-white px-5 py-3 text-sm font-bold text-black disabled:opacity-50"
+          className="ml-3 mt-6 rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso disabled:opacity-50"
         >
           Enviar a revisión
         </button>
@@ -1077,7 +1077,7 @@ function ExperienceCard({
       {experience.canReview &&
       experience.status ===
         'submitted' ? (
-        <div className="mt-6 border-t border-white/10 pt-5">
+        <div className="mt-6 border-t border-borde/10 pt-5">
           <textarea
             value={note}
             onChange={(event) =>
@@ -1102,7 +1102,7 @@ function ExperienceCard({
                 );
               }}
               disabled={isWorking}
-              className="rounded-full border border-red-400/30 px-4 py-3 text-sm font-semibold text-red-300 disabled:opacity-50"
+              className="rounded-full border border-borde px-4 py-3 text-sm font-semibold text-rojo-base disabled:opacity-50"
             >
               Devolver
             </button>
@@ -1116,7 +1116,7 @@ function ExperienceCard({
                 );
               }}
               disabled={isWorking}
-              className="rounded-full bg-[#D9FF00] px-4 py-3 text-sm font-bold text-black disabled:opacity-50"
+              className="rounded-full bg-rojo-base px-4 py-3 text-sm font-bold text-hueso disabled:opacity-50"
             >
               Publicar
             </button>
@@ -1129,7 +1129,7 @@ function ExperienceCard({
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href={`/agenda/${experience.slug}`}
-            className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold text-[#D9FF00] transition hover:border-[#D9FF00]"
+            className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold text-texto-principal transition hover:border-acento"
           >
             Ver actividad pública
           </Link>
@@ -1139,14 +1139,14 @@ function ExperienceCard({
             <>
               <Link
                 href={`/gestion-agenda/${experience.id}/asistentes`}
-                className="rounded-full bg-white px-5 py-3 text-sm font-bold text-black transition hover:bg-[#D9FF00]"
+                className="rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso transition hover:bg-rojo-base"
               >
                 Gestionar asistentes
               </Link>
 
               <Link
                 href={`/gestion-agenda/${experience.id}/reporte`}
-                className="rounded-full border border-[#D9FF00]/30 px-5 py-3 text-sm font-semibold text-[#D9FF00] transition hover:bg-[#D9FF00] hover:text-black"
+                className="rounded-full border border-acento/30 px-5 py-3 text-sm font-semibold text-texto-principal transition hover:bg-rojo-base hover:text-hueso"
               >
                 Crear o revisar reporte
               </Link>
@@ -1171,7 +1171,7 @@ function Field({
     <div>
       <label
         htmlFor={htmlFor}
-        className="mb-2 block text-sm font-medium text-[#BDBDBD]"
+        className="mb-2 block text-sm font-medium text-texto-largo"
       >
         {label}
       </label>
@@ -1235,7 +1235,7 @@ function getErrorMessage(
 }
 
 const inputClassName =
-  'w-full rounded-2xl border border-white/10 bg-[#111111] px-5 py-4 text-white outline-none transition focus:border-[#D9FF00]';
+  'w-full rounded-2xl border border-borde/10 bg-superficie-elevada px-5 py-4 text-texto-largo outline-none transition focus:border-acento';
 
 const textareaClassName =
-  'w-full resize-y rounded-2xl border border-white/10 bg-[#111111] px-5 py-4 leading-7 text-white outline-none transition focus:border-[#D9FF00]';
+  'w-full resize-y rounded-2xl border border-borde/10 bg-superficie-elevada px-5 py-4 leading-7 text-texto-largo outline-none transition focus:border-acento';

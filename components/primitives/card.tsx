@@ -18,11 +18,11 @@ export function Card({
       className={[
         'rounded-3xl',
         'border',
-        'border-white/10',
-        elevated ? 'bg-[#111111]' : 'bg-[#0B0B0B]',
+        'border-borde/10',
+        elevated ? 'bg-superficie-elevada' : 'bg-superficie-elevada',
         elevated ? 'shadow-2xl' : '',
         interactive
-          ? 'transition hover:border-lime-400 hover:-translate-y-1'
+          ? 'transition hover:border-acento hover:-translate-y-1'
           : '',
         className,
       ]

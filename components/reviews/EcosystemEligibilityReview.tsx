@@ -296,18 +296,18 @@ export function EcosystemEligibilityReview() {
   }
 
   return (
-    <main className="min-h-screen bg-[#050505] px-6 py-10 text-white sm:px-8 lg:px-12">
+    <main className="min-h-screen bg-superficie px-6 py-10 text-texto-largo sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <Link
               href="/mi-ecosistema"
-              className="text-sm text-[#777777] transition hover:text-white"
+              className="text-sm text-texto-largo transition hover:text-texto-largo"
             >
               ← Volver a Mi Ecosistema
             </Link>
 
-            <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-[#D9FF00]">
+            <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-texto-principal">
               Administración del ecosistema
             </p>
 
@@ -315,7 +315,7 @@ export function EcosystemEligibilityReview() {
               Aplicaciones al ecosistema
             </h1>
 
-            <p className="mt-5 max-w-3xl text-base leading-7 text-[#999999]">
+            <p className="mt-5 max-w-3xl text-base leading-7 text-texto-largo">
               Aquí revisas la ficha controlada que cada actor decidió
               compartir. La conversación, el presupuesto interno, las
               tareas, los documentos y demás información sensible del
@@ -329,14 +329,14 @@ export function EcosystemEligibilityReview() {
               void loadQueue();
             }}
             disabled={isLoading}
-            className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-white disabled:opacity-50"
+            className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold transition hover:border-borde disabled:opacity-50"
           >
             Actualizar cola
           </button>
         </div>
 
         {errorMessage ? (
-          <div className="mt-8 rounded-2xl border border-red-400/20 bg-red-400/10 p-5 text-sm text-red-200">
+          <div className="mt-8 rounded-2xl border border-borde bg-rojo-base p-5 text-sm text-hueso">
             {errorMessage}
           </div>
         ) : null}
@@ -347,18 +347,18 @@ export function EcosystemEligibilityReview() {
               (item) => (
                 <div
                   key={item}
-                  className="h-96 animate-pulse rounded-3xl bg-[#101010]"
+                  className="h-96 animate-pulse rounded-3xl bg-superficie-elevada"
                 />
               )
             )}
           </div>
         ) : applications.length === 0 ? (
-          <div className="mt-10 rounded-3xl border border-dashed border-white/15 bg-[#0A0A0A] p-10">
+          <div className="mt-10 rounded-3xl border border-dashed border-borde/15 bg-superficie-elevada p-10">
             <h2 className="text-2xl font-semibold">
               No hay aplicaciones pendientes
             </h2>
 
-            <p className="mt-3 text-[#777777]">
+            <p className="mt-3 text-texto-largo">
               La cola del ecosistema está vacía.
             </p>
           </div>
@@ -375,7 +375,7 @@ export function EcosystemEligibilityReview() {
                     key={
                       application.applicationId
                     }
-                    className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-7"
+                    className="rounded-3xl border border-borde/10 bg-superficie-elevada p-7"
                   >
                     <div className="grid gap-8 xl:grid-cols-[1fr_380px]">
                       <div>
@@ -414,7 +414,7 @@ export function EcosystemEligibilityReview() {
                           }
                         </h2>
 
-                        <p className="mt-4 text-sm leading-7 text-[#999999]">
+                        <p className="mt-4 text-sm leading-7 text-texto-largo">
                           {
                             application.publicSummary
                           }
@@ -480,8 +480,8 @@ export function EcosystemEligibilityReview() {
                           />
                         </div>
 
-                        <div className="mt-6 rounded-2xl border border-white/10 bg-[#111111] p-5">
-                          <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#666666]">
+                        <div className="mt-6 rounded-2xl border border-borde/10 bg-superficie-elevada p-5">
+                          <p className="text-xs font-bold uppercase tracking-[0.15em] text-texto-largo">
                             Rutas solicitadas
                           </p>
 
@@ -520,7 +520,7 @@ export function EcosystemEligibilityReview() {
                       </div>
 
                       <div className="xl:sticky xl:top-8 xl:self-start">
-                        <div className="rounded-3xl border border-white/10 bg-[#111111] p-5">
+                        <div className="rounded-3xl border border-borde/10 bg-superficie-elevada p-5">
                           {application.status ===
                           'submitted' ? (
                             <button
@@ -531,7 +531,7 @@ export function EcosystemEligibilityReview() {
                                 );
                               }}
                               disabled={isBusy}
-                              className="w-full rounded-full border border-[#D9FF00]/30 px-4 py-3 text-sm font-semibold text-[#D9FF00] disabled:opacity-50"
+                              className="w-full rounded-full border border-acento/30 px-4 py-3 text-sm font-semibold text-texto-principal disabled:opacity-50"
                             >
                               Iniciar revisión
                             </button>
@@ -539,7 +539,7 @@ export function EcosystemEligibilityReview() {
 
                           <label
                             htmlFor={`decision-${application.applicationId}`}
-                            className="mt-5 block text-xs font-bold uppercase tracking-[0.16em] text-[#767676]"
+                            className="mt-5 block text-xs font-bold uppercase tracking-[0.16em] text-texto-largo"
                           >
                             Ruta de aprobación
                           </label>
@@ -561,7 +561,7 @@ export function EcosystemEligibilityReview() {
                                 })
                               )
                             }
-                            className="mt-3 w-full rounded-2xl border border-white/10 bg-[#0A0A0A] px-4 py-3 text-sm text-white outline-none focus:border-[#D9FF00]"
+                            className="mt-3 w-full rounded-2xl border border-borde/10 bg-superficie-elevada px-4 py-3 text-sm text-texto-largo outline-none focus:border-acento"
                           >
                             {decisionOptions.map(
                               (option) => (
@@ -583,7 +583,7 @@ export function EcosystemEligibilityReview() {
 
                           <label
                             htmlFor={`application-note-${application.applicationId}`}
-                            className="mt-5 block text-xs font-bold uppercase tracking-[0.16em] text-[#767676]"
+                            className="mt-5 block text-xs font-bold uppercase tracking-[0.16em] text-texto-largo"
                           >
                             Nota de revisión
                           </label>
@@ -608,7 +608,7 @@ export function EcosystemEligibilityReview() {
                             }
                             placeholder="Explica la decisión o los ajustes que necesita."
                             rows={7}
-                            className="mt-3 w-full resize-none rounded-2xl border border-white/10 bg-[#0A0A0A] p-4 text-sm text-white outline-none focus:border-[#D9FF00]"
+                            className="mt-3 w-full resize-none rounded-2xl border border-borde/10 bg-superficie-elevada p-4 text-sm text-texto-largo outline-none focus:border-acento"
                           />
 
                           <div className="mt-4 grid gap-3">
@@ -620,7 +620,7 @@ export function EcosystemEligibilityReview() {
                                 );
                               }}
                               disabled={isBusy}
-                              className="rounded-full bg-[#D9FF00] px-4 py-3 text-sm font-bold text-black disabled:opacity-50"
+                              className="rounded-full bg-rojo-base px-4 py-3 text-sm font-bold text-hueso disabled:opacity-50"
                             >
                               Aceptar aplicación
                             </button>
@@ -633,7 +633,7 @@ export function EcosystemEligibilityReview() {
                                 );
                               }}
                               disabled={isBusy}
-                              className="rounded-full border border-amber-300/30 px-4 py-3 text-sm font-semibold text-amber-200 disabled:opacity-50"
+                              className="rounded-full border border-borde px-4 py-3 text-sm font-semibold text-naranja disabled:opacity-50"
                             >
                               Solicitar ajustes
                             </button>
@@ -646,7 +646,7 @@ export function EcosystemEligibilityReview() {
                                 );
                               }}
                               disabled={isBusy}
-                              className="rounded-full border border-red-400/30 px-4 py-3 text-sm font-semibold text-red-300 disabled:opacity-50"
+                              className="rounded-full border border-borde px-4 py-3 text-sm font-semibold text-rojo-base disabled:opacity-50"
                             >
                               Rechazar
                             </button>
@@ -691,8 +691,8 @@ function ProductPanel({
     details.availableUnits ?? 0;
 
   return (
-    <section className="mt-6 rounded-3xl border border-[#D9FF00]/20 bg-[#D9FF00]/[0.04] p-6">
-      <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#D9FF00]">
+    <section className="mt-6 rounded-3xl border border-acento/20 bg-rojo-base/[0.04] p-6">
+      <p className="text-xs font-bold uppercase tracking-[0.16em] text-texto-principal">
         Evaluación comercial del producto
       </p>
 
@@ -700,7 +700,7 @@ function ProductPanel({
         {details.productName}
       </h3>
 
-      <p className="mt-3 text-sm leading-7 text-[#A6A6A6]">
+      <p className="mt-3 text-sm leading-7 text-texto-largo">
         {details.productDescription}
       </p>
 
@@ -794,8 +794,8 @@ function SnapshotPanel({
   }
 
   return (
-    <section className="mt-6 rounded-3xl border border-white/10 bg-[#111111] p-6">
-      <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#767676]">
+    <section className="mt-6 rounded-3xl border border-borde/10 bg-superficie-elevada p-6">
+      <p className="text-xs font-bold uppercase tracking-[0.16em] text-texto-largo">
         Snapshot compartido del proyecto
       </p>
 
@@ -822,12 +822,12 @@ function InformationCard({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#0A0A0A] p-4">
-      <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#666666]">
+    <div className="rounded-2xl border border-borde/10 bg-superficie-elevada p-4">
+      <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-texto-largo">
         {title}
       </p>
 
-      <p className="mt-3 text-sm leading-6 text-[#A6A6A6]">
+      <p className="mt-3 text-sm leading-6 text-texto-largo">
         {value || 'Sin información'}
       </p>
     </div>
@@ -842,12 +842,12 @@ function Metric({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#111111] p-4">
-      <p className="text-[10px] uppercase tracking-[0.14em] text-[#666666]">
+    <div className="rounded-2xl border border-borde/10 bg-superficie-elevada p-4">
+      <p className="text-[10px] uppercase tracking-[0.14em] text-texto-largo">
         {label}
       </p>
 
-      <p className="mt-2 truncate text-sm font-semibold text-white">
+      <p className="mt-2 truncate text-sm font-semibold text-texto-largo">
         {value}
       </p>
     </div>
@@ -866,8 +866,8 @@ function StatusPill({
       className={[
         'rounded-full border px-3 py-1.5 text-xs font-semibold',
         accent
-          ? 'border-[#D9FF00]/30 bg-[#D9FF00]/10 text-[#D9FF00]'
-          : 'border-white/10 bg-white/[0.03] text-[#A6A6A6]',
+          ? 'border-acento/30 bg-acento/10 text-texto-principal'
+          : 'border-borde/10 bg-superficie-elevada text-texto-largo',
       ].join(' ')}
     >
       {value}

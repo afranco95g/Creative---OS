@@ -346,12 +346,12 @@ export function FundingApplicationManager({
       <header>
         <Link
           href={`/oportunidades/${opportunityId}`}
-          className="text-sm text-[#777777] transition hover:text-white"
+          className="text-sm text-texto-largo transition hover:text-texto-largo"
         >
           ← Volver a la oportunidad
         </Link>
 
-        <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-[#D9FF00]">
+        <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-texto-principal">
           Postulación de proyecto
         </p>
 
@@ -359,7 +359,7 @@ export function FundingApplicationManager({
           {opportunityTitle}
         </h1>
 
-        <p className="mt-5 max-w-3xl text-base leading-8 text-[#999999]">
+        <p className="mt-5 max-w-3xl text-base leading-8 text-texto-largo">
           Selecciona un proyecto aceptado por el ecosistema,
           explica cómo utilizarás los recursos y cuáles serán
           los resultados esperados.
@@ -367,21 +367,21 @@ export function FundingApplicationManager({
       </header>
 
       {errorMessage ? (
-        <div className="mt-8 rounded-2xl border border-red-400/20 bg-red-400/10 p-4 text-sm leading-6 text-red-200">
+        <div className="mt-8 rounded-2xl border border-borde bg-rojo-base p-4 text-sm leading-6 text-hueso">
           {errorMessage}
         </div>
       ) : null}
 
       {successMessage ? (
-        <div className="mt-8 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4 text-sm text-emerald-200">
+        <div className="mt-8 rounded-2xl border border-borde bg-superficie-elevada p-4 text-sm text-texto-principal">
           {successMessage}
         </div>
       ) : null}
 
-      <section className="mt-10 rounded-[32px] border border-white/10 bg-[#0A0A0A] p-7 md:p-9">
+      <section className="mt-10 rounded-[32px] border border-borde/10 bg-superficie-elevada p-7 md:p-9">
         <div className="flex flex-wrap items-start justify-between gap-5">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#777777]">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-texto-largo">
               {editingId
                 ? 'Editar postulación'
                 : 'Nueva postulación'}
@@ -396,7 +396,7 @@ export function FundingApplicationManager({
             <button
               type="button"
               onClick={resetForm}
-              className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold"
+              className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold"
             >
               Cancelar edición
             </button>
@@ -404,21 +404,21 @@ export function FundingApplicationManager({
         </div>
 
         {isLoading ? (
-          <div className="mt-8 h-72 animate-pulse rounded-3xl bg-[#111111]" />
+          <div className="mt-8 h-72 animate-pulse rounded-3xl bg-superficie-elevada" />
         ) : projects.length ===
           0 ? (
-          <div className="mt-8 rounded-3xl border border-dashed border-white/15 p-8">
+          <div className="mt-8 rounded-3xl border border-dashed border-borde/15 p-8">
             <h3 className="text-xl font-bold">
               Todavía no tienes proyectos vinculados
             </h3>
 
-            <p className="mt-3 text-sm leading-7 text-[#777777]">
+            <p className="mt-3 text-sm leading-7 text-texto-largo">
               Primero crea o vincula un proyecto con tu cuenta.
             </p>
 
             <Link
               href="/studio?new=1"
-              className="mt-6 inline-flex rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
+              className="mt-6 inline-flex rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso"
             >
               Crear proyecto
             </Link>
@@ -484,7 +484,7 @@ export function FundingApplicationManager({
                 className={[
                   'rounded-2xl border p-5',
                   selectedProject.isEligible
-                    ? 'border-emerald-400/20 bg-emerald-400/10'
+                    ? 'border-borde bg-superficie-elevada'
                     : 'border-yellow-400/20 bg-yellow-400/10',
                 ].join(' ')}
               >
@@ -494,7 +494,7 @@ export function FundingApplicationManager({
                     : 'El proyecto todavía no puede postularse'}
                 </p>
 
-                <p className="mt-2 text-sm leading-6 text-white/60">
+                <p className="mt-2 text-sm leading-6 text-texto-largo/60">
                   Estado actual:{' '}
                   {
                     selectedProject.workflowStatus
@@ -504,7 +504,7 @@ export function FundingApplicationManager({
                 {!selectedProject.isEligible ? (
                   <Link
                     href="/mi-ecosistema"
-                    className="mt-4 inline-flex text-sm font-bold text-[#D9FF00]"
+                    className="mt-4 inline-flex text-sm font-bold text-texto-principal"
                   >
                     Solicitar elegibilidad →
                   </Link>
@@ -649,7 +649,7 @@ export function FundingApplicationManager({
                 )}
               </select>
 
-              <p className="mt-2 text-xs leading-5 text-[#666666]">
+              <p className="mt-2 text-xs leading-5 text-texto-largo">
                 Solo aparecen reportes publicados y relacionados
                 con el proyecto seleccionado.
               </p>
@@ -662,7 +662,7 @@ export function FundingApplicationManager({
                   isWorking ||
                   !selectedProject?.isEligible
                 }
-                className="rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black disabled:opacity-40"
+                className="rounded-full bg-rojo-base px-6 py-3 text-sm font-bold text-hueso disabled:opacity-40"
               >
                 {isWorking
                   ? 'Guardando...'
@@ -675,7 +675,7 @@ export function FundingApplicationManager({
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="rounded-full border border-white/15 px-6 py-3 text-sm font-semibold"
+                  className="rounded-full border border-borde/15 px-6 py-3 text-sm font-semibold"
                 >
                   Cancelar
                 </button>
@@ -686,7 +686,7 @@ export function FundingApplicationManager({
       </section>
 
       <section className="mt-14">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#777777]">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-texto-largo">
           Seguimiento
         </p>
 
@@ -696,7 +696,7 @@ export function FundingApplicationManager({
 
         {applications.length ===
         0 ? (
-          <div className="mt-7 rounded-3xl border border-dashed border-white/15 p-8 text-[#777777]">
+          <div className="mt-7 rounded-3xl border border-dashed border-borde/15 p-8 text-texto-largo">
             Todavía no has postulado ningún proyecto a esta
             oportunidad.
           </div>
@@ -719,9 +719,9 @@ export function FundingApplicationManager({
                     key={
                       application.applicationId
                     }
-                    className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-6"
+                    className="rounded-3xl border border-borde/10 bg-superficie-elevada p-6"
                   >
-                    <span className="rounded-full border border-[#D9FF00]/20 bg-[#D9FF00]/10 px-3 py-1 text-[10px] font-bold uppercase text-[#D9FF00]">
+                    <span className="rounded-full border border-acento/20 bg-acento/10 px-3 py-1 text-[10px] font-bold uppercase text-texto-principal">
                       {
                         statusLabels[
                           application.status
@@ -735,14 +735,14 @@ export function FundingApplicationManager({
                       }
                     </h3>
 
-                    <p className="mt-4 text-sm font-semibold text-[#D9FF00]">
+                    <p className="mt-4 text-sm font-semibold text-texto-principal">
                       {formatMoney(
                         application.requestedAmount,
                         currency
                       )}
                     </p>
 
-                    <p className="mt-4 text-sm leading-7 text-[#999999]">
+                    <p className="mt-4 text-sm leading-7 text-texto-largo">
                       {
                         application.proposalSummary ||
                         'Postulación en construcción.'
@@ -752,7 +752,7 @@ export function FundingApplicationManager({
                     {application.reportExperienceSlug ? (
                       <Link
                         href={`/reportes/experiencias/${application.reportExperienceSlug}`}
-                        className="mt-5 inline-flex text-sm font-bold text-[#D9FF00]"
+                        className="mt-5 inline-flex text-sm font-bold text-texto-principal"
                       >
                         Ver reporte adjunto →
                       </Link>
@@ -774,12 +774,12 @@ export function FundingApplicationManager({
 
                     {application.status ===
                     'accepted' ? (
-                      <div className="mt-5 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4">
-                        <p className="font-semibold text-emerald-200">
+                      <div className="mt-5 rounded-2xl border border-borde bg-superficie-elevada p-4">
+                        <p className="font-semibold text-texto-principal">
                           Proyecto seleccionado
                         </p>
 
-                        <p className="mt-2 text-sm text-emerald-100/70">
+                        <p className="mt-2 text-sm text-texto-largo">
                           El financiador aceptó esta postulación.
                         </p>
                       </div>
@@ -794,7 +794,7 @@ export function FundingApplicationManager({
                               application
                             )
                           }
-                          className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold"
+                          className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold"
                         >
                           Editar
                         </button>
@@ -809,7 +809,7 @@ export function FundingApplicationManager({
                           disabled={
                             isActive
                           }
-                          className="rounded-full bg-white px-5 py-3 text-sm font-bold text-black disabled:opacity-50"
+                          className="rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso disabled:opacity-50"
                         >
                           Enviar al financiador
                         </button>
@@ -839,7 +839,7 @@ function Field({
     <div>
       <label
         htmlFor={htmlFor}
-        className="mb-2 block text-sm font-medium text-[#BDBDBD]"
+        className="mb-2 block text-sm font-medium text-texto-largo"
       >
         {label}
       </label>
@@ -878,7 +878,7 @@ function getErrorMessage(
 }
 
 const inputClassName =
-  'w-full rounded-2xl border border-white/10 bg-[#111111] px-5 py-4 text-white outline-none transition focus:border-[#D9FF00] disabled:opacity-50';
+  'w-full rounded-2xl border border-borde/10 bg-superficie-elevada px-5 py-4 text-texto-largo outline-none transition focus:border-acento disabled:opacity-50';
 
 const textareaClassName =
-  'w-full resize-y rounded-2xl border border-white/10 bg-[#111111] px-5 py-4 leading-7 text-white outline-none transition focus:border-[#D9FF00]';
+  'w-full resize-y rounded-2xl border border-borde/10 bg-superficie-elevada px-5 py-4 leading-7 text-texto-largo outline-none transition focus:border-acento';

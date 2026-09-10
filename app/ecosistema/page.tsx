@@ -18,6 +18,8 @@ const sectionDefinitions:
     eyebrow: string;
     title: string;
     description: string;
+    ctaLabel?: string;
+    ctaHref?: string;
   }> = [
     {
       actorType:
@@ -59,6 +61,12 @@ const sectionDefinitions:
 
       description:
         'Empresas, fundaciones, agencias, entidades y personas que apoyan procesos culturales y creativos.',
+
+      ctaLabel:
+        'Ver financiamiento activo',
+
+      ctaHref:
+        '/oportunidades',
     },
   ];
 
@@ -166,15 +174,31 @@ export default async function PublicEcosystemPage() {
                     </p>
                   </div>
 
-                  <p className="text-sm text-texto-largo">
-                    {
-                      sectionActors.length
-                    }{' '}
-                    {sectionActors.length ===
-                    1
-                      ? 'perfil'
-                      : 'perfiles'}
-                  </p>
+                  <div className="flex flex-col items-start gap-3 lg:items-end">
+                    <p className="text-sm text-texto-largo">
+                      {
+                        sectionActors.length
+                      }{' '}
+                      {sectionActors.length ===
+                      1
+                        ? 'perfil'
+                        : 'perfiles'}
+                    </p>
+
+                    {section.ctaHref ? (
+                      <Link
+                        href={
+                          section.ctaHref
+                        }
+                        className="border border-borde px-5 py-2.5 text-sm font-semibold transition hover:bg-superficie-elevada"
+                      >
+                        {
+                          section.ctaLabel
+                        }{' '}
+                        →
+                      </Link>
+                    ) : null}
+                  </div>
                 </div>
 
                 {sectionActors.length ===

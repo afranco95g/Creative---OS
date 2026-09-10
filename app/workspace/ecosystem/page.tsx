@@ -1,5 +1,5 @@
-import { EntityPage } from '@/features/ecosystem/entities/components/EntityPage';
+import { redirect } from 'next/navigation';
 
-export default function PeoplePage() {
-  return <EntityPage entity="people" />;
+export default function WorkspaceEcosystemRedirect() {
+  redirect('/ecosistema');
 }

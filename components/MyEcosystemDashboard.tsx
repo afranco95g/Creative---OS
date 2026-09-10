@@ -354,36 +354,36 @@ export function MyEcosystemDashboard({
       'super_admin';
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen bg-superficie text-texto-largo">
       <WorkspaceActorBridge
         person={person}
         spaces={spaces}
         funders={funders}
       />
-      <header className="border-b border-white/10 bg-[#080808] px-6 py-6 sm:px-8 lg:px-12">
+      <header className="border-b border-borde/10 bg-superficie-elevada px-6 py-6 sm:px-8 lg:px-12">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 href="/"
-                className="text-sm text-[#777777] transition hover:text-white"
+                className="text-sm text-texto-largo transition hover:text-texto-largo"
               >
                 ← Volver al medio
               </Link>
 
-              <span className="text-[#333333]">
+              <span className="text-borde">
                 /
               </span>
 
               <Link
                 href="/studio"
-                className="text-sm text-[#777777] transition hover:text-white"
+                className="text-sm text-texto-largo transition hover:text-texto-largo"
               >
                 Creative OS
               </Link>
             </div>
 
-            <p className="mt-6 text-xs font-bold uppercase tracking-[0.28em] text-[#D9FF00]">
+            <p className="mt-6 text-xs font-bold uppercase tracking-[0.28em] text-texto-principal">
               El Culebreo
             </p>
 
@@ -397,14 +397,14 @@ export function MyEcosystemDashboard({
               <>
                 <Link
                   href="/revision-actores"
-                  className="rounded-full border border-[#D9FF00]/30 px-5 py-3 text-sm font-semibold text-[#D9FF00] transition hover:bg-[#D9FF00] hover:text-black"
+                  className="rounded-full border border-acento/30 px-5 py-3 text-sm font-semibold text-texto-principal transition hover:bg-rojo-base hover:text-hueso"
                 >
                   Revisar actores
                 </Link>
 
                 <Link
                   href="/revision-ecosistema"
-                  className="rounded-full border border-[#D9FF00]/30 px-5 py-3 text-sm font-semibold text-[#D9FF00] transition hover:bg-[#D9FF00] hover:text-black"
+                  className="rounded-full border border-acento/30 px-5 py-3 text-sm font-semibold text-texto-principal transition hover:bg-rojo-base hover:text-hueso"
                 >
                   Revisar elegibilidad
                 </Link>
@@ -414,22 +414,29 @@ export function MyEcosystemDashboard({
             {canReviewEditorial ? (
               <Link
                 href="/revision-editorial"
-                className="rounded-full border border-[#D9FF00]/30 px-5 py-3 text-sm font-semibold text-[#D9FF00] transition hover:bg-[#D9FF00] hover:text-black"
+                className="rounded-full border border-acento/30 px-5 py-3 text-sm font-semibold text-texto-principal transition hover:bg-rojo-base hover:text-hueso"
               >
                 Revisión editorial
               </Link>
             ) : null}
 
             <Link
-              href="/workspace/ecosystem"
-              className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-white"
+              href="/ecosistema"
+              className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold transition hover:border-borde"
             >
               Explorar actores
             </Link>
 
             <Link
+              href="/oportunidades"
+              className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold transition hover:border-borde"
+            >
+              Financiación abierta
+            </Link>
+
+            <Link
               href="/studio?new=1"
-              className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black transition hover:bg-white"
+              className="rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso transition hover:bg-rojo-base"
             >
               Crear proyecto
             </Link>
@@ -546,7 +553,7 @@ function AccountSummary({
   verified: boolean;
 }) {
   return (
-    <section className="rounded-[36px] border border-white/10 bg-[#0A0A0A] p-7 md:p-9">
+    <section className="rounded-[36px] border border-borde/10 bg-superficie-elevada p-7 md:p-9">
       <div className="flex flex-col gap-8 xl:flex-row xl:items-start xl:justify-between">
         <div className="max-w-3xl">
           <SectionEyebrow>
@@ -557,7 +564,7 @@ function AccountSummary({
             {profile.fullName}
           </h2>
 
-          <p className="mt-3 text-[#A6A6A6]">
+          <p className="mt-3 text-texto-largo">
             {profile.email}
           </p>
 
@@ -649,12 +656,12 @@ function PersonPlatform({
   return (
     <>
       <section className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
-        <article className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-7">
+        <article className="rounded-3xl border border-borde/10 bg-superficie-elevada p-7">
           <SectionEyebrow>
             Plataforma personal
           </SectionEyebrow>
 
-          <div className="mt-3 flex items-center justify-between gap-4"><h2 className="text-2xl font-bold">Mi perfil</h2>{person ? <button type="button" onClick={() => setEditing(true)} className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm font-semibold transition hover:border-[#D9FF00] hover:text-[#D9FF00]"><Pencil size={15}/> Editar perfil</button> : null}</div>
+          <div className="mt-3 flex items-center justify-between gap-4"><h2 className="text-2xl font-bold">Mi perfil</h2>{person ? <button type="button" onClick={() => setEditing(true)} className="inline-flex items-center gap-2 rounded-full border border-borde/15 px-4 py-2 text-sm font-semibold transition hover:border-acento hover:text-acento"><Pencil size={15}/> Editar perfil</button> : null}</div>
 
           {person ? (
             <>
@@ -675,14 +682,14 @@ function PersonPlatform({
                     }
                   </h3>
 
-                  <p className="mt-1 text-sm text-[#777777]">
+                  <p className="mt-1 text-sm text-texto-largo">
                     {person.headline ||
                       'Perfil creativo en construcción'}
                   </p>
                 </div>
               </div>
 
-              <p className="mt-6 text-sm leading-7 text-[#A6A6A6]">
+              <p className="mt-6 text-sm leading-7 text-texto-largo">
                 {person.biography ||
                   'Todavía no has añadido una biografía.'}
               </p>
@@ -750,7 +757,7 @@ function PersonPlatform({
                     : 'Sin definir'
                 }
               />
-              <div className="mt-7 rounded-2xl border border-white/10 bg-black/40 p-5"><div className="flex items-center justify-between"><div><p className="text-xs font-bold uppercase tracking-[.18em] text-[#777]">Activación del perfil</p><p className="mt-2 text-sm text-[#aaa]">Completa la información esencial para enviar tu perfil a revisión.</p></div><strong className="text-2xl text-[#D9FF00]">{completeness}%</strong></div><div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-[#D9FF00] transition-all" style={{width:`${completeness}%`}}/></div></div>
+              <div className="mt-7 rounded-2xl border border-borde/10 bg-black/40 p-5"><div className="flex items-center justify-between"><div><p className="text-xs font-bold uppercase tracking-[.18em] text-texto-largo">Activación del perfil</p><p className="mt-2 text-sm text-texto-largo">Completa la información esencial para enviar tu perfil a revisión.</p></div><strong className="text-2xl text-texto-principal">{completeness}%</strong></div><div className="mt-4 h-1.5 overflow-hidden rounded-full bg-borde/10"><div className="h-full rounded-full bg-rojo-base transition-all" style={{width:`${completeness}%`}}/></div></div>
             </>
           ) : (
             <EmptyState
@@ -787,13 +794,13 @@ function PersonProfileEditor({person,onClose,onSaved}:{person:MyEcosystemPerson;
   const completeness=getProfileCompleteness(preview);
   const field=<K extends keyof PersonProfileInput>(key:K,value:PersonProfileInput[K])=>setForm((current)=>({...current,[key]:value}));
   const save=async(submitForReview:boolean)=>{setError('');if(!form.fullName.trim()){setError('El nombre es obligatorio.');return}if(submitForReview&&completeness<80){setError('Completa al menos el 80% del perfil antes de enviarlo a revisión.');return}setSaving(true);try{const data=await updateMyPersonProfile(person.id,{...form,skills:splitTags(skillsText),interests:splitTags(interestsText)},submitForReview);onSaved(mapUpdatedPerson(person,data))}catch(cause){setError(cause instanceof Error?cause.message:'No fue posible guardar el perfil.')}finally{setSaving(false)}};
-  return <div role="dialog" aria-modal="true" aria-label="Editar perfil" className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-3 backdrop-blur-md sm:p-6"><section className="flex max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-[30px] border border-white/15 bg-[#0a0a0a]"><header className="flex items-center justify-between border-b border-white/10 px-6 py-5 sm:px-8"><div><p className="text-xs font-bold uppercase tracking-[.22em] text-[#D9FF00]">Plataforma personal</p><h2 className="mt-2 text-2xl font-bold">Editar y activar mi perfil</h2></div><button onClick={onClose} aria-label="Cerrar" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15"><X size={18}/></button></header><div className="grid min-h-0 flex-1 overflow-y-auto lg:grid-cols-[1fr_320px]"><form onSubmit={(event)=>{event.preventDefault();void save(false)}} className="space-y-8 p-6 sm:p-8"><EditorSection title="Identidad profesional"><div className="grid gap-5 sm:grid-cols-2"><TextField label="Nombre completo" value={form.fullName} onChange={(v)=>field('fullName',v)} required/><TextField label="Titular profesional" value={form.headline} onChange={(v)=>field('headline',v)} placeholder="Ej. Productora y gestora cultural"/><TextField label="URL de fotografía" value={form.avatarUrl} onChange={(v)=>field('avatarUrl',v)} placeholder="https://..."/><TextField label="Correo público" value={form.publicEmail} onChange={(v)=>field('publicEmail',v)} type="email"/></div><label className="block"><EditorLabel>Biografía</EditorLabel><textarea value={form.biography} onChange={(e)=>field('biography',e.target.value)} maxLength={1200} placeholder="Cuenta tu trayectoria, enfoque creativo y el tipo de proyectos que desarrollas." className="mt-2 min-h-36 w-full rounded-2xl border border-white/15 bg-black p-4 outline-none focus:border-[#D9FF00]"/><span className="mt-1 block text-right text-xs text-[#666]">{form.biography.length}/1200</span></label></EditorSection><EditorSection title="Ubicación"><div className="grid gap-5 sm:grid-cols-3"><TextField label="Ciudad" value={form.city} onChange={(v)=>field('city',v)}/><TextField label="Departamento" value={form.department} onChange={(v)=>field('department',v)}/><TextField label="País" value={form.country} onChange={(v)=>field('country',v)}/></div></EditorSection><EditorSection title="Roles y capacidades"><div><EditorLabel>Roles creativos</EditorLabel><div className="mt-3 flex flex-wrap gap-2">{PERSON_ROLES.map(([id,label])=>{const active=form.roles.includes(id);return <button key={id} type="button" onClick={()=>field('roles',active?form.roles.filter((role)=>role!==id):[...form.roles,id])} className={`rounded-full border px-4 py-2 text-sm ${active?'border-[#D9FF00] bg-[#D9FF00] font-semibold text-black':'border-white/15 text-[#aaa]'}`}>{label}</button>})}</div></div><TagField label="Habilidades" value={skillsText} onChange={setSkillsText} placeholder="Producción, fotografía, curaduría..."/><TagField label="Intereses" value={interestsText} onChange={setInterestsText} placeholder="Música, territorio, educación..."/></EditorSection><EditorSection title="Enlaces"><div className="grid gap-5 sm:grid-cols-2"><TextField label="Sitio web" value={form.websiteUrl} onChange={(v)=>field('websiteUrl',v)} placeholder="https://..."/><TextField label="Instagram" value={form.instagramUrl} onChange={(v)=>field('instagramUrl',v)} placeholder="https://instagram.com/..."/><TextField label="LinkedIn" value={form.linkedinUrl} onChange={(v)=>field('linkedinUrl',v)} placeholder="https://linkedin.com/in/..."/><TextField label="YouTube" value={form.youtubeUrl} onChange={(v)=>field('youtubeUrl',v)} placeholder="https://youtube.com/@..."/></div></EditorSection>{error?<p className="rounded-2xl border border-red-400/30 bg-red-400/5 p-4 text-sm text-red-200">{error}</p>:null}<div className="flex flex-wrap justify-end gap-3 border-t border-white/10 pt-6"><button type="button" onClick={onClose} className="rounded-full border border-white/15 px-5 py-3">Cancelar</button><button disabled={saving} className="rounded-full border border-[#D9FF00]/40 px-5 py-3 font-semibold text-[#D9FF00] disabled:opacity-50">Guardar borrador</button><button type="button" disabled={saving||completeness<80||person.status==='review'} onClick={()=>void save(true)} className="inline-flex items-center gap-2 rounded-full bg-[#D9FF00] px-5 py-3 font-bold text-black disabled:cursor-not-allowed disabled:opacity-40"><Sparkles size={17}/>{person.status==='review'?'En revisión':'Enviar para activar'}</button></div></form><aside className="border-t border-white/10 bg-black/30 p-6 lg:border-l lg:border-t-0 sm:p-8"><p className="text-xs font-bold uppercase tracking-[.18em] text-[#777]">Progreso del perfil</p><strong className="mt-3 block text-5xl text-[#D9FF00]">{completeness}%</strong><div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full bg-[#D9FF00]" style={{width:`${completeness}%`}}/></div><p className="mt-4 text-sm leading-6 text-[#999]">Necesitas 80% para solicitar la activación pública.</p><div className="mt-8 space-y-3">{profileChecklist(preview).map((item)=><div key={item.label} className="flex items-center gap-3 text-sm"><CheckCircle2 size={17} className={item.complete?'text-[#D9FF00]':'text-[#444]'}/><span className={item.complete?'text-white':'text-[#777]'}>{item.label}</span></div>)}</div></aside></div></section></div>;
+  return <div role="dialog" aria-modal="true" aria-label="Editar perfil" className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-3 backdrop-blur-md sm:p-6"><section className="flex max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-[30px] border border-borde/15 bg-superficie-elevada"><header className="flex items-center justify-between border-b border-borde/10 px-6 py-5 sm:px-8"><div><p className="text-xs font-bold uppercase tracking-[.22em] text-texto-principal">Plataforma personal</p><h2 className="mt-2 text-2xl font-bold">Editar y activar mi perfil</h2></div><button onClick={onClose} aria-label="Cerrar" className="flex h-10 w-10 items-center justify-center rounded-full border border-borde/15"><X size={18}/></button></header><div className="grid min-h-0 flex-1 overflow-y-auto lg:grid-cols-[1fr_320px]"><form onSubmit={(event)=>{event.preventDefault();void save(false)}} className="space-y-8 p-6 sm:p-8"><EditorSection title="Identidad profesional"><div className="grid gap-5 sm:grid-cols-2"><TextField label="Nombre completo" value={form.fullName} onChange={(v)=>field('fullName',v)} required/><TextField label="Titular profesional" value={form.headline} onChange={(v)=>field('headline',v)} placeholder="Ej. Productora y gestora cultural"/><TextField label="URL de fotografía" value={form.avatarUrl} onChange={(v)=>field('avatarUrl',v)} placeholder="https://..."/><TextField label="Correo público" value={form.publicEmail} onChange={(v)=>field('publicEmail',v)} type="email"/></div><label className="block"><EditorLabel>Biografía</EditorLabel><textarea value={form.biography} onChange={(e)=>field('biography',e.target.value)} maxLength={1200} placeholder="Cuenta tu trayectoria, enfoque creativo y el tipo de proyectos que desarrollas." className="mt-2 min-h-36 w-full rounded-2xl border border-borde/15 bg-superficie-elevada p-4 outline-none focus:border-acento"/><span className="mt-1 block text-right text-xs text-texto-largo">{form.biography.length}/1200</span></label></EditorSection><EditorSection title="Ubicación"><div className="grid gap-5 sm:grid-cols-3"><TextField label="Ciudad" value={form.city} onChange={(v)=>field('city',v)}/><TextField label="Departamento" value={form.department} onChange={(v)=>field('department',v)}/><TextField label="País" value={form.country} onChange={(v)=>field('country',v)}/></div></EditorSection><EditorSection title="Roles y capacidades"><div><EditorLabel>Roles creativos</EditorLabel><div className="mt-3 flex flex-wrap gap-2">{PERSON_ROLES.map(([id,label])=>{const active=form.roles.includes(id);return <button key={id} type="button" onClick={()=>field('roles',active?form.roles.filter((role)=>role!==id):[...form.roles,id])} className={`rounded-full border px-4 py-2 text-sm ${active?'border-acento bg-rojo-base font-semibold text-hueso':'border-borde/15 text-texto-largo'}`}>{label}</button>})}</div></div><TagField label="Habilidades" value={skillsText} onChange={setSkillsText} placeholder="Producción, fotografía, curaduría..."/><TagField label="Intereses" value={interestsText} onChange={setInterestsText} placeholder="Música, territorio, educación..."/></EditorSection><EditorSection title="Enlaces"><div className="grid gap-5 sm:grid-cols-2"><TextField label="Sitio web" value={form.websiteUrl} onChange={(v)=>field('websiteUrl',v)} placeholder="https://..."/><TextField label="Instagram" value={form.instagramUrl} onChange={(v)=>field('instagramUrl',v)} placeholder="https://instagram.com/..."/><TextField label="LinkedIn" value={form.linkedinUrl} onChange={(v)=>field('linkedinUrl',v)} placeholder="https://linkedin.com/in/..."/><TextField label="YouTube" value={form.youtubeUrl} onChange={(v)=>field('youtubeUrl',v)} placeholder="https://youtube.com/@..."/></div></EditorSection>{error?<p className="rounded-2xl border border-borde bg-rojo-base p-4 text-sm text-hueso">{error}</p>:null}<div className="flex flex-wrap justify-end gap-3 border-t border-borde/10 pt-6"><button type="button" onClick={onClose} className="rounded-full border border-borde/15 px-5 py-3">Cancelar</button><button disabled={saving} className="rounded-full border border-acento/40 px-5 py-3 font-semibold text-texto-principal disabled:opacity-50">Guardar borrador</button><button type="button" disabled={saving||completeness<80||person.status==='review'} onClick={()=>void save(true)} className="inline-flex items-center gap-2 rounded-full bg-rojo-base px-5 py-3 font-bold text-hueso disabled:cursor-not-allowed disabled:opacity-40"><Sparkles size={17}/>{person.status==='review'?'En revisión':'Enviar para activar'}</button></div></form><aside className="border-t border-borde/10 bg-black/30 p-6 lg:border-l lg:border-t-0 sm:p-8"><p className="text-xs font-bold uppercase tracking-[.18em] text-texto-largo">Progreso del perfil</p><strong className="mt-3 block text-5xl text-texto-principal">{completeness}%</strong><div className="mt-4 h-2 overflow-hidden rounded-full bg-borde/10"><div className="h-full bg-rojo-base" style={{width:`${completeness}%`}}/></div><p className="mt-4 text-sm leading-6 text-texto-largo">Necesitas 80% para solicitar la activación pública.</p><div className="mt-8 space-y-3">{profileChecklist(preview).map((item)=><div key={item.label} className="flex items-center gap-3 text-sm"><CheckCircle2 size={17} className={item.complete?'text-texto-principal':'text-texto-largo'}/><span className={item.complete?'text-texto-largo':'text-texto-largo'}>{item.label}</span></div>)}</div></aside></div></section></div>;
 }
 
 function EditorSection({title,children}:{title:string;children:React.ReactNode}){return <section><h3 className="mb-5 text-lg font-semibold">{title}</h3><div className="space-y-5">{children}</div></section>}
-function EditorLabel({children}:{children:React.ReactNode}){return <span className="text-xs font-bold uppercase tracking-[.16em] text-[#777]">{children}</span>}
-function TextField({label,value,onChange,placeholder,type='text',required=false}:{label:string;value:string;onChange:(value:string)=>void;placeholder?:string;type?:string;required?:boolean}){return <label className="block"><EditorLabel>{label}</EditorLabel><input type={type} required={required} value={value} onChange={(e)=>onChange(e.target.value)} placeholder={placeholder} className="mt-2 w-full rounded-xl border border-white/15 bg-black px-4 py-3 outline-none focus:border-[#D9FF00]"/></label>}
-function TagField({label,value,onChange,placeholder}:{label:string;value:string;onChange:(value:string)=>void;placeholder:string}){const tags=splitTags(value);return <label className="block"><EditorLabel>{label}</EditorLabel><input value={value} onChange={(e)=>onChange(e.target.value)} placeholder={placeholder} className="mt-2 w-full rounded-xl border border-white/15 bg-black px-4 py-3 outline-none focus:border-[#D9FF00]"/><span className="mt-2 block text-xs text-[#666]">Separa cada elemento con una coma.</span>{tags.length?<div className="mt-3 flex flex-wrap gap-2">{tags.map((tag)=><span key={tag} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-[#bbb]">{tag}</span>)}</div>:null}</label>}
+function EditorLabel({children}:{children:React.ReactNode}){return <span className="text-xs font-bold uppercase tracking-[.16em] text-texto-largo">{children}</span>}
+function TextField({label,value,onChange,placeholder,type='text',required=false}:{label:string;value:string;onChange:(value:string)=>void;placeholder?:string;type?:string;required?:boolean}){return <label className="block"><EditorLabel>{label}</EditorLabel><input type={type} required={required} value={value} onChange={(e)=>onChange(e.target.value)} placeholder={placeholder} className="mt-2 w-full rounded-xl border border-borde/15 bg-superficie-elevada px-4 py-3 outline-none focus:border-acento"/></label>}
+function TagField({label,value,onChange,placeholder}:{label:string;value:string;onChange:(value:string)=>void;placeholder:string}){const tags=splitTags(value);return <label className="block"><EditorLabel>{label}</EditorLabel><input value={value} onChange={(e)=>onChange(e.target.value)} placeholder={placeholder} className="mt-2 w-full rounded-xl border border-borde/15 bg-superficie-elevada px-4 py-3 outline-none focus:border-acento"/><span className="mt-2 block text-xs text-texto-largo">Separa cada elemento con una coma.</span>{tags.length?<div className="mt-3 flex flex-wrap gap-2">{tags.map((tag)=><span key={tag} className="rounded-full border border-borde/10 bg-borde/5 px-3 py-1 text-xs text-texto-largo">{tag}</span>)}</div>:null}</label>}
 function splitTags(value:string){return [...new Set(value.split(',').map((item)=>item.trim()).filter(Boolean))]}
 function profileChecklist(person:MyEcosystemPerson){return [{label:'Nombre y titular profesional',complete:Boolean(person.fullName&&person.headline)},{label:'Biografía',complete:Boolean(person.biography&&person.biography.length>=80)},{label:'Ubicación',complete:Boolean(person.city&&person.country)},{label:'Rol creativo',complete:person.roles.length>0},{label:'Habilidades',complete:person.skills.length>=2},{label:'Intereses',complete:person.interests.length>=2},{label:'Fotografía o avatar',complete:Boolean(person.avatarUrl)},{label:'Canal de contacto',complete:Boolean(person.publicEmail||person.websiteUrl||person.instagramUrl)}]}
 function getProfileCompleteness(person:MyEcosystemPerson|null){if(!person)return 0;const items=profileChecklist(person);return Math.round(items.filter((item)=>item.complete).length/items.length*100)}
@@ -811,7 +818,7 @@ function ProjectsPanel({
     | null;
 }) {
   return (
-    <article className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-7">
+    <article className="rounded-3xl border border-borde/10 bg-superficie-elevada p-7">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <SectionEyebrow>
@@ -825,7 +832,7 @@ function ProjectsPanel({
 
         <Link
           href="/studio?new=1"
-          className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
+          className="rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso"
         >
           Nuevo proyecto
         </Link>
@@ -834,7 +841,7 @@ function ProjectsPanel({
       <ProjectCloudPanel />
 
       <section className="mt-6">
-        <p className="text-sm font-semibold text-white">¿Qué quieres hacer?</p>
+        <p className="text-sm font-semibold text-texto-largo">¿Qué quieres hacer?</p>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           <ProjectEntry href="/studio?new=1" title="Crear una idea" description="Empieza desde una intuición y desarróllala con Creative OS." />
           <ProjectEntry href="/importar-proyecto" title="Importar un proyecto" description="Carga información existente para que el Productor Ejecutivo proponga un plan." />
@@ -843,7 +850,7 @@ function ProjectsPanel({
       </section>
 
       {!workspaceState ? (
-        <div className="mt-6 h-40 animate-pulse rounded-2xl bg-[#151515]" />
+        <div className="mt-6 h-40 animate-pulse rounded-2xl bg-superficie" />
       ) : projects.length === 0 ? (
         <EmptyState
           title="Todavía no tienes proyectos"
@@ -861,9 +868,9 @@ function ProjectsPanel({
                     project.id
                   )
                 }
-                className="rounded-2xl border border-white/10 bg-[#111111] p-5 transition hover:border-[#D9FF00]"
+                className="rounded-2xl border border-borde/10 bg-superficie-elevada p-5 transition hover:border-acento"
               >
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#767676]">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-texto-largo">
                   {categoryLabels[
                     project.category
                   ] ??
@@ -874,12 +881,12 @@ function ProjectsPanel({
                   {project.title}
                 </h3>
 
-                <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#888888]">
+                <p className="mt-3 line-clamp-3 text-sm leading-6 text-texto-largo">
                   {project.description ||
                     'Proyecto sin descripción inicial.'}
                 </p>
 
-                <p className="mt-5 text-sm font-semibold text-[#D9FF00]">
+                <p className="mt-5 text-sm font-semibold text-texto-principal">
                   Abrir Mesa de Producción →
                 </p>
               </Link>
@@ -891,7 +898,7 @@ function ProjectsPanel({
   );
 }
 
-function ProjectEntry({href,title,description}:{href:string;title:string;description:string}){return <Link href={href} className="rounded-2xl border border-white/10 bg-[#111] p-5 transition hover:border-[#D9FF00]"><strong>{title}</strong><p className="mt-2 text-sm leading-6 text-[#888]">{description}</p></Link>}
+function ProjectEntry({href,title,description}:{href:string;title:string;description:string}){return <Link href={href} className="rounded-2xl border border-borde/10 bg-superficie-elevada p-5 transition hover:border-acento"><strong>{title}</strong><p className="mt-2 text-sm leading-6 text-texto-largo">{description}</p></Link>}
 
 function SpacePlatform({
   space,
@@ -909,7 +916,7 @@ function SpacePlatform({
 }) {
   return (
     <section className="space-y-6">
-      <article className="rounded-[36px] border border-white/10 bg-[#0A0A0A] p-7 md:p-9">
+      <article className="rounded-[36px] border border-borde/10 bg-superficie-elevada p-7 md:p-9">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl">
             <SectionEyebrow>
@@ -920,7 +927,7 @@ function SpacePlatform({
               {space.name}
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#A6A6A6]">
+            <p className="mt-4 text-sm leading-7 text-texto-largo">
               {space.description ||
                 'Este espacio todavía necesita completar su presentación.'}
             </p>
@@ -953,14 +960,14 @@ function SpacePlatform({
           <div className="flex flex-wrap gap-3">
             <Link
               href="/gestion-agenda"
-              className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
+              className="rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso"
             >
               Gestionar experiencias
             </Link>
 
             <Link
               href="/studio?new=1"
-              className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-white"
+              className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold transition hover:border-borde"
             >
               Crear proyecto
             </Link>
@@ -1084,7 +1091,7 @@ function BrandPlatform({
 }) {
   return (
     <section className="space-y-6">
-      <article className="rounded-[36px] border border-white/10 bg-[#0A0A0A] p-7 md:p-9">
+      <article className="rounded-[36px] border border-borde/10 bg-superficie-elevada p-7 md:p-9">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl">
             <SectionEyebrow>
@@ -1095,7 +1102,7 @@ function BrandPlatform({
               {funder.name}
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-[#A6A6A6]">
+            <p className="mt-4 text-sm leading-7 text-texto-largo">
               {funder.description ||
                 'Esta organización todavía necesita completar su presentación.'}
             </p>
@@ -1139,14 +1146,14 @@ function BrandPlatform({
           <div className="flex flex-wrap gap-3">
             <Link
               href="/gestion-financiacion"
-              className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
+              className="rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso"
             >
               Gestionar oportunidades
             </Link>
 
             <Link
-              href="/workspace/ecosystem"
-              className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-white"
+              href="/ecosistema"
+              className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold transition hover:border-borde"
             >
               Explorar ecosistema
             </Link>
@@ -1241,7 +1248,7 @@ function BrandPlatform({
 
       <Link
         href="/productos/gestionar"
-        className="inline-flex bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
+        className="inline-flex bg-rojo-base px-5 py-3 text-sm font-bold text-hueso"
       >
         Gestionar productos
       </Link>
@@ -1251,7 +1258,7 @@ function BrandPlatform({
 
 function PublicationProcess() {
   return (
-    <section className="rounded-[36px] border border-white/10 bg-[#0A0A0A] p-7 md:p-9">
+    <section className="rounded-[36px] border border-borde/10 bg-superficie-elevada p-7 md:p-9">
       <SectionEyebrow>
         Publicación
       </SectionEyebrow>
@@ -1260,7 +1267,7 @@ function PublicationProcess() {
         Cómo llegará un proyecto al medio
       </h2>
 
-      <p className="mt-4 max-w-4xl text-sm leading-7 text-[#A6A6A6]">
+      <p className="mt-4 max-w-4xl text-sm leading-7 text-texto-largo">
         Crear un proyecto no significa publicarlo. Primero
         debe desarrollarse en Creative OS, pasar la revisión
         de elegibilidad y después ser postulado por su
@@ -1314,8 +1321,8 @@ function WarningsPanel({
   warnings: string[];
 }) {
   return (
-    <section className="rounded-3xl border border-amber-400/20 bg-amber-400/5 p-6">
-      <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-300">
+    <section className="rounded-3xl border border-borde bg-superficie-elevada p-6">
+      <p className="text-xs font-bold uppercase tracking-[0.18em] text-naranja">
         Información incompleta
       </p>
 
@@ -1324,7 +1331,7 @@ function WarningsPanel({
           (warning) => (
             <p
               key={warning}
-              className="text-sm leading-6 text-amber-100/70"
+              className="text-sm leading-6 text-texto-largo"
             >
               {warning}
             </p>
@@ -1347,7 +1354,7 @@ function InformationCard({
   }>;
 }) {
   return (
-    <article className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-6">
+    <article className="rounded-3xl border border-borde/10 bg-superficie-elevada p-6">
       <h3 className="text-xl font-bold">
         {title}
       </h3>
@@ -1357,13 +1364,13 @@ function InformationCard({
           (item) => (
             <div
               key={item.label}
-              className="border-t border-white/10 pt-5 first:border-t-0 first:pt-0"
+              className="border-t border-borde/10 pt-5 first:border-t-0 first:pt-0"
             >
-              <p className="text-xs uppercase tracking-[0.15em] text-[#555555]">
+              <p className="text-xs uppercase tracking-[0.15em] text-texto-largo">
                 {item.label}
               </p>
 
-              <p className="mt-2 text-sm leading-6 text-[#A6A6A6]">
+              <p className="mt-2 text-sm leading-6 text-texto-largo">
                 {item.value}
               </p>
             </div>
@@ -1382,8 +1389,8 @@ function NextPlatformStage({
   description: string;
 }) {
   return (
-    <article className="rounded-3xl border border-dashed border-[#D9FF00]/30 bg-[#D9FF00]/[0.04] p-7">
-      <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#D9FF00]">
+    <article className="rounded-3xl border border-dashed border-acento/30 bg-rojo-base/[0.04] p-7">
+      <p className="text-xs font-bold uppercase tracking-[0.18em] text-texto-principal">
         Desarrollo conectado
       </p>
 
@@ -1391,7 +1398,7 @@ function NextPlatformStage({
         {title}
       </h3>
 
-      <p className="mt-3 max-w-3xl text-sm leading-7 text-[#A6A6A6]">
+      <p className="mt-3 max-w-3xl text-sm leading-7 text-texto-largo">
         {description}
       </p>
     </article>
@@ -1405,7 +1412,7 @@ function SectionEyebrow({
     React.ReactNode;
 }) {
   return (
-    <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+    <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
       {children}
     </p>
   );
@@ -1419,12 +1426,12 @@ function Metric({
   label: string;
 }) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#111111] p-4 text-center">
-      <p className="text-3xl font-bold text-[#D9FF00]">
+    <article className="rounded-2xl border border-borde/10 bg-superficie-elevada p-4 text-center">
+      <p className="text-3xl font-bold text-texto-principal">
         {value}
       </p>
 
-      <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-[#777777]">
+      <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-texto-largo">
         {label}
       </p>
     </article>
@@ -1443,8 +1450,8 @@ function StatusPill({
       className={[
         'rounded-full border px-3 py-1.5 text-xs font-semibold',
         accent
-          ? 'border-[#D9FF00]/30 bg-[#D9FF00]/10 text-[#D9FF00]'
-          : 'border-white/10 bg-white/[0.03] text-[#A6A6A6]',
+          ? 'border-acento/30 bg-acento/10 text-texto-principal'
+          : 'border-borde/10 bg-superficie-elevada text-texto-largo',
       ].join(' ')}
     >
       {value}
@@ -1482,7 +1489,7 @@ function Avatar({
       .toUpperCase();
 
   return (
-    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#D9FF00] text-lg font-bold text-black">
+    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-rojo-base text-lg font-bold text-hueso">
       {initials || 'CE'}
     </div>
   );
@@ -1496,12 +1503,12 @@ function ProfileInformation({
   value: string;
 }) {
   return (
-    <div className="mt-5 border-t border-white/10 pt-5">
-      <p className="text-xs uppercase tracking-[0.15em] text-[#555555]">
+    <div className="mt-5 border-t border-borde/10 pt-5">
+      <p className="text-xs uppercase tracking-[0.15em] text-texto-largo">
         {label}
       </p>
 
-      <p className="mt-2 text-sm leading-6 text-[#A6A6A6]">
+      <p className="mt-2 text-sm leading-6 text-texto-largo">
         {value}
       </p>
     </div>
@@ -1516,12 +1523,12 @@ function EmptyState({
   description: string;
 }) {
   return (
-    <div className="mt-6 rounded-3xl border border-dashed border-white/15 bg-white/[0.02] p-7">
+    <div className="mt-6 rounded-3xl border border-dashed border-borde/15 bg-superficie-elevada p-7">
       <h3 className="text-xl font-semibold">
         {title}
       </h3>
 
-      <p className="mt-3 max-w-3xl text-sm leading-7 text-[#777777]">
+      <p className="mt-3 max-w-3xl text-sm leading-7 text-texto-largo">
         {description}
       </p>
     </div>
@@ -1538,8 +1545,8 @@ function ProcessStep({
   description: string;
 }) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#111111] p-5">
-      <p className="text-xs font-bold text-[#D9FF00]">
+    <article className="rounded-2xl border border-borde/10 bg-superficie-elevada p-5">
+      <p className="text-xs font-bold text-texto-principal">
         {number}
       </p>
 
@@ -1547,7 +1554,7 @@ function ProcessStep({
         {title}
       </h3>
 
-      <p className="mt-2 text-xs leading-5 text-[#777777]">
+      <p className="mt-2 text-xs leading-5 text-texto-largo">
         {description}
       </p>
     </article>

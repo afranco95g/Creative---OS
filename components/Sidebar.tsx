@@ -80,12 +80,12 @@ export function Sidebar({
     `${projectPath}/continuity`;
 
   return (
-    <aside className="sticky top-0 flex h-screen w-[280px] shrink-0 flex-col justify-between overflow-y-auto border-r border-[#232323] bg-[#080808] p-6">
+    <aside className="sticky top-0 flex h-screen w-[280px] shrink-0 flex-col justify-between overflow-y-auto border-r border-borde bg-superficie-elevada p-6">
       <div>
         <div className="mb-8 flex flex-col gap-3">
           <Link
             href="/"
-            className="text-xs text-[#767676] transition hover:text-[#D9FF00]"
+            className="text-xs text-texto-largo transition hover:text-texto-principal"
           >
             ← Volver al medio
           </Link>
@@ -95,38 +95,38 @@ export function Sidebar({
             onClick={
               onBackToWorkspace
             }
-            className="text-left text-xs text-[#767676] transition hover:text-white"
+            className="text-left text-xs text-texto-largo transition hover:text-texto-largo"
           >
             ← Volver al estudio
           </button>
         </div>
 
         <div className="mb-10">
-          <p className="text-sm font-bold uppercase tracking-[0.28em] text-[#D9FF00]">
+          <p className="text-sm font-bold uppercase tracking-[0.28em] text-texto-principal">
             Creative OS
           </p>
 
-          <p className="mt-2 text-xs leading-relaxed text-[#767676]">
+          <p className="mt-2 text-xs leading-relaxed text-texto-largo">
             Sistema operativo para
             construir, fortalecer y
             activar proyectos.
           </p>
         </div>
 
-        <div className="mb-8 rounded-2xl border border-[#232323] bg-[#101010] p-4">
+        <div className="mb-8 rounded-2xl border border-borde bg-superficie-elevada p-4">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#A6A6A6]">
+            <span className="text-texto-largo">
               Construcción
             </span>
 
-            <span className="text-white">
+            <span className="text-texto-largo">
               {progress}%
             </span>
           </div>
 
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#232323]">
+          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-borde">
             <div
-              className="h-full rounded-full bg-[#D9FF00] transition-all duration-500"
+              className="h-full rounded-full bg-rojo-base transition-all duration-500"
               style={{
                 width: `${progress}%`,
               }}
@@ -153,8 +153,8 @@ export function Sidebar({
                   className={[
                     'w-full rounded-xl px-4 py-3 text-left text-sm transition',
                     isActive
-                      ? 'bg-[#D9FF00] font-semibold text-black'
-                      : 'text-[#A6A6A6] hover:bg-[#151515] hover:text-white',
+                      ? 'bg-rojo-base font-semibold text-hueso'
+                      : 'text-texto-largo hover:bg-superficie hover:text-texto-largo',
                   ].join(' ')}
                 >
                   {item.label}
@@ -164,8 +164,8 @@ export function Sidebar({
           )}
         </nav>
 
-        <div className="mt-6 border-t border-[#232323] pt-6">
-          <p className="mb-3 px-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#555555]">
+        <div className="mt-6 border-t border-borde pt-6">
+          <p className="mb-3 px-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-texto-largo">
             Inteligencia y continuidad
           </p>
 
@@ -173,43 +173,43 @@ export function Sidebar({
             href={
               continuityHref
             }
-            className="block w-full rounded-xl border border-[#333333] bg-[#101010] px-4 py-3 text-left text-sm text-[#A6A6A6] transition hover:border-[#D9FF00] hover:text-white"
+            className="block w-full rounded-xl border border-borde bg-superficie-elevada px-4 py-3 text-left text-sm text-texto-largo transition hover:border-acento hover:text-texto-largo"
           >
-            <span className="block font-medium text-white">
+            <span className="block font-medium text-texto-largo">
               Memoria y continuidad
             </span>
 
-            <span className="mt-1 block text-xs leading-5 text-[#767676]">
+            <span className="mt-1 block text-xs leading-5 text-texto-largo">
               Executive Memory,
               exportación y handoff.
             </span>
           </Link>
         </div>
 
-        <div className="mt-6 border-t border-[#232323] pt-6">
-          <p className="mb-3 px-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#555555]">
+        <div className="mt-6 border-t border-borde pt-6">
+          <p className="mb-3 px-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-texto-largo">
             Ecosistema
           </p>
 
           <Link
-            href="/workspace/ecosystem"
-            className="block rounded-xl px-4 py-3 text-sm text-[#A6A6A6] transition hover:bg-[#151515] hover:text-white"
+            href="/ecosistema"
+            className="block rounded-xl px-4 py-3 text-sm text-texto-largo transition hover:bg-superficie hover:text-texto-largo"
           >
             Personas y conexiones
           </Link>
         </div>
       </div>
 
-      <div className="mt-8 rounded-2xl border border-[#232323] bg-[#101010] p-4">
-        <p className="text-xs text-[#767676]">
+      <div className="mt-8 rounded-2xl border border-borde bg-superficie-elevada p-4">
+        <p className="text-xs text-texto-largo">
           Proyecto activo
         </p>
 
-        <p className="mt-1 text-sm font-medium text-white">
+        <p className="mt-1 text-sm font-medium text-texto-largo">
           {graph.title}
         </p>
 
-        <p className="mt-2 text-xs capitalize text-[#767676]">
+        <p className="mt-2 text-xs capitalize text-texto-largo">
           Estado:{' '}
           {graph.stage.replaceAll(
             '_',

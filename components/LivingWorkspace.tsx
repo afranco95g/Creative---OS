@@ -24,41 +24,41 @@ export function LivingWorkspace({ graph, messages, progress }: LivingWorkspacePr
   const progressExplanation = explainProjectProgress(graph);
 
   return (
-    <aside className="sticky top-12 h-fit max-h-[calc(100vh-96px)] overflow-y-auto rounded-3xl border border-[#232323] bg-[#101010] p-6">
+    <aside className="sticky top-12 h-fit max-h-[calc(100vh-96px)] overflow-y-auto rounded-3xl border border-borde bg-superficie-elevada p-6">
       <div>
-        <p className="text-xs uppercase tracking-[0.2em] text-[#767676]">
+        <p className="text-xs uppercase tracking-[0.2em] text-texto-largo">
           Workspace vivo
         </p>
 
-        <h3 className="mt-3 text-2xl font-semibold text-white">
+        <h3 className="mt-3 text-2xl font-semibold text-texto-largo">
           {graph.title}
         </h3>
-<div className="mt-5 rounded-2xl border border-[#232323] bg-[#151515] p-4">
-  <p className="mb-2 text-xs uppercase tracking-[0.18em] text-[#767676]">
+<div className="mt-5 rounded-2xl border border-borde bg-superficie p-4">
+  <p className="mb-2 text-xs uppercase tracking-[0.18em] text-texto-largo">
     Productor pensando
   </p>
-  <p className="text-sm leading-relaxed text-[#D9FF00]">
+  <p className="text-sm leading-relaxed text-texto-principal">
     {production.producerThought}
   </p>
 </div>
         <div className="mt-5">
-          <div className="mb-2 flex justify-between text-xs text-[#B5B5B5]">
+          <div className="mb-2 flex justify-between text-xs text-texto-largo">
             <span>Construcción del proyecto</span>
             <span>{progress}%</span>
           </div>
 
-          <div className="h-1.5 rounded-full bg-[#232323]">
+          <div className="h-1.5 rounded-full bg-borde">
             <div
-              className="h-full rounded-full bg-[#D9FF00]"
+              className="h-full rounded-full bg-rojo-base"
               style={{ width: `${progress}%` }}
             />
           </div>
-          <details className="mt-4 rounded-xl border border-white/10 p-3 text-xs text-[#aaa]">
-            <summary className="cursor-pointer text-[#D9FF00]">Por qué estás en {progress}%</summary>
-            <p className="mt-3"><span className="text-white">Confirmado:</span> {progressExplanation.confirmed.join(', ') || 'Base inicial'}</p>
-            <p className="mt-2"><span className="text-white">En construcción:</span> {progressExplanation.building.join(', ') || 'Sin módulos intermedios'}</p>
-            <p className="mt-2"><span className="text-white">Pendiente:</span> {progressExplanation.pending.join(', ') || 'Revisión final'}</p>
-            <p className="mt-2"><span className="text-white">Próximo avance:</span> fortalecer {progressExplanation.recommended}.</p>
+          <details className="mt-4 rounded-xl border border-borde/10 p-3 text-xs text-texto-largo">
+            <summary className="cursor-pointer text-texto-principal">Por qué estás en {progress}%</summary>
+            <p className="mt-3"><span className="text-texto-largo">Confirmado:</span> {progressExplanation.confirmed.join(', ') || 'Base inicial'}</p>
+            <p className="mt-2"><span className="text-texto-largo">En construcción:</span> {progressExplanation.building.join(', ') || 'Sin módulos intermedios'}</p>
+            <p className="mt-2"><span className="text-texto-largo">Pendiente:</span> {progressExplanation.pending.join(', ') || 'Revisión final'}</p>
+            <p className="mt-2"><span className="text-texto-largo">Próximo avance:</span> fortalecer {progressExplanation.recommended}.</p>
           </details>
         </div>
       </div>
@@ -69,7 +69,7 @@ export function LivingWorkspace({ graph, messages, progress }: LivingWorkspacePr
             {strongModules.map((module) => (
               <span
                 key={module.id}
-                className="rounded-full border border-[#284221] bg-[#102010] px-3 py-1 text-xs text-[#6EEB83]"
+                className="rounded-full border border-borde bg-superficie-elevada px-3 py-1 text-xs text-emerald-700"
               >
                 ✓ {module.title}
               </span>
@@ -85,12 +85,12 @@ export function LivingWorkspace({ graph, messages, progress }: LivingWorkspacePr
           {weakModules.map((module) => (
             <div key={module.id}>
               <div className="flex justify-between text-xs">
-                <span className="text-[#B5B5B5]">{module.title}</span>
-                <span className="text-white">{module.score}%</span>
+                <span className="text-texto-largo">{module.title}</span>
+                <span className="text-texto-largo">{module.score}%</span>
               </div>
-              <div className="mt-2 h-1 rounded-full bg-[#232323]">
+              <div className="mt-2 h-1 rounded-full bg-borde">
                 <div
-                  className="h-full rounded-full bg-[#D9FF00]"
+                  className="h-full rounded-full bg-rojo-base"
                   style={{ width: `${module.score}%` }}
                 />
               </div>
@@ -104,12 +104,12 @@ export function LivingWorkspace({ graph, messages, progress }: LivingWorkspacePr
           {documents.map((item) => (
             <div key={item.definition.id}>
               <div className="flex justify-between text-xs">
-                <span className="text-[#B5B5B5]">{item.definition.title}</span>
-                <span className="text-white">{item.readiness}%</span>
+                <span className="text-texto-largo">{item.definition.title}</span>
+                <span className="text-texto-largo">{item.readiness}%</span>
               </div>
-              <div className="mt-2 h-1 rounded-full bg-[#232323]">
+              <div className="mt-2 h-1 rounded-full bg-borde">
                 <div
-                  className="h-full rounded-full bg-[#D9FF00]"
+                  className="h-full rounded-full bg-rojo-base"
                   style={{ width: `${item.readiness}%` }}
                 />
               </div>
@@ -124,13 +124,13 @@ export function LivingWorkspace({ graph, messages, progress }: LivingWorkspacePr
       {production.recentEvents.map((event, index) => (
         <div
           key={`${event.title}-${index}`}
-          className="rounded-2xl border border-[#232323] bg-[#151515] p-4"
+          className="rounded-2xl border border-borde bg-superficie p-4"
         >
-          <p className="text-sm font-medium text-white">
+          <p className="text-sm font-medium text-texto-largo">
             {event.title}
           </p>
 
-          <p className="mt-1 text-xs leading-relaxed text-[#A6A6A6]">
+          <p className="mt-1 text-xs leading-relaxed text-texto-largo">
             {event.description}
           </p>
         </div>
@@ -146,9 +146,9 @@ export function LivingWorkspace({ graph, messages, progress }: LivingWorkspacePr
       {production.createdTasks.map((task) => (
         <div
           key={task}
-          className="rounded-2xl border border-[#232323] bg-[#151515] px-4 py-3"
+          className="rounded-2xl border border-borde bg-superficie px-4 py-3"
         >
-          <p className="text-sm text-white">○ {task}</p>
+          <p className="text-sm text-texto-largo">○ {task}</p>
         </div>
       ))}
     </div>
@@ -162,8 +162,8 @@ export function LivingWorkspace({ graph, messages, progress }: LivingWorkspacePr
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="mt-8 border-t border-[#232323] pt-6">
-      <p className="mb-4 text-xs uppercase tracking-[0.18em] text-[#767676]">
+    <div className="mt-8 border-t border-borde pt-6">
+      <p className="mb-4 text-xs uppercase tracking-[0.18em] text-texto-largo">
         {title}
       </p>
       {children}
@@ -172,5 +172,5 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
 }
 
 function Empty({ text }: { text: string }) {
-  return <p className="text-sm leading-relaxed text-[#767676]">{text}</p>;
+  return <p className="text-sm leading-relaxed text-texto-largo">{text}</p>;
 }

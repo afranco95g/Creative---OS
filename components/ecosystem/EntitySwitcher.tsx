@@ -37,10 +37,10 @@ export function EntitySwitcher({
   return (
     <section
       aria-labelledby="entity-switcher-title"
-      className="rounded-[32px] border border-white/10 bg-[#0A0A0A] p-6 md:p-7"
+      className="rounded-[32px] border border-borde/10 bg-superficie-elevada p-6 md:p-7"
     >
       <div className="flex flex-col gap-3">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
           Identidad activa
         </p>
 
@@ -51,7 +51,7 @@ export function EntitySwitcher({
           ¿Desde dónde quieres gestionar el ecosistema?
         </h2>
 
-        <p className="max-w-3xl text-sm leading-7 text-[#888888]">
+        <p className="max-w-3xl text-sm leading-7 text-texto-largo">
           Tu cuenta puede participar como persona y también
           representar espacios, marcas u organizaciones. Elige
           una identidad para ver sus herramientas y su
@@ -78,8 +78,8 @@ export function EntitySwitcher({
               className={[
                 'group relative min-h-[150px] rounded-3xl border p-5 text-left transition',
                 isSelected
-                  ? 'border-[#D9FF00] bg-[#D9FF00]/[0.07]'
-                  : 'border-white/10 bg-[#111111] hover:border-white/25',
+                  ? 'border-acento bg-rojo-base/[0.07]'
+                  : 'border-borde/10 bg-superficie-elevada hover:border-borde/25',
               ].join(' ')}
             >
               <div className="flex items-start justify-between gap-4">
@@ -88,15 +88,15 @@ export function EntitySwitcher({
                     className={[
                       'text-[10px] font-bold uppercase tracking-[0.17em]',
                       isSelected
-                        ? 'text-[#D9FF00]'
-                        : 'text-[#666666]',
+                        ? 'text-texto-principal'
+                        : 'text-texto-largo',
                     ].join(' ')}
                   >
                     {entityTypeLabels[entity.type]}
                   </p>
 
                   {entity.badge ? (
-                    <p className="mt-2 text-xs text-[#777777]">
+                    <p className="mt-2 text-xs text-texto-largo">
                       {entity.badge}
                     </p>
                   ) : null}
@@ -107,8 +107,8 @@ export function EntitySwitcher({
                   className={[
                     'flex h-6 w-6 items-center justify-center rounded-full border text-xs',
                     isSelected
-                      ? 'border-[#D9FF00] bg-[#D9FF00] text-black'
-                      : 'border-white/20 text-[#666666]',
+                      ? 'border-acento bg-rojo-base text-hueso'
+                      : 'border-borde/20 text-texto-largo',
                   ].join(' ')}
                 >
                   {isSelected ? '✓' : ''}
@@ -119,12 +119,12 @@ export function EntitySwitcher({
                 {entity.name}
               </h3>
 
-              <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#888888]">
+              <p className="mt-2 line-clamp-2 text-sm leading-6 text-texto-largo">
                 {entity.description}
               </p>
 
               {entity.verified ? (
-                <span className="mt-4 inline-flex rounded-full bg-[#D9FF00] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-black">
+                <span className="mt-4 inline-flex rounded-full bg-rojo-base px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-hueso">
                   Verificado
                 </span>
               ) : null}

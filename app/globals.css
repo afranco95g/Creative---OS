@@ -37,7 +37,9 @@
     --texto-largo: #EDE9E1;
     --acento: #FF8A1F;
     --borde: #EDE9E1;
-    --stencil-offset: #EDE9E1;
+    /* En oscuro el titular es hueso: el offset debe ser vinotinto de marca,
+       no hueso — si no, la "segunda pasada" desaparece y el título se ensucia. */
+    --stencil-offset: #5C1A10;
   }
 }
 
@@ -50,7 +52,7 @@
   --texto-largo: #EDE9E1;
   --acento: #FF8A1F;
   --borde: #EDE9E1;
-  --stencil-offset: #EDE9E1;
+  --stencil-offset: #5C1A10;
 }
 
 :root[data-theme='light'] {

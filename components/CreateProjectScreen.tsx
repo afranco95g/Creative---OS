@@ -83,17 +83,17 @@ export function CreateProjectScreen({
   }
 
   return (
-    <main className="min-h-screen bg-[#050505] px-8 py-10 text-white">
+    <main className="min-h-screen bg-superficie px-8 py-10 text-texto-largo">
       <section className="mx-auto max-w-4xl">
         <button
           type="button"
           onClick={step === 1 ? onCancel : () => setStep(1)}
-          className="mb-12 text-sm text-[#A6A6A6] transition hover:text-white"
+          className="mb-12 text-sm text-texto-largo transition hover:text-texto-largo"
         >
           ← {step === 1 ? 'Volver al estudio' : 'Volver'}
         </button>
 
-        <p className="text-sm font-bold uppercase tracking-[0.28em] text-[#D9FF00]">
+        <p className="text-sm font-bold uppercase tracking-[0.28em] text-texto-principal">
           Nuevo proyecto
         </p>
 
@@ -103,7 +103,7 @@ export function CreateProjectScreen({
               Cuéntame qué quieres construir.
             </h1>
 
-            <p className="mt-6 max-w-3xl text-xl leading-relaxed text-[#A6A6A6]">
+            <p className="mt-6 max-w-3xl text-xl leading-relaxed text-texto-largo">
               No necesitas tener el proyecto organizado. Escríbelo como se lo
               contarías a un productor durante una primera reunión.
             </p>
@@ -112,14 +112,14 @@ export function CreateProjectScreen({
               value={description}
               onChange={(event) => setDescription(event.target.value)}
               placeholder="Por ejemplo: quiero crear una marca de gelato artesanal que empiece con activaciones culturales antes de abrir un espacio físico..."
-              className="mt-10 min-h-[240px] w-full resize-none rounded-3xl border border-[#232323] bg-[#101010] p-7 text-lg leading-relaxed text-white outline-none transition placeholder:text-[#5F5F5F] focus:border-[#D9FF00]"
+              className="mt-10 min-h-[240px] w-full resize-none rounded-3xl border border-borde bg-superficie-elevada p-7 text-lg leading-relaxed text-texto-largo outline-none transition placeholder:text-texto-largo focus:border-acento"
             />
 
             <div className="mt-6 flex justify-end">
               <button
                 type="submit"
                 disabled={!description.trim()}
-                className="rounded-full bg-[#D9FF00] px-7 py-3 text-sm font-bold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-full bg-rojo-base px-7 py-3 text-sm font-bold text-hueso transition hover:shadow-stencil disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Continuar
               </button>
@@ -131,13 +131,13 @@ export function CreateProjectScreen({
               Démosle una primera identidad.
             </h1>
 
-            <p className="mt-6 max-w-3xl text-xl leading-relaxed text-[#A6A6A6]">
+            <p className="mt-6 max-w-3xl text-xl leading-relaxed text-texto-largo">
               Esto solo configura el espacio inicial. El Productor Ejecutivo
               seguirá organizando el proyecto contigo.
             </p>
 
             <label className="mt-10 block">
-              <span className="mb-2 block text-xs uppercase tracking-[0.18em] text-[#767676]">
+              <span className="mb-2 block text-xs uppercase tracking-[0.18em] text-texto-largo">
                 Nombre provisional
               </span>
 
@@ -145,12 +145,12 @@ export function CreateProjectScreen({
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
                 placeholder="Charlie Gelato"
-                className="w-full rounded-2xl border border-[#232323] bg-[#101010] px-5 py-4 text-lg text-white outline-none transition placeholder:text-[#5F5F5F] focus:border-[#D9FF00]"
+                className="w-full rounded-2xl border border-borde bg-superficie-elevada px-5 py-4 text-lg text-texto-largo outline-none transition placeholder:text-texto-largo focus:border-acento"
               />
             </label>
 
             <div className="mt-8">
-              <p className="mb-4 text-xs uppercase tracking-[0.18em] text-[#767676]">
+              <p className="mb-4 text-xs uppercase tracking-[0.18em] text-texto-largo">
                 ¿Qué tipo de proyecto se parece más?
               </p>
 
@@ -162,13 +162,13 @@ export function CreateProjectScreen({
                     onClick={() => setCategory(item.id)}
                     className={`rounded-2xl border p-5 text-left transition ${
                       category === item.id
-                        ? 'border-[#D9FF00] bg-[#15170A]'
-                        : 'border-[#232323] bg-[#101010] hover:border-[#4A4A4A]'
+                        ? 'border-acento bg-superficie'
+                        : 'border-borde bg-superficie-elevada hover:border-borde'
                     }`}
                   >
-                    <p className="font-semibold text-white">{item.label}</p>
+                    <p className="font-semibold text-texto-largo">{item.label}</p>
 
-                    <p className="mt-2 text-sm leading-relaxed text-[#A6A6A6]">
+                    <p className="mt-2 text-sm leading-relaxed text-texto-largo">
                       {item.description}
                     </p>
                   </button>
@@ -180,14 +180,14 @@ export function CreateProjectScreen({
               <button
                 type="submit"
                 disabled={!title.trim()}
-                className="rounded-full bg-[#D9FF00] px-7 py-3 text-sm font-bold text-black transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-full bg-rojo-base px-7 py-3 text-sm font-bold text-hueso transition hover:shadow-stencil disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Crear Mesa de Producción
               </button>
             </div>
 
             {errorMessage ? (
-              <p className="mt-4 rounded-2xl border border-red-400/25 bg-red-400/10 px-5 py-4 text-sm text-red-200">
+              <p className="mt-4 rounded-2xl border border-borde bg-rojo-base px-5 py-4 text-sm text-hueso">
                 {errorMessage}
               </p>
             ) : null}

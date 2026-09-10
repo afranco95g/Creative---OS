@@ -202,18 +202,18 @@ export function EditorialProjectReview() {
   }
 
   return (
-    <main className="min-h-screen bg-[#050505] px-6 py-10 text-white sm:px-8 lg:px-12">
+    <main className="min-h-screen bg-superficie px-6 py-10 text-texto-largo sm:px-8 lg:px-12">
       <div className="mx-auto max-w-6xl">
         <header className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <Link
               href="/mi-ecosistema"
-              className="text-sm text-[#777777] transition hover:text-white"
+              className="text-sm text-texto-largo transition hover:text-texto-largo"
             >
               ← Volver a Mi Ecosistema
             </Link>
 
-            <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-[#D9FF00]">
+            <p className="mt-8 text-xs font-bold uppercase tracking-[0.24em] text-texto-principal">
               Administración del medio
             </p>
 
@@ -221,7 +221,7 @@ export function EditorialProjectReview() {
               Revisión editorial
             </h1>
 
-            <p className="mt-5 max-w-3xl text-base leading-7 text-[#999999]">
+            <p className="mt-5 max-w-3xl text-base leading-7 text-texto-largo">
               Revisa las nuevas postulaciones y continúa
               administrando los proyectos que ya fueron publicados
               por El Culebreo.
@@ -234,23 +234,23 @@ export function EditorialProjectReview() {
               void loadAllProjects();
             }}
             disabled={isLoading}
-            className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-white disabled:opacity-50"
+            className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold transition hover:border-borde disabled:opacity-50"
           >
             Actualizar proyectos
           </button>
         </header>
 
         {errorMessage ? (
-          <div className="mt-8 rounded-2xl border border-red-400/20 bg-red-400/10 p-5 text-sm leading-6 text-red-200">
+          <div className="mt-8 rounded-2xl border border-borde bg-rojo-base p-5 text-sm leading-6 text-hueso">
             {errorMessage}
           </div>
         ) : null}
 
         {isLoading ? (
           <div className="mt-10 space-y-5">
-            <div className="h-72 animate-pulse rounded-3xl bg-[#101010]" />
+            <div className="h-72 animate-pulse rounded-3xl bg-superficie-elevada" />
 
-            <div className="h-56 animate-pulse rounded-3xl bg-[#101010]" />
+            <div className="h-56 animate-pulse rounded-3xl bg-superficie-elevada" />
           </div>
         ) : (
           <>
@@ -325,7 +325,7 @@ function PendingProjectsSection({
     <section className="mt-12">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#767676]">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-largo">
             Cola editorial
           </p>
 
@@ -334,7 +334,7 @@ function PendingProjectsSection({
           </h2>
         </div>
 
-        <p className="text-sm text-[#777777]">
+        <p className="text-sm text-texto-largo">
           {projects.length}{' '}
           {projects.length === 1
             ? 'postulación'
@@ -343,12 +343,12 @@ function PendingProjectsSection({
       </div>
 
       {projects.length === 0 ? (
-        <div className="mt-6 rounded-3xl border border-dashed border-white/15 bg-[#0A0A0A] p-8">
+        <div className="mt-6 rounded-3xl border border-dashed border-borde/15 bg-superficie-elevada p-8">
           <h3 className="text-xl font-semibold">
             No hay postulaciones pendientes
           </h3>
 
-          <p className="mt-3 text-sm text-[#777777]">
+          <p className="mt-3 text-sm text-texto-largo">
             La cola editorial está vacía.
           </p>
         </div>
@@ -358,19 +358,19 @@ function PendingProjectsSection({
             (project) => (
               <article
                 key={project.id}
-                className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-7"
+                className="rounded-3xl border border-borde/10 bg-superficie-elevada p-7"
               >
                 <div className="grid gap-8 xl:grid-cols-[1fr_360px]">
                   <div>
                     <div className="flex flex-wrap gap-2">
-                      <span className="rounded-full border border-[#D9FF00]/20 bg-[#D9FF00]/10 px-3 py-1 text-[10px] font-bold uppercase text-[#D9FF00]">
+                      <span className="rounded-full border border-acento/20 bg-acento/10 px-3 py-1 text-[10px] font-bold uppercase text-texto-principal">
                         {project.workflowStatus ===
                         'editorial_review'
                           ? 'En revisión'
                           : 'Postulado'}
                       </span>
 
-                      <span className="rounded-full border border-white/10 px-3 py-1 text-[10px] uppercase text-[#777777]">
+                      <span className="rounded-full border border-borde/10 px-3 py-1 text-[10px] uppercase text-texto-largo">
                         {project.progress}% construido
                       </span>
                     </div>
@@ -379,25 +379,25 @@ function PendingProjectsSection({
                       {project.title}
                     </h3>
 
-                    <p className="mt-4 text-sm leading-7 text-[#999999]">
+                    <p className="mt-4 text-sm leading-7 text-texto-largo">
                       {project.description ||
                         'Proyecto sin descripción.'}
                     </p>
 
-                    <p className="mt-5 text-sm text-[#777777]">
+                    <p className="mt-5 text-sm text-texto-largo">
                       Propietario:{' '}
-                      <strong className="text-white">
+                      <strong className="text-texto-largo">
                         {project.ownerName}
                       </strong>
                     </p>
 
                     {project.eligibilityNote ? (
-                      <div className="mt-5 rounded-2xl border border-white/10 bg-[#111111] p-4">
-                        <p className="text-[10px] uppercase tracking-[0.14em] text-[#666666]">
+                      <div className="mt-5 rounded-2xl border border-borde/10 bg-superficie-elevada p-4">
+                        <p className="text-[10px] uppercase tracking-[0.14em] text-texto-largo">
                           Nota del ecosistema
                         </p>
 
-                        <p className="mt-2 text-sm leading-6 text-[#A6A6A6]">
+                        <p className="mt-2 text-sm leading-6 text-texto-largo">
                           {
                             project.eligibilityNote
                           }
@@ -410,20 +410,20 @@ function PendingProjectsSection({
                         type="button"
                         onClick={() => void onCreateStory(project.id)}
                         disabled={activeProjectId === project.id}
-                        className="rounded-full bg-[#D9FF00] px-5 py-3 text-sm font-bold text-black"
+                        className="rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso"
                       >
                         Crear borrador editorial
                       </button>
                       <Link
                         href={`/revision-editorial/${project.id}`}
-                        className="rounded-full bg-white px-5 py-3 text-sm font-bold text-black transition hover:bg-[#D9FF00]"
+                        className="rounded-full bg-rojo-base px-5 py-3 text-sm font-bold text-hueso transition hover:bg-rojo-base"
                       >
                         Preparar ficha editorial
                       </Link>
 
                       <Link
                         href={`/revision-editorial/${project.id}/actores`}
-                        className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-[#D9FF00] hover:text-[#D9FF00]"
+                        className="rounded-full border border-borde/15 px-5 py-3 text-sm font-semibold transition hover:border-acento hover:text-acento"
                       >
                         Gestionar actores
                       </Link>
@@ -433,7 +433,7 @@ function PendingProjectsSection({
                   <div>
                     <label
                       htmlFor={`editorial-note-${project.id}`}
-                      className="text-xs font-bold uppercase tracking-[0.16em] text-[#767676]"
+                      className="text-xs font-bold uppercase tracking-[0.16em] text-texto-largo"
                     >
                       Nota editorial
                     </label>
@@ -459,7 +459,7 @@ function PendingProjectsSection({
                       }
                       placeholder="Explica la decisión editorial."
                       rows={6}
-                      className="mt-3 w-full resize-none rounded-2xl border border-white/10 bg-[#111111] p-4 text-sm text-white outline-none focus:border-[#D9FF00]"
+                      className="mt-3 w-full resize-none rounded-2xl border border-borde/10 bg-superficie-elevada p-4 text-sm text-texto-largo outline-none focus:border-acento"
                     />
 
                     {project.workflowStatus ===
@@ -475,7 +475,7 @@ function PendingProjectsSection({
                           activeProjectId ===
                           project.id
                         }
-                        className="mt-4 w-full rounded-full border border-white/15 px-4 py-3 text-sm font-semibold disabled:opacity-50"
+                        className="mt-4 w-full rounded-full border border-borde/15 px-4 py-3 text-sm font-semibold disabled:opacity-50"
                       >
                         Marcar en revisión
                       </button>
@@ -494,7 +494,7 @@ function PendingProjectsSection({
                           activeProjectId ===
                           project.id
                         }
-                        className="rounded-full border border-red-400/30 px-4 py-3 text-sm font-semibold text-red-300 disabled:opacity-50"
+                        className="rounded-full border border-borde px-4 py-3 text-sm font-semibold text-rojo-base disabled:opacity-50"
                       >
                         Rechazar
                       </button>
@@ -511,7 +511,7 @@ function PendingProjectsSection({
                           activeProjectId ===
                           project.id
                         }
-                        className="rounded-full bg-[#D9FF00] px-4 py-3 text-sm font-bold text-black disabled:opacity-50"
+                        className="rounded-full bg-rojo-base px-4 py-3 text-sm font-bold text-hueso disabled:opacity-50"
                       >
                         Publicar
                       </button>
@@ -534,10 +534,10 @@ function PublishedProjectsSection({
     PublishedEditorialProject[];
 }) {
   return (
-    <section className="mt-16 border-t border-white/10 pt-12">
+    <section className="mt-16 border-t border-borde/10 pt-12">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D9FF00]">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-texto-principal">
             Archivo editorial
           </p>
 
@@ -545,13 +545,13 @@ function PublishedProjectsSection({
             Proyectos publicados
           </h2>
 
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-[#888888]">
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-texto-largo">
             Continúa editando la narrativa, los créditos y las
             relaciones del ecosistema después de la publicación.
           </p>
         </div>
 
-        <p className="text-sm text-[#777777]">
+        <p className="text-sm text-texto-largo">
           {projects.length}{' '}
           {projects.length === 1
             ? 'proyecto'
@@ -560,7 +560,7 @@ function PublishedProjectsSection({
       </div>
 
       {projects.length === 0 ? (
-        <div className="mt-6 rounded-3xl border border-dashed border-white/15 bg-[#0A0A0A] p-8">
+        <div className="mt-6 rounded-3xl border border-dashed border-borde/15 bg-superficie-elevada p-8">
           <h3 className="text-xl font-semibold">
             Todavía no hay proyectos publicados
           </h3>
@@ -571,14 +571,14 @@ function PublishedProjectsSection({
             (project) => (
               <article
                 key={project.id}
-                className="rounded-3xl border border-white/10 bg-[#0A0A0A] p-6"
+                className="rounded-3xl border border-borde/10 bg-superficie-elevada p-6"
               >
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="rounded-full bg-[#D9FF00] px-3 py-1 text-[10px] font-bold uppercase text-black">
+                  <span className="rounded-full bg-rojo-base px-3 py-1 text-[10px] font-bold uppercase text-hueso">
                     Publicado
                   </span>
 
-                  <span className="text-xs text-[#777777]">
+                  <span className="text-xs text-texto-largo">
                     {categoryLabels[
                       project.category
                     ] ??
@@ -592,13 +592,13 @@ function PublishedProjectsSection({
                   {project.title}
                 </h3>
 
-                <p className="mt-3 line-clamp-3 text-sm leading-7 text-[#888888]">
+                <p className="mt-3 line-clamp-3 text-sm leading-7 text-texto-largo">
                   {project.description ||
                     'Proyecto publicado por El Culebreo.'}
                 </p>
 
                 {project.publishedAt ? (
-                  <p className="mt-4 text-xs text-[#555555]">
+                  <p className="mt-4 text-xs text-texto-largo">
                     Publicado el{' '}
                     {new Date(
                       project.publishedAt
@@ -611,21 +611,21 @@ function PublishedProjectsSection({
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Link
                     href={`/revision-editorial/${project.id}`}
-                    className="rounded-full border border-white/15 px-4 py-2.5 text-sm font-semibold transition hover:border-white"
+                    className="rounded-full border border-borde/15 px-4 py-2.5 text-sm font-semibold transition hover:border-borde"
                   >
                     Editar ficha
                   </Link>
 
                   <Link
                     href={`/revision-editorial/${project.id}/actores`}
-                    className="rounded-full border border-[#D9FF00]/30 px-4 py-2.5 text-sm font-semibold text-[#D9FF00] transition hover:bg-[#D9FF00] hover:text-black"
+                    className="rounded-full border border-acento/30 px-4 py-2.5 text-sm font-semibold text-texto-principal transition hover:bg-rojo-base hover:text-hueso"
                   >
                     Gestionar actores
                   </Link>
 
                   <Link
                     href={`/proyectos/${project.id}`}
-                    className="rounded-full bg-white px-4 py-2.5 text-sm font-bold text-black transition hover:bg-[#D9FF00]"
+                    className="rounded-full bg-rojo-base px-4 py-2.5 text-sm font-bold text-hueso transition hover:bg-rojo-base"
                   >
                     Ver público
                   </Link>

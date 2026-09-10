@@ -219,9 +219,9 @@ export default function ProjectPage() {
     loadedProjectId !== project.id
   ) {
     return (
-      <main className="min-h-screen bg-[#050505] px-8 py-12 text-white">
+      <main className="min-h-screen bg-superficie px-8 py-12 text-texto-largo">
         <div className="mx-auto max-w-5xl">
-          <p className="text-sm uppercase tracking-[0.2em] text-[#767676]">
+          <p className="text-sm uppercase tracking-[0.2em] text-texto-largo">
             Creative OS
           </p>
 
@@ -240,7 +240,7 @@ export default function ProjectPage() {
   } = projectSnapshot;
 
   return (
-    <div className="flex min-h-screen bg-[#050505] text-white">
+    <div className="flex min-h-screen bg-superficie text-texto-largo">
       <Sidebar
         activeView={activeView}
         setActiveView={setActiveView}
@@ -323,25 +323,25 @@ function ProjectHeader({
   progress,
 }: ProjectHeaderProps) {
   return (
-    <header className="border-b border-[#232323] bg-[#080808] px-8 py-6">
+    <header className="border-b border-borde bg-superficie-elevada px-8 py-6">
       <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#767676]">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-texto-largo">
             Mesa de Producción
           </p>
 
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white">
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-texto-largo">
             {graph.title}
           </h1>
 
-          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#A6A6A6]">
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-texto-largo">
             {description ||
               'Proyecto sin descripción inicial.'}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <span className="rounded-full border border-[#333333] bg-[#101010] px-4 py-2 text-xs text-[#A6A6A6]">
+          <span className="rounded-full border border-borde bg-superficie-elevada px-4 py-2 text-xs text-texto-largo">
             {
               STAGE_LABELS[
                 graph.stage
@@ -349,7 +349,7 @@ function ProjectHeader({
             }
           </span>
 
-          <span className="rounded-full bg-[#D9FF00] px-4 py-2 text-xs font-bold text-black">
+          <span className="rounded-full bg-rojo-base px-4 py-2 text-xs font-bold text-hueso">
             {progress}% construido
           </span>
         </div>
@@ -408,7 +408,7 @@ function ExecutiveReview({
   return (
     <section className="mx-auto max-w-6xl space-y-10">
       <header>
-        <p className="text-sm uppercase tracking-[0.25em] text-[#D9FF00]">
+        <p className="text-sm uppercase tracking-[0.25em] text-texto-principal">
           Executive Review
         </p>
 
@@ -416,7 +416,7 @@ function ExecutiveReview({
           Lectura ejecutiva del proyecto
         </h2>
 
-        <p className="mt-4 max-w-3xl text-lg leading-relaxed text-[#A6A6A6]">
+        <p className="mt-4 max-w-3xl text-lg leading-relaxed text-texto-largo">
           Esta revisión organiza el nivel de preparación,
           las fortalezas, los vacíos y las prioridades
           detectadas a partir de la información actual.
@@ -473,15 +473,15 @@ function ExecutiveReview({
         />
       </div>
 
-      <section className="rounded-3xl border border-[#232323] bg-[#101010] p-7">
-        <p className="text-xs uppercase tracking-[0.2em] text-[#767676]">Plan del Productor Ejecutivo</p>
+      <section className="rounded-3xl border border-borde bg-superficie-elevada p-7">
+        <p className="text-xs uppercase tracking-[0.2em] text-texto-largo">Plan del Productor Ejecutivo</p>
         <h3 className="mt-3 text-2xl font-semibold">Acciones justificadas según la etapa</h3>
-        <div className="mt-6 space-y-4">{actionPlan.map((item)=><article key={item.id} className="rounded-2xl border border-white/10 bg-[#151515] p-5"><div className="flex justify-between gap-4"><strong>Prioridad {item.priority}: {item.action}</strong><span className="text-xs uppercase text-[#D9FF00]">{graph.modules[item.area].title}</span></div><p className="mt-3 text-sm text-[#aaa]"><b className="text-white">Por qué:</b> {item.reason}</p><p className="mt-2 text-sm text-[#aaa]"><b className="text-white">Resultado esperado:</b> {item.expectedResult}</p><p className="mt-2 text-xs text-[#777]">Dependencia: {item.dependency} · Responsable sugerido: {item.owner} · Estado: {item.status}</p></article>)}</div>
+        <div className="mt-6 space-y-4">{actionPlan.map((item)=><article key={item.id} className="rounded-2xl border border-borde/10 bg-superficie p-5"><div className="flex justify-between gap-4"><strong>Prioridad {item.priority}: {item.action}</strong><span className="text-xs uppercase text-texto-principal">{graph.modules[item.area].title}</span></div><p className="mt-3 text-sm text-texto-largo"><b className="text-texto-largo">Por qué:</b> {item.reason}</p><p className="mt-2 text-sm text-texto-largo"><b className="text-texto-largo">Resultado esperado:</b> {item.expectedResult}</p><p className="mt-2 text-xs text-texto-largo">Dependencia: {item.dependency} · Responsable sugerido: {item.owner} · Estado: {item.status}</p></article>)}</div>
       </section>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <section className="rounded-3xl border border-[#232323] bg-[#101010] p-7">
-          <p className="text-xs uppercase tracking-[0.2em] text-[#767676]">
+        <section className="rounded-3xl border border-borde bg-superficie-elevada p-7">
+          <p className="text-xs uppercase tracking-[0.2em] text-texto-largo">
             Próximas acciones
           </p>
 
@@ -498,20 +498,20 @@ function ExecutiveReview({
                 .map((task) => (
                   <article
                     key={task.id}
-                    className="rounded-2xl border border-[#232323] bg-[#151515] p-4"
+                    className="rounded-2xl border border-borde bg-superficie p-4"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="font-medium text-white">
+                        <p className="font-medium text-texto-largo">
                           {task.title}
                         </p>
 
-                        <p className="mt-2 text-sm leading-relaxed text-[#A6A6A6]">
+                        <p className="mt-2 text-sm leading-relaxed text-texto-largo">
                           {task.description}
                         </p>
                       </div>
 
-                      <span className="shrink-0 rounded-full border border-[#333333] px-3 py-1 text-[10px] uppercase text-[#A6A6A6]">
+                      <span className="shrink-0 rounded-full border border-borde px-3 py-1 text-[10px] uppercase text-texto-largo">
                         {
                           task.urgency
                         }
@@ -523,8 +523,8 @@ function ExecutiveReview({
           )}
         </section>
 
-        <section className="rounded-3xl border border-[#232323] bg-[#101010] p-7">
-          <p className="text-xs uppercase tracking-[0.2em] text-[#767676]">
+        <section className="rounded-3xl border border-borde bg-superficie-elevada p-7">
+          <p className="text-xs uppercase tracking-[0.2em] text-texto-largo">
             Riesgos
           </p>
 
@@ -541,19 +541,19 @@ function ExecutiveReview({
                 .map((risk) => (
                   <article
                     key={risk.id}
-                    className="rounded-2xl border border-[#4A3216] bg-[#201608] p-4"
+                    className="rounded-2xl border border-borde bg-superficie-elevada p-4"
                   >
-                    <p className="font-medium text-[#FFC857]">
+                    <p className="font-medium text-naranja">
                       {risk.title}
                     </p>
 
-                    <p className="mt-2 text-sm leading-relaxed text-[#D4B878]">
+                    <p className="mt-2 text-sm leading-relaxed text-texto-largo">
                       {
                         risk.mitigationPlan
                       }
                     </p>
 
-                    <div className="mt-3 flex gap-2 text-[10px] uppercase tracking-[0.12em] text-[#A98A49]">
+                    <div className="mt-3 flex gap-2 text-[10px] uppercase tracking-[0.12em] text-texto-largo">
                       <span>
                         Probabilidad:{' '}
                         {
@@ -590,16 +590,16 @@ function ReviewMetric({
   description,
 }: ReviewMetricProps) {
   return (
-    <article className="rounded-3xl border border-[#232323] bg-[#101010] p-6">
-      <p className="text-xs uppercase tracking-[0.18em] text-[#767676]">
+    <article className="rounded-3xl border border-borde bg-superficie-elevada p-6">
+      <p className="text-xs uppercase tracking-[0.18em] text-texto-largo">
         {label}
       </p>
 
-      <p className="mt-4 text-3xl font-semibold text-[#D9FF00]">
+      <p className="mt-4 text-3xl font-semibold text-texto-principal">
         {value}
       </p>
 
-      <p className="mt-3 text-sm leading-relaxed text-[#A6A6A6]">
+      <p className="mt-3 text-sm leading-relaxed text-texto-largo">
         {description}
       </p>
     </article>
@@ -620,8 +620,8 @@ function ReviewColumn({
   emptyMessage,
 }: ReviewColumnProps) {
   return (
-    <section className="rounded-3xl border border-[#232323] bg-[#101010] p-7">
-      <p className="text-xs uppercase tracking-[0.2em] text-[#767676]">
+    <section className="rounded-3xl border border-borde bg-superficie-elevada p-7">
+      <p className="text-xs uppercase tracking-[0.2em] text-texto-largo">
         {eyebrow}
       </p>
 
@@ -638,27 +638,27 @@ function ReviewColumn({
           {modules.map((module) => (
             <article
               key={module.id}
-              className="rounded-2xl border border-[#232323] bg-[#151515] p-4"
+              className="rounded-2xl border border-borde bg-superficie p-4"
             >
               <div className="flex items-center justify-between gap-5">
                 <div>
-                  <p className="font-medium text-white">
+                  <p className="font-medium text-texto-largo">
                     {module.title}
                   </p>
 
-                  <p className="mt-1 text-xs text-[#767676]">
+                  <p className="mt-1 text-xs text-texto-largo">
                     {module.description}
                   </p>
                 </div>
 
-                <span className="text-lg font-semibold text-[#D9FF00]">
+                <span className="text-lg font-semibold text-texto-principal">
                   {module.score}%
                 </span>
               </div>
 
-              <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#232323]">
+              <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-borde">
                 <div
-                  className="h-full rounded-full bg-[#D9FF00]"
+                  className="h-full rounded-full bg-rojo-base"
                   style={{
                     width: `${module.score}%`,
                   }}
@@ -678,7 +678,7 @@ function EmptyReviewState({
   text: string;
 }) {
   return (
-    <p className="mt-6 rounded-2xl border border-dashed border-[#333333] p-5 text-sm leading-relaxed text-[#767676]">
+    <p className="mt-6 rounded-2xl border border-dashed border-borde p-5 text-sm leading-relaxed text-texto-largo">
       {text}
     </p>
   );
@@ -695,7 +695,7 @@ function LivingLog({
   return (
     <section className="mx-auto max-w-5xl space-y-10">
       <header>
-        <p className="text-sm uppercase tracking-[0.25em] text-[#D9FF00]">
+        <p className="text-sm uppercase tracking-[0.25em] text-texto-principal">
           Bitácora Viva
         </p>
 
@@ -703,7 +703,7 @@ function LivingLog({
           Historia del proyecto
         </h2>
 
-        <p className="mt-4 max-w-3xl text-lg leading-relaxed text-[#A6A6A6]">
+        <p className="mt-4 max-w-3xl text-lg leading-relaxed text-texto-largo">
           Aquí queda registrado cómo la conversación
           modifica módulos, genera decisiones y fortalece
           la estructura del proyecto.
@@ -711,26 +711,26 @@ function LivingLog({
       </header>
 
       {events.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-[#333333] bg-[#080808] p-10">
+        <div className="rounded-3xl border border-dashed border-borde bg-superficie-elevada p-10">
           <h3 className="text-2xl font-semibold">
             Todavía no hay movimientos
           </h3>
 
-          <p className="mt-3 max-w-2xl text-[#A6A6A6]">
+          <p className="mt-3 max-w-2xl text-texto-largo">
             Conversa con el Productor Ejecutivo para
             comenzar a construir la bitácora.
           </p>
         </div>
       ) : (
-        <div className="relative space-y-5 pl-9 before:absolute before:bottom-0 before:left-3 before:top-0 before:w-px before:bg-[#D9FF00]/40">
+        <div className="relative space-y-5 pl-9 before:absolute before:bottom-0 before:left-3 before:top-0 before:w-px before:bg-acento/40">
           {events.map((event) => (
             <article
               key={event.id}
-              className="relative rounded-3xl border border-[#232323] bg-[#101010] p-6 before:absolute before:-left-[31px] before:top-7 before:h-4 before:w-4 before:rounded-full before:bg-[#D9FF00]"
+              className="relative rounded-3xl border border-borde bg-superficie-elevada p-6 before:absolute before:-left-[31px] before:top-7 before:h-4 before:w-4 before:rounded-full before:bg-rojo-base"
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.16em] text-[#767676]">
+                  <p className="text-xs uppercase tracking-[0.16em] text-texto-largo">
                     {event.type.replaceAll(
                       '_',
                       ' '
@@ -742,7 +742,7 @@ function LivingLog({
                   </h3>
                 </div>
 
-                <time className="text-xs text-[#767676]">
+                <time className="text-xs text-texto-largo">
                   {new Date(
                     event.createdAt
                   ).toLocaleString(
@@ -751,7 +751,7 @@ function LivingLog({
                 </time>
               </div>
 
-              <p className="mt-4 text-sm leading-relaxed text-[#A6A6A6]">
+              <p className="mt-4 text-sm leading-relaxed text-texto-largo">
                 {event.description}
               </p>
             </article>
@@ -761,7 +761,7 @@ function LivingLog({
 
       <Link
         href="/studio"
-        className="inline-flex text-sm font-semibold text-[#D9FF00]"
+        className="inline-flex text-sm font-semibold text-texto-principal"
       >
         ← Volver al Executive Workspace
       </Link>
@@ -771,16 +771,16 @@ function LivingLog({
 
 function ProjectLoading() {
   return (
-    <main className="min-h-screen bg-[#050505] px-8 py-12 text-white">
+    <main className="min-h-screen bg-superficie px-8 py-12 text-texto-largo">
       <div className="mx-auto max-w-6xl">
-        <div className="h-5 w-40 animate-pulse rounded bg-[#232323]" />
+        <div className="h-5 w-40 animate-pulse rounded bg-borde" />
 
-        <div className="mt-5 h-14 w-2/3 animate-pulse rounded bg-[#151515]" />
+        <div className="mt-5 h-14 w-2/3 animate-pulse rounded bg-superficie" />
 
         <div className="mt-10 grid gap-6 lg:grid-cols-[280px_1fr]">
-          <div className="h-[700px] animate-pulse rounded-3xl bg-[#101010]" />
+          <div className="h-[700px] animate-pulse rounded-3xl bg-superficie-elevada" />
 
-          <div className="h-[700px] animate-pulse rounded-3xl bg-[#101010]" />
+          <div className="h-[700px] animate-pulse rounded-3xl bg-superficie-elevada" />
         </div>
       </div>
     </main>
@@ -789,9 +789,9 @@ function ProjectLoading() {
 
 function ProjectNotFound({ message = '' }: { message?: string }) {
   return (
-    <main className="min-h-screen bg-[#050505] px-8 py-12 text-white">
-      <div className="mx-auto max-w-3xl rounded-3xl border border-[#232323] bg-[#101010] p-8">
-        <p className="text-xs uppercase tracking-[0.2em] text-[#767676]">
+    <main className="min-h-screen bg-superficie px-8 py-12 text-texto-largo">
+      <div className="mx-auto max-w-3xl rounded-3xl border border-borde bg-superficie-elevada p-8">
+        <p className="text-xs uppercase tracking-[0.2em] text-texto-largo">
           Creative OS
         </p>
 
@@ -799,13 +799,13 @@ function ProjectNotFound({ message = '' }: { message?: string }) {
           Proyecto no encontrado
         </h1>
 
-        <p className="mt-4 leading-relaxed text-[#A6A6A6]">
+        <p className="mt-4 leading-relaxed text-texto-largo">
           {message || 'El proyecto no existe o no pertenece a esta cuenta.'}
         </p>
 
         <Link
           href="/studio"
-          className="mt-7 inline-flex rounded-full bg-[#D9FF00] px-6 py-3 text-sm font-bold text-black"
+          className="mt-7 inline-flex rounded-full bg-rojo-base px-6 py-3 text-sm font-bold text-hueso"
         >
           Volver al estudio
         </Link>
