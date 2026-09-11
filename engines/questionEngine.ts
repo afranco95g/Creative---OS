@@ -181,8 +181,18 @@ export function getNextBestQuestion(
   graph: ProjectGraph,
   messages: ConversationMessage[] = []
 ): string {
+  const previousQuestions =
+    getPreviousQuestions(messages);
+  const previousIntents: Set<QuestionIntent> = new Set(messages.filter((message) => message.role === 'producer').map((message) => getQuestionIntent(message.response?.nextQuestion || message.content)).filter((intent) => intent !== 'other'));
+
+  // El bloque de apertura decide primero, salvo que ya se le haya hecho esta
+  // pregunta literalmente en un turno anterior sin que la respuesta haya
+  // llegado a actualizar el grafo: en ese caso se trata como agotado para
+  // este turno y sigue decidiendo la lógica de módulos débiles de abajo.
   const preguntaDeApertura = seleccionarPreguntaDeApertura(graph);
-  if (preguntaDeApertura) return preguntaDeApertura.pregunta;
+  if (preguntaDeApertura && !previousQuestions.has(normalizeText(preguntaDeApertura.pregunta))) {
+    return preguntaDeApertura.pregunta;
+  }
 
   const weakModules =
     getWeakModules(
@@ -191,10 +201,6 @@ export function getNextBestQuestion(
         graph.modules
       ).length
     );
-
-  const previousQuestions =
-    getPreviousQuestions(messages);
-  const previousIntents: Set<QuestionIntent> = new Set(messages.filter((message) => message.role === 'producer').map((message) => getQuestionIntent(message.response?.nextQuestion || message.content)).filter((intent) => intent !== 'other'));
 
   for (
     const module of weakModules
