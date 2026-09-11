@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "tsc -p tests/tsconfig.tests.json && node .test-tools/tests/knowledgeQueryBuilder.test.js && node .test-tools/tests/kicksInterpretation.test.js && node .test-tools/tests/doblaYDevoraClassification.test.js && node .test-tools/tests/projectKnowledgeV2.test.js && node .test-tools/tests/executiveEngineV23.test.js && node .test-tools/tests/financialAuthorityV24.test.js && node .test-tools/tests/muscoRuntimeIntegration.test.js",
+    "test": "tsc -p tests/tsconfig.tests.json && node .test-tools/tests/knowledgeQueryBuilder.test.js && node .test-tools/tests/kicksInterpretation.test.js && node .test-tools/tests/doblaYDevoraClassification.test.js && node .test-tools/tests/projectKnowledgeV2.test.js && node .test-tools/tests/executiveEngineV23.test.js && node .test-tools/tests/financialAuthorityV24.test.js && node .test-tools/tests/muscoRuntimeIntegration.test.js && node .test-tools/tests/projectSeedExtraction.test.js && node .test-tools/tests/openingBlock.test.js",
     "typecheck": "tsc --noEmit",
     "knowledge:scan": "tsc -p scripts/tsconfig.knowledge.json && node .knowledge-tools/scripts/knowledge-admin.js scan",
     "knowledge:ingest": "tsc -p scripts/tsconfig.knowledge.json && node .knowledge-tools/scripts/knowledge-admin.js ingest",

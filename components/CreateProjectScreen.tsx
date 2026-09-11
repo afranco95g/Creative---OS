@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 import { WorkspaceProject } from '../types/workspace';
+import { categoriaDesdeDisciplina, extraerSemilla, SemillaDeProyecto } from '../engines/projectSeedExtractor';
 
 interface CreateProjectScreenProps {
   errorMessage?: string;
@@ -65,14 +66,32 @@ export function CreateProjectScreen({
   const [title, setTitle] = useState('');
   const [category, setCategory] =
     useState<WorkspaceProject['category']>('other');
+  const [semilla, setSemilla] = useState<SemillaDeProyecto | null>(null);
 
   function handleDescriptionSubmit(event: FormEvent) {
     event.preventDefault();
 
     if (!description.trim()) return;
 
+    const semillaExtraida = extraerSemilla(description);
+
+    setSemilla(semillaExtraida);
+    setTitle(semillaExtraida.nombreCandidato?.valor ?? '');
+    setCategory(
+      categoriaDesdeDisciplina(
+        semillaExtraida.disciplinaCandidata?.valor ?? null
+      )
+    );
     setStep(2);
   }
+
+  const huboExtraccion = Boolean(
+    semilla &&
+      (semilla.nombreCandidato ||
+        semilla.disciplinaCandidata ||
+        semilla.lugarCandidato ||
+        semilla.intencionCandidata)
+  );
 
   function handleProjectSubmit(event: FormEvent) {
     event.preventDefault();
@@ -128,7 +147,9 @@ export function CreateProjectScreen({
         ) : (
           <form onSubmit={handleProjectSubmit}>
             <h1 className="mt-5 text-6xl font-semibold tracking-tight">
-              Démosle una primera identidad.
+              {huboExtraccion
+                ? 'Confirmemos lo que entendí.'
+                : 'Démosle una primera identidad.'}
             </h1>
 
             <p className="mt-6 max-w-3xl text-xl leading-relaxed text-texto-largo">
@@ -147,12 +168,22 @@ export function CreateProjectScreen({
                 placeholder="Charlie Gelato"
                 className="w-full rounded-2xl border border-borde bg-superficie-elevada px-5 py-4 text-lg text-texto-largo outline-none transition placeholder:text-texto-largo focus:border-acento"
               />
+
+              {semilla?.nombreCandidato ? (
+                <p>Lo tomé de: &quot;{semilla.nombreCandidato.razon}&quot;</p>
+              ) : null}
             </label>
 
             <div className="mt-8">
               <p className="mb-4 text-xs uppercase tracking-[0.18em] text-texto-largo">
                 ¿Qué tipo de proyecto se parece más?
               </p>
+
+              {semilla?.disciplinaCandidata ? (
+                <p>
+                  Lo tomé de: &quot;{semilla.disciplinaCandidata.razon}&quot;
+                </p>
+              ) : null}
 
               <div className="grid grid-cols-2 gap-4">
                 {PROJECT_CATEGORIES.map((item) => (

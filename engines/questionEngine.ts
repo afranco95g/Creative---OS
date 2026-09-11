@@ -7,13 +7,14 @@ import {
 import {
   getWeakModules,
 } from '../core/projectEngine';
+import { seleccionarPreguntaDeApertura } from './openingBlockEngine';
 
 interface QuestionDefinition {
   initial: string;
   deepen: string;
 }
 
-export type QuestionIntent = 'clarify_project_name' | 'clarify_project_type' | 'clarify_purpose' | 'clarify_problem' | 'clarify_audience' | 'clarify_location' | 'clarify_objective' | 'clarify_activities' | 'clarify_date' | 'clarify_quantity' | 'clarify_budget' | 'clarify_responsibility' | 'clarify_allies' | 'clarify_risks' | 'clarify_sustainability' | 'clarify_impact' | 'clarify_metrics' | 'clarify_tasks' | 'clarify_decisions' | 'clarify_documents' | 'clarify_evidence' | 'clarify_opportunities' | 'other';
+export type QuestionIntent = 'clarify_project_name' | 'clarify_project_type' | 'clarify_purpose' | 'clarify_problem' | 'clarify_audience' | 'clarify_location' | 'clarify_objective' | 'clarify_activities' | 'clarify_date' | 'clarify_quantity' | 'clarify_budget' | 'clarify_responsibility' | 'clarify_allies' | 'clarify_risks' | 'clarify_sustainability' | 'clarify_impact' | 'clarify_metrics' | 'clarify_tasks' | 'clarify_decisions' | 'clarify_documents' | 'clarify_evidence' | 'clarify_opportunities' | 'clarify_phase' | 'clarify_intent' | 'other';
 
 const MODULE_INTENTS: Partial<Record<ProjectModuleId, QuestionIntent>> = {
   identity: 'clarify_project_name', community: 'clarify_audience', context: 'clarify_location',
@@ -180,6 +181,9 @@ export function getNextBestQuestion(
   graph: ProjectGraph,
   messages: ConversationMessage[] = []
 ): string {
+  const preguntaDeApertura = seleccionarPreguntaDeApertura(graph);
+  if (preguntaDeApertura) return preguntaDeApertura.pregunta;
+
   const weakModules =
     getWeakModules(
       graph,
@@ -248,9 +252,13 @@ export function isQuestionAlreadyAnswered(intent: QuestionIntent, graph: Project
   const hasModule = (id: ProjectModuleId) => Boolean(graph.modules[id]?.content.trim());
   switch (intent) {
     case 'clarify_project_name': return !isPlaceholderTitle(graph.title);
-    case 'clarify_project_type': return Boolean(graph.knowledge?.projectType.primaryType);
+    case 'clarify_project_type': return Boolean(graph.knowledge?.projectType.primaryType) || hasModule('identity');
     case 'clarify_audience': return hasModule('community') || hasKey('expected_attendance', 'previous_attendance');
+    case 'clarify_purpose': return hasModule('purpose');
+    case 'clarify_problem': return hasModule('problem');
     case 'clarify_location': return hasModule('context') || hasKey('artist_regional_context');
+    case 'clarify_phase': return hasModule('activities');
+    case 'clarify_intent': return hasModule('opportunities');
     case 'clarify_date': return hasModule('timeline') || active.some((entity) => entity.type === 'timeline_fact');
     case 'clarify_quantity': return hasKey('artist_requirement', 'expected_attendance');
     case 'clarify_budget': return hasModule('budget') || active.some((entity) => entity.type === 'financial_fact');

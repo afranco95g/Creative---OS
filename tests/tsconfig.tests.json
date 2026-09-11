@@ -19,6 +19,8 @@
     "projectKnowledgeV2.test.ts",
     "executiveEngineV23.test.ts",
     "financialAuthorityV24.test.ts",
-    "muscoRuntimeIntegration.test.ts"
+    "muscoRuntimeIntegration.test.ts",
+    "projectSeedExtraction.test.ts",
+    "openingBlock.test.ts"
   ]
 }
