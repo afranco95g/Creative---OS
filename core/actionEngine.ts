@@ -1,4 +1,5 @@
 import {
+  PatchOperation,
   ProjectDecision,
   ProjectEvent,
   ProjectGraph,
@@ -18,6 +19,11 @@ export type ProjectAction =
       value: string;
       evidenceQuote?: string;
       scoreBoost?: number;
+      // Spec no-se-sin-colateral.md, 5.4: opcional, default 'strengthen' —
+      // ningún llamador existente cambia. La acción de "no sé" pasa 'set'
+      // para que "se guarda el texto literal" se cumpla por la operación,
+      // no por que el módulo llegue vacío.
+      operation?: PatchOperation;
     }
   | {
       type: 'create_task';
@@ -100,10 +106,13 @@ function updateModule(
   const patch: ProjectPatch = {
     id: createId(),
     moduleId: action.moduleId,
-    operation: 'strengthen',
+    operation: action.operation ?? 'strengthen',
     value: action.value,
     evidenceQuote: action.evidenceQuote || action.value,
-    scoreBoost: action.scoreBoost || 20,
+    // `??` y no `||`: un `scoreBoost` explícito de 0 (spec
+    // bloque-de-apertura-y-extraccion.md 5.3, "no sé" no sube el puntaje)
+    // es un valor válido y no debe caer al default de 20.
+    scoreBoost: action.scoreBoost ?? 20,
     source: 'system',
     createdAt: now(),
   };

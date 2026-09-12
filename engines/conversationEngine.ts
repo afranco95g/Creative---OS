@@ -100,9 +100,25 @@ function createPatch(
   };
 }
 
+export interface OpcionesDeExtraccion {
+  /** Cuando es true, NO se aplica el patch de respaldo al módulo más débil
+   *  si ninguna lista de palabras clave matcheó. El turno puede entonces
+   *  terminar con cero patches, y eso es correcto. Ver spec
+   *  no-se-sin-colateral.md, 5.1: un "no sé" a una pregunta del bloque de
+   *  apertura no debe generar ningún patch colateral. */
+  sinPatchDeRespaldo?: boolean;
+  /** Módulo de la pregunta que el sistema acaba de hacer, si la hubo y si
+   *  mapea a un módulo. El patch de respaldo se aplica ahí — nunca al
+   *  módulo más débil del grafo. Si es `null` o no se pasa, no hay a dónde
+   *  mandar la respuesta y por lo tanto no se aplica ningún patch de
+   *  respaldo. Ver spec respuestas-al-modulo-correcto.md, 5.3. */
+  moduloDeRespaldo?: ProjectModuleId | null;
+}
+
 export function extractProjectPatchesFromMessage(
   message: string,
-  graph: ProjectGraph
+  graph: ProjectGraph,
+  opciones?: OpcionesDeExtraccion
 ): ProjectPatch[] {
   const semantic = classifyProjectEvidence(message).filter((item) => item.confidence >= 0.8 && !item.requiresConfirmation);
   if (semantic.length) return semantic.map((item) => ({ ...createPatch(item.targetModule, item.extractedContent, Math.round(item.confidence * 35)), evidenceQuote: item.evidenceQuote }));
@@ -491,14 +507,12 @@ export function extractProjectPatchesFromMessage(
     );
   }
 
-  if (patches.length === 0) {
-    const nextModule =
-      getWeakModules(
-        graph,
-        1
-      )[0]?.id || 'context';
-
-    addPatch(nextModule, 12);
+  // Spec respuestas-al-modulo-correcto.md, 5.3: el patch de respaldo va al
+  // módulo de la pregunta que se hizo (`moduloDeRespaldo`), nunca al módulo
+  // más débil del grafo. Sin `moduloDeRespaldo` no hay a dónde mandar la
+  // respuesta, así que no se aplica ningún patch.
+  if (patches.length === 0 && !opciones?.sinPatchDeRespaldo && opciones?.moduloDeRespaldo) {
+    addPatch(opciones.moduloDeRespaldo, 12);
   }
 
   return patches;
@@ -581,12 +595,14 @@ function buildProducerResponse(
 
 export function processConversationTurn(
   message: string,
-  graph: ProjectGraph
+  graph: ProjectGraph,
+  opciones?: OpcionesDeExtraccion
 ) {
   const patches =
     extractProjectPatchesFromMessage(
       message,
-      graph
+      graph,
+      opciones
     );
 
   let nextGraph =

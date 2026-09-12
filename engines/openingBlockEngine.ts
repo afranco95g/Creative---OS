@@ -175,6 +175,75 @@ function contextualizar(pregunta: PreguntaDeApertura, graph: ProjectGraph): stri
   return pregunta.plantillaConContexto.replace(MARCADOR_CONTEXTO, recorte);
 }
 
+/**
+ * Normalización de texto local a este archivo. Es deliberadamente una copia
+ * de la de `questionEngine.ts` (minúsculas, sin tildes, sin puntuación, con
+ * `trim()` final para que las comparaciones por prefijo/sufijo no se rompan
+ * por espacios que deja la puntuación reemplazada): `questionEngine.ts` ya
+ * importa valores de este archivo (`BLOQUE_DE_APERTURA`,
+ * `seleccionarPreguntaDeApertura`), así que importar de vuelta un valor de
+ * `questionEngine.ts` aquí crearía un ciclo de importación en tiempo de
+ * ejecución, no solo de tipos.
+ */
+// Rango Unicode de las marcas diacríticas combinadas (0x0300-0x036f), que
+// `normalize('NFD')` separa de la letra base. Se construye con
+// `String.fromCharCode` sobre literales numéricos, no con un escape `\u...`
+// en el propio código fuente, para que no quede ambigüedad de codificación
+// en el archivo.
+const MARCAS_DIACRITICAS = new RegExp(
+  `[${String.fromCharCode(0x0300)}-${String.fromCharCode(0x036f)}]`,
+  'g'
+);
+
+function normalizarTexto(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(MARCAS_DIACRITICAS, '')
+    .replace(/[^a-z0-9ñ\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+const RESPUESTAS_NO_SE = ['no se', 'ninguna', 'ninguno', 'nada', 'todavia no', 'no aplica'];
+
+/**
+ * Spec 5.3: la respuesta normalizada, sola (no dentro de una frase más
+ * larga), coincide con una de las variantes de "no sé". `no sé`/`no se` y
+ * `todavía no`/`todavia no` normalizan al mismo valor, por eso la lista tiene
+ * seis entradas y no ocho.
+ */
+export function esRespuestaNoSe(respuesta: string): boolean {
+  return RESPUESTAS_NO_SE.includes(normalizarTexto(respuesta));
+}
+
+function coincideConTexto(pregunta: PreguntaDeApertura, textoNormalizado: string): boolean {
+  if (textoNormalizado === normalizarTexto(pregunta.pregunta)) return true;
+  if (!pregunta.plantillaConContexto) return false;
+
+  const [prefijo, sufijo] = pregunta.plantillaConContexto.split(MARCADOR_CONTEXTO);
+  const prefijoNormalizado = normalizarTexto(prefijo);
+  const sufijoNormalizado = normalizarTexto(sufijo);
+
+  return (
+    textoNormalizado.startsWith(prefijoNormalizado) &&
+    textoNormalizado.endsWith(sufijoNormalizado)
+  );
+}
+
+/**
+ * Encuentra, a partir del texto ya hecho de una pregunta (literal o
+ * contextualizado), cuál de las siete de `BLOQUE_DE_APERTURA` es. Se usa
+ * tanto para clasificar la intención en `questionEngine.getQuestionIntent`
+ * como para reconocer, en `projectController`, si la última pregunta hecha
+ * fue una del bloque y por lo tanto acepta "no sé" (spec 5.3).
+ */
+export function encontrarPreguntaPorTexto(texto: string): PreguntaDeApertura | null {
+  const textoNormalizado = normalizarTexto(texto);
+  return BLOQUE_DE_APERTURA.find((pregunta) => coincideConTexto(pregunta, textoNormalizado)) ?? null;
+}
+
 export function seleccionarPreguntaDeApertura(graph: ProjectGraph): PreguntaDeApertura | null {
   // Paso 1: descartar lo respondido — lo que ya se sabe no se pregunta.
   const sinResponder = BLOQUE_DE_APERTURA.filter((pregunta) => !estaPreguntaRespondida(pregunta, graph));

@@ -27,7 +27,18 @@ import {
   getNextBestQuestion,
   getQuestionIntent,
   isQuestionAlreadyAnswered,
+  MODULO_POR_INTENCION,
 } from '../engines/questionEngine';
+
+import {
+  encontrarPreguntaPorTexto,
+  esRespuestaNoSe,
+  SIN_RESPUESTA_POR_AHORA,
+} from '../engines/openingBlockEngine';
+
+import type {
+  PreguntaDeApertura,
+} from '../engines/openingBlockEngine';
 
 import {
   getProjectProgress,
@@ -135,18 +146,56 @@ export function processProjectMessage(
     };
   }
 
+  // Spec no-se-sin-colateral.md, 5.2: si la última pregunta hecha fue una
+  // del bloque de apertura y la respuesta de este turno es "no sé", se
+  // desactiva el patch de respaldo de `extractProjectPatchesFromMessage`
+  // (engines/conversationEngine.ts, catch-all de las líneas 494-501) para
+  // que ese turno no escriba nada en ningún módulo distinto al de la
+  // pregunta respondida. Sin el patch de respaldo, un "no sé" puede terminar
+  // el turno con cero patches, y eso es correcto: no hay colateral que
+  // revertir porque nunca se genera. El valor se calcula una sola vez, antes
+  // de `processConversationTurn`, y se reutiliza más abajo en la acción
+  // contextual de `inferContextualAnswerActions` (spec
+  // bloque-de-apertura-y-extraccion.md, 5.3) en vez de volver a llamar a
+  // `encontrarPreguntaDeAperturaPreguntada` con el mismo resultado.
+  const preguntaDeAperturaRespondida =
+    encontrarPreguntaDeAperturaPreguntada(
+      currentState.messages
+    );
+
+  const respuestaNoSeDeApertura =
+    preguntaDeAperturaRespondida !== null &&
+    esRespuestaNoSe(cleanInput);
+
+  // Spec respuestas-al-modulo-correcto.md, 5.1 y 5.3: el módulo de la
+  // pregunta que se acaba de hacer (si la hubo, y si mapea a un módulo) es
+  // el destino del patch de respaldo — nunca el módulo más débil del grafo.
+  const resultadoPreguntaHecha =
+    resultadoDePreguntaHecha(
+      currentState.messages
+    );
+
   const conversationResult =
     processConversationTurn(
       cleanInput,
-      currentState.graph
+      currentState.graph,
+      {
+        sinPatchDeRespaldo: respuestaNoSeDeApertura,
+        moduloDeRespaldo: resultadoPreguntaHecha.modulo,
+      }
     );
+
+  const conversationGraph =
+    conversationResult.nextGraph;
 
   const contextualActions =
     inferContextualAnswerActions(
       currentState,
-      conversationResult.nextGraph,
+      conversationGraph,
       cleanInput,
-      conversationResult.patches
+      conversationResult.patches,
+      preguntaDeAperturaRespondida,
+      resultadoPreguntaHecha
     );
 
   const decisionActions =
@@ -158,12 +207,12 @@ export function processProjectMessage(
 
   const inferredActions =
     inferActionsFromGraph(
-      conversationResult.nextGraph
+      conversationGraph
     );
 
   const nextGraph =
     executeActions(
-      conversationResult.nextGraph,
+      conversationGraph,
       [
         ...contextualActions,
         ...decisionActions,
@@ -278,14 +327,123 @@ function attachResponseToProducerMessages(
   );
 }
 
+/**
+ * La última pregunta hecha al usuario (la que `userInput` está respondiendo
+ * en este turno), si es que corresponde a una de las siete del bloque de
+ * apertura. `currentState.messages` es el historial previo a este turno, así
+ * que el último mensaje `producer` es la pregunta que se está respondiendo
+ * ahora.
+ */
+function encontrarPreguntaDeAperturaPreguntada(
+  messages: ConversationMessage[]
+): PreguntaDeApertura | null {
+  const ultimoMensajeProducer = [...messages]
+    .reverse()
+    .find((message) => message.role === 'producer');
+
+  const textoPregunta =
+    ultimoMensajeProducer?.response?.nextQuestion ||
+    ultimoMensajeProducer?.content;
+
+  if (!textoPregunta) return null;
+
+  return encontrarPreguntaPorTexto(textoPregunta);
+}
+
+/**
+ * Spec respuestas-al-modulo-correcto.md, 5.1 (enmendada): distingue dos
+ * situaciones que un solo `null` colapsaba y contradecía. `huboPregunta` es
+ * true si existe algún mensaje `producer` previo con texto de pregunta,
+ * independientemente de si esa pregunta se pudo mapear a un módulo.
+ *
+ * - Si no hubo pregunta previa (primer mensaje del proyecto, o el último
+ *   mensaje `producer` no tiene texto de pregunta): `huboPregunta: false`,
+ *   `modulo: null`. No se guarda nada.
+ * - Si hubo pregunta y era del bloque de apertura: `huboPregunta: true`,
+ *   `modulo` = el de esa pregunta.
+ * - Si hubo pregunta y no era del bloque de apertura: se clasifica su texto
+ *   con `getQuestionIntent` y se busca en `MODULO_POR_INTENCION`.
+ *   `huboPregunta: true`, `modulo` = lo que encuentre, o `null` si la
+ *   intención es `'other'` o no está en el mapa.
+ */
+function resultadoDePreguntaHecha(
+  messages: ConversationMessage[]
+): { huboPregunta: boolean; modulo: ProjectModuleId | null } {
+  const preguntaDeApertura =
+    encontrarPreguntaDeAperturaPreguntada(messages);
+
+  if (preguntaDeApertura) {
+    return { huboPregunta: true, modulo: preguntaDeApertura.modulo };
+  }
+
+  const ultimoMensajeProducer = [...messages]
+    .reverse()
+    .find((message) => message.role === 'producer');
+
+  const textoPregunta =
+    ultimoMensajeProducer?.response?.nextQuestion ||
+    ultimoMensajeProducer?.content;
+
+  if (!textoPregunta) {
+    return { huboPregunta: false, modulo: null };
+  }
+
+  const intent = getQuestionIntent(textoPregunta);
+  const modulo = MODULO_POR_INTENCION[intent] ?? null;
+
+  return { huboPregunta: true, modulo };
+}
+
 function inferContextualAnswerActions(
   currentState:
     ProjectControllerState,
   conversationGraph:
     ProjectGraph,
   userInput: string,
-  patches: ProjectPatch[]
+  patches: ProjectPatch[],
+  preguntaDeAperturaRespondida:
+    PreguntaDeApertura | null,
+  resultadoPreguntaHecha:
+    { huboPregunta: boolean; modulo: ProjectModuleId | null }
 ): ProjectAction[] {
+  // Spec no-se-sin-colateral.md, 5.4: si la última pregunta hecha fue una
+  // del bloque de apertura (las siete aceptan "no sé") y la respuesta,
+  // normalizada y sola, es una variante de "no sé", se guarda el texto
+  // literal `Sin respuesta por ahora.` sin subir el puntaje, con
+  // `operation: 'set'` — no `'strengthen'` — para que "se guarda el texto
+  // literal" se cumpla por la operación misma y no por que el módulo
+  // llegue vacío. Esto corre antes de que la respuesta caiga al camino
+  // genérico de abajo, que guardaría el texto crudo del usuario y subiría
+  // el puntaje 25 puntos.
+  if (
+    preguntaDeAperturaRespondida &&
+    esRespuestaNoSe(userInput)
+  ) {
+    return [
+      {
+        type: 'update_module',
+        moduleId: preguntaDeAperturaRespondida.modulo,
+        value: SIN_RESPUESTA_POR_AHORA,
+        evidenceQuote: userInput,
+        scoreBoost: 0,
+        operation: 'set',
+      },
+    ];
+  }
+
+  // Spec respuestas-al-modulo-correcto.md, 5.4 (enmendada): el respaldo de
+  // `recommendedModule` solo corre en el único caso para el que fue
+  // escrito — hubo pregunta pero no mapeó a ningún módulo. Si no hubo
+  // pregunta (nada que responder), o si hubo y sí mapeó a un módulo (que ya
+  // recibió el patch de respaldo en `conversationEngine`, spec 5.3), esta
+  // función no debe escribir una segunda copia en `recommendedModule`.
+  if (
+    !resultadoPreguntaHecha.huboPregunta ||
+    resultadoPreguntaHecha.modulo !== null
+  ) {
+    return [];
+  }
+
   const recommendedModule =
     currentState
       .executiveInsight
@@ -531,7 +689,7 @@ function normalizeForMatching(
     .toLowerCase()
     .normalize('NFD')
     .replace(
-      /[\u0300-\u036f]/g,
+      /[̀-ͯ]/g,
       ''
     )
     .replace(

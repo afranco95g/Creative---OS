@@ -7,7 +7,7 @@ import {
 import {
   getWeakModules,
 } from '../core/projectEngine';
-import { seleccionarPreguntaDeApertura } from './openingBlockEngine';
+import { seleccionarPreguntaDeApertura, encontrarPreguntaPorTexto } from './openingBlockEngine';
 
 interface QuestionDefinition {
   initial: string;
@@ -24,6 +24,24 @@ const MODULE_INTENTS: Partial<Record<ProjectModuleId, QuestionIntent>> = {
   kpis: 'clarify_metrics', tasks: 'clarify_tasks', decisions: 'clarify_decisions', documents: 'clarify_documents',
   evidence: 'clarify_evidence', opportunities: 'clarify_opportunities',
 };
+
+/**
+ * Mapa inverso de `MODULE_INTENTS`, derivado en tiempo de módulo y no a
+ * mano, para que ambos no puedan desincronizarse. Spec
+ * respuestas-al-modulo-correcto.md, 5.2: si dos módulos comparten intención
+ * (hoy `generalObjective` y `specificObjectives` comparten
+ * 'clarify_objective'), gana el primero en orden de declaración de
+ * `MODULE_INTENTS` — arbitrario pero estable, y solo importa cuando la
+ * pregunta no es del bloque de apertura.
+ */
+export const MODULO_POR_INTENCION: Partial<Record<QuestionIntent, ProjectModuleId>> = (
+  Object.entries(MODULE_INTENTS) as [ProjectModuleId, QuestionIntent][]
+).reduce<Partial<Record<QuestionIntent, ProjectModuleId>>>((acc, [moduleId, intent]) => {
+  if (!(intent in acc)) {
+    acc[intent] = moduleId;
+  }
+  return acc;
+}, {});
 
 const STRATEGIC_QUESTIONS: Record<
   ProjectModuleId,
@@ -185,6 +203,21 @@ export function getNextBestQuestion(
     getPreviousQuestions(messages);
   const previousIntents: Set<QuestionIntent> = new Set(messages.filter((message) => message.role === 'producer').map((message) => getQuestionIntent(message.response?.nextQuestion || message.content)).filter((intent) => intent !== 'other'));
 
+  // El nombre del proyecto decide antes que el bloque de apertura: mientras
+  // el título siga siendo un placeholder, ninguna de las siete preguntas del
+  // bloque lo pide (AP-01 pregunta qué es, no cómo se llama), así que un
+  // proyecto creado por una vía que no exige título se queda sin nombre para
+  // siempre. Ver specs/nombre-antes-del-bloque.md, sección 4.
+  const preguntaDeNombre = STRATEGIC_QUESTIONS.identity.initial;
+  if (
+    isPlaceholderTitle(graph.title) &&
+    !isQuestionAlreadyAnswered('clarify_project_name', graph) &&
+    !previousIntents.has('clarify_project_name') &&
+    !previousQuestions.has(normalizeText(preguntaDeNombre))
+  ) {
+    return preguntaDeNombre;
+  }
+
   // El bloque de apertura decide primero, salvo que ya se le haya hecho esta
   // pregunta literalmente en un turno anterior sin que la respuesta haya
   // llegado a actualizar el grafo: en ese caso se trata como agotado para
@@ -226,6 +259,14 @@ export function getNextBestQuestion(
 }
 
 export function getQuestionIntent(question: string): QuestionIntent {
+  // Las siete preguntas del bloque de apertura se reconocen por texto exacto
+  // (o contextualizado, para AP-04) contra `BLOQUE_DE_APERTURA`, antes que
+  // cualquier regex genérica — evita colisiones como AP-02/AP-07 con
+  // /quien|responsable|equipo|rol/ más abajo. Ver spec
+  // bloque-de-apertura-y-extraccion.md, tabla 5.1.
+  const preguntaDeApertura = encontrarPreguntaPorTexto(question);
+  if (preguntaDeApertura) return preguntaDeApertura.intent;
+
   const text = normalizeText(question);
   if (/como se llama|como te gustaria nombrar|nombre del proyecto/.test(text)) return 'clarify_project_name';
   if (/tipo de proyecto|formato del proyecto/.test(text)) return 'clarify_project_type';

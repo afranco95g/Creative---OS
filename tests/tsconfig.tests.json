@@ -21,6 +21,7 @@
     "financialAuthorityV24.test.ts",
     "muscoRuntimeIntegration.test.ts",
     "projectSeedExtraction.test.ts",
-    "openingBlock.test.ts"
+    "openingBlock.test.ts",
+    "answerRouting.test.ts"
   ]
 }

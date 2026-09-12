@@ -247,11 +247,18 @@ export function applyPatch(graph: ProjectGraph, patch: ProjectPatch): ProjectGra
     updatedAt: now(),
   };
 
+  // Spec no-se-sin-colateral.md, 5.5: `scoreBoost === 0` es, hoy, siempre un
+  // "no sé" (el único llamador conocido que lo pasa así). Se condiciona
+  // sobre el puntaje y no sobre un campo nuevo porque cualquier otro
+  // llamador futuro que pase `scoreBoost: 0` está, por la misma razón,
+  // registrando una respuesta sin puntaje y no "fortaleciendo" el módulo.
   const event: ProjectEvent = {
     id: createId(),
     type: 'module_updated',
-    title: `${currentModule.title} actualizado`,
-    description: `Se fortaleció ${currentModule.title} a partir de una conversación.`,
+    title: patch.scoreBoost === 0 ? `${currentModule.title} registrado` : `${currentModule.title} actualizado`,
+    description: patch.scoreBoost === 0
+      ? `Se registró una respuesta sin puntaje en ${currentModule.title}.`
+      : `Se fortaleció ${currentModule.title} a partir de una conversación.`,
     moduleId: currentModule.id,
     createdAt: now(),
   };
