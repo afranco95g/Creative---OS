@@ -84,8 +84,14 @@ function LoginContent() {
       return;
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
+    const destination =
+      normalizedEmail === 'imaginecompanysas@gmail.com' && !requestedRedirect
+        ? '/cursos/music-business'
+        : safeRedirect;
+
     router.replace(
-      safeRedirect
+      destination
     );
 
     router.refresh();
