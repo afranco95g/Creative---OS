@@ -12,9 +12,9 @@
     "knowledge:scan": "tsc -p scripts/tsconfig.knowledge.json && node .knowledge-tools/scripts/knowledge-admin.js scan",
     "knowledge:ingest": "tsc -p scripts/tsconfig.knowledge.json && node .knowledge-tools/scripts/knowledge-admin.js ingest",
     "knowledge:validate": "tsc -p scripts/tsconfig.knowledge.json && node .knowledge-tools/scripts/knowledge-admin.js validate",
-    "knowledge:report": "tsc -p scripts/tsconfig.knowledge.json && node .knowledge-tools/scripts/knowledge-admin.js report"
-    ,"financial:migration-preview": "tsc -p scripts/tsconfig.financial.json && node .financial-tools/scripts/financial-migration-preview.js preview"
-    ,"financial:backup": "tsc -p scripts/tsconfig.financial.json && node .financial-tools/scripts/financial-migration-preview.js backup"
+    "knowledge:report": "tsc -p scripts/tsconfig.knowledge.json && node .knowledge-tools/scripts/knowledge-admin.js report",
+    "financial:migration-preview": "tsc -p scripts/tsconfig.financial.json && node .financial-tools/scripts/financial-migration-preview.js preview",
+    "financial:backup": "tsc -p scripts/tsconfig.financial.json && node .financial-tools/scripts/financial-migration-preview.js backup"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",
@@ -24,7 +24,8 @@
     "next": "^15.0.3",
     "pdf-parse": "^2.4.5",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/node": "^22.9.0",

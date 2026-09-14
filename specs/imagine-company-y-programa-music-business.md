@@ -318,7 +318,7 @@ with check (
     select 1 from public.courses
     where courses.id::text = (storage.foldername(name))[1]
       and (
-        public.current_profile_role() in ('admin', 'super_admin')
+        public.current_profile_role() in ('ecosystem_admin', 'super_admin')
         or exists (
           select 1 from public.funder_memberships
           where funder_memberships.funder_id = courses.owner_actor_id
