@@ -321,3 +321,35 @@ hoy se cumple por el estado del grafo en una que se cumple por la operación.
 Plata: **no se toca ningún cálculo financiero.** `budgetSignalProcessor` no aparece
 en la lista de archivos. El único efecto de esta entrega sobre puntajes es hacer que
 un puntaje que no debía subir, no suba.
+
+---
+
+# APÉNDICE — Resultado del ciclo (2026-09-11)
+
+**Cerrado en 1 vuelta.** `npm run typecheck` limpio. Se construyó lo que la spec
+define: el patch de respaldo se apaga para un "no sé" y
+`revertirModulosColateralesDeRespuestaNoSe` quedó borrada por completo.
+
+## Lo que la spec tenía mal
+
+**La traza de la sección 2.3 era incorrecta.** Predecía que el colateral caería en
+`purpose` (AP-03); al ejecutar cayó en `problem` (AP-04). La causa: se razonó
+desde `getWeakModules` y el orden de inserción sin seguir el fallback de
+`recommendedModule` en `inferContextualAnswerActions`, que es lo que desplazaba el
+módulo. **El reporte original del auditor, que decía AP-04, tenía razón.**
+
+La salvaguarda del criterio 8.1 —"escribir el test y verlo fallar antes de tocar
+nada; si la traza no cuadra, se reporta y se corrige, no se omite"— es lo que
+atrapó el error. Sin ella, el escenario se habría escrito contra la traza falsa.
+
+**La sección 8.2 decía "8 archivos de test" y son 9.** Imprecisión heredada de
+antes de esta entrega (`projectSeedExtraction.test.ts` se agregó en un commit
+anterior). Correcto declararla fuera de alcance para esta entrega.
+
+## Hallazgo del auditor que sí era real
+
+El comentario nuevo del escenario 10 atribuía el desplazamiento a
+`classifyProjectEvidence`, que no tiene regla para `identity` y devuelve `[]` para
+el mensaje de T1. La causa real era el fallback de `recommendedModule`.
+**Un comentario permanente con una explicación falsa es una trampa para quien lea
+el archivo después**, y corregirlo fue una captura legítima.

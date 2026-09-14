@@ -1,4 +1,5 @@
 import type { ProjectGraph, ProjectModuleId } from '../types/project';
+import type { ProjectType } from '../types/projectKnowledge';
 import type { QuestionIntent } from './questionEngine';
 
 /**
@@ -20,6 +21,13 @@ export interface PreguntaDeApertura {
   prioridadBase: number; // necesidad: qué tan urgente es hoy
   necesidad: string; // qué necesidad del proyecto atiende, en una frase
   aceptaNoSe: true;
+  /**
+   * Spec redaccion-de-la-apertura.md, 4.3: solo `AP-05` lo trae. Restringe la
+   * pregunta a los `primaryType` de la familia con locación (evento, taller,
+   * activación...). Si `primaryType` no está definido, la pregunta se hace
+   * igual (no se puede descartar sin saber la disciplina).
+   */
+  arquetipos?: ProjectType[];
 }
 
 /**
@@ -27,6 +35,24 @@ export interface PreguntaDeApertura {
  * pregunta del bloque. Ver spec 5.3.
  */
 export const SIN_RESPUESTA_POR_AHORA = 'Sin respuesta por ahora.';
+
+/**
+ * Spec redaccion-de-la-apertura.md, 4.3: la familia de `primaryType` con
+ * locación física — evento, taller, activación, experiencia, obra artística
+ * (cubre rodaje y montaje: no hay otro `ProjectType` de los trece que los
+ * represente) y programa (cubre residencia: una residencia es un programa de
+ * estadía/producción en un lugar). El resto (producto, servicio, negocio,
+ * campaña, investigación, iniciativa comunitaria, otro) no tiene un lugar que
+ * preguntar.
+ */
+const ARQUETIPOS_CON_LOCACION: ProjectType[] = [
+  'event',
+  'workshop',
+  'experience',
+  'btl_activation',
+  'artistic_project',
+  'program',
+];
 
 const OPCIONES_AP07 = [
   'El Estado (una convocatoria pública)',
@@ -43,7 +69,7 @@ const OPCIONES_AP07 = [
 export const BLOQUE_DE_APERTURA: PreguntaDeApertura[] = [
   {
     codigo: 'AP-01',
-    pregunta: '¿Qué es? Cuéntamelo en una o dos frases.',
+    pregunta: 'Cuéntame qué es, en una o dos frases.',
     plantillaConContexto: null,
     opciones: null,
     intent: 'clarify_project_type',
@@ -55,7 +81,7 @@ export const BLOQUE_DE_APERTURA: PreguntaDeApertura[] = [
   },
   {
     codigo: 'AP-02',
-    pregunta: '¿Quién va a estar del otro lado?',
+    pregunta: '¿Para quién está pensado tu [oficio]?',
     plantillaConContexto: null,
     opciones: null,
     intent: 'clarify_audience',
@@ -67,7 +93,7 @@ export const BLOQUE_DE_APERTURA: PreguntaDeApertura[] = [
   },
   {
     codigo: 'AP-03',
-    pregunta: '¿Qué te hizo querer hacer esto?',
+    pregunta: '¿Qué te hizo querer hacer tu [oficio]?',
     plantillaConContexto: null,
     opciones: null,
     intent: 'clarify_purpose',
@@ -79,8 +105,8 @@ export const BLOQUE_DE_APERTURA: PreguntaDeApertura[] = [
   },
   {
     codigo: 'AP-04',
-    pregunta: '¿Qué falta hoy para esa gente, que esto viene a atender?',
-    plantillaConContexto: '¿Qué les falta hoy a [RESPUESTA_AP02], que esto viene a atender?',
+    pregunta: '¿Qué viste que hacía falta?',
+    plantillaConContexto: '¿Qué viste que les hacía falta a [RESPUESTA_AP02]?',
     opciones: null,
     intent: 'clarify_problem',
     modulo: 'problem',
@@ -91,7 +117,7 @@ export const BLOQUE_DE_APERTURA: PreguntaDeApertura[] = [
   },
   {
     codigo: 'AP-05',
-    pregunta: '¿Dónde pasa?',
+    pregunta: '¿Tienes locación para tu [oficio]?',
     plantillaConContexto: null,
     opciones: null,
     intent: 'clarify_location',
@@ -100,10 +126,11 @@ export const BLOQUE_DE_APERTURA: PreguntaDeApertura[] = [
     prioridadBase: 60,
     necesidad: 'Ubicar el proyecto en un territorio',
     aceptaNoSe: true,
+    arquetipos: ARQUETIPOS_CON_LOCACION,
   },
   {
     codigo: 'AP-06',
-    pregunta: '¿Qué parte ya existe?',
+    pregunta: '¿Qué ya tienes hecho?',
     plantillaConContexto: null,
     opciones: null,
     intent: 'clarify_phase',
@@ -115,7 +142,7 @@ export const BLOQUE_DE_APERTURA: PreguntaDeApertura[] = [
   },
   {
     codigo: 'AP-07',
-    pregunta: '¿Quién tiene que decir sí para que esto pase?',
+    pregunta: '¿Quién tiene que decir que sí?',
     plantillaConContexto: null,
     opciones: OPCIONES_AP07,
     intent: 'clarify_intent',
@@ -129,6 +156,7 @@ export const BLOQUE_DE_APERTURA: PreguntaDeApertura[] = [
 
 const LIMITE_CONTEXTO = 80;
 const MARCADOR_CONTEXTO = '[RESPUESTA_AP02]';
+const MARCADOR_OFICIO = '[oficio]';
 
 function tieneContenido(graph: ProjectGraph, moduloId: ProjectModuleId): boolean {
   return Boolean(graph.modules[moduloId]?.content.trim());
@@ -142,6 +170,65 @@ export function estaPreguntaRespondida(pregunta: PreguntaDeApertura, graph: Proj
   if (tieneContenido(graph, pregunta.modulo)) return true;
   if (pregunta.modulo === 'identity') return Boolean(graph.knowledge?.projectType.primaryType);
   return false;
+}
+
+/**
+ * Spec redaccion-de-la-apertura.md, 4.3: si la pregunta trae `arquetipos`,
+ * solo se hace cuando `primaryType` está en esa lista. Sin `primaryType`
+ * conocido no se puede descartar, así que la pregunta se hace igual (mejor
+ * preguntar de más que perder el dato).
+ */
+export function aplicaPreguntaDeApertura(pregunta: PreguntaDeApertura, graph: ProjectGraph): boolean {
+  if (!pregunta.arquetipos) return true;
+
+  const primaryType = graph.knowledge?.projectType.primaryType;
+  if (!primaryType) return true;
+
+  return pregunta.arquetipos.includes(primaryType);
+}
+
+/**
+ * Spec redaccion-de-la-apertura.md, 4.2: la palabra de la disciplina, o
+ * `proyecto` si no hay disciplina. Switch exhaustivo sobre `ProjectType`
+ * (el `never` de `default` hace que agregar un miembro nuevo al tipo rompa
+ * la compilación aquí hasta que se le asigne palabra).
+ */
+export function palabraDelOficio(graph: ProjectGraph): string {
+  const primaryType = graph.knowledge?.projectType.primaryType;
+  if (!primaryType) return 'proyecto';
+
+  switch (primaryType) {
+    case 'product':
+      return 'producto';
+    case 'service':
+      return 'servicio';
+    case 'event':
+      return 'evento';
+    case 'workshop':
+      return 'taller';
+    case 'experience':
+      return 'experiencia';
+    case 'artistic_project':
+      return 'obra';
+    case 'community_initiative':
+      return 'iniciativa';
+    case 'business':
+      return 'negocio';
+    case 'campaign':
+      return 'campaña';
+    case 'btl_activation':
+      return 'activación';
+    case 'research':
+      return 'investigación';
+    case 'program':
+      return 'programa';
+    case 'other':
+      return 'proyecto';
+    default: {
+      const _exhaustivo: never = primaryType;
+      return _exhaustivo;
+    }
+  }
 }
 
 function recortarEnLimiteDePalabra(texto: string, maxLength: number): string | null {
@@ -173,6 +260,15 @@ function contextualizar(pregunta: PreguntaDeApertura, graph: ProjectGraph): stri
   if (recorte === null) return pregunta.pregunta;
 
   return pregunta.plantillaConContexto.replace(MARCADOR_CONTEXTO, recorte);
+}
+
+/**
+ * Sustitución del marcador de oficio (spec 4.2): un `replace` sobre el texto
+ * ya contextualizado, igual que la interpolación de `contextualizar`. No
+ * genera lenguaje; si el texto no trae el marcador, lo devuelve intacto.
+ */
+function sustituirOficio(texto: string, graph: ProjectGraph): string {
+  return texto.replace(MARCADOR_OFICIO, palabraDelOficio(graph));
 }
 
 /**
@@ -218,11 +314,15 @@ export function esRespuestaNoSe(respuesta: string): boolean {
   return RESPUESTAS_NO_SE.includes(normalizarTexto(respuesta));
 }
 
-function coincideConTexto(pregunta: PreguntaDeApertura, textoNormalizado: string): boolean {
-  if (textoNormalizado === normalizarTexto(pregunta.pregunta)) return true;
-  if (!pregunta.plantillaConContexto) return false;
-
-  const [prefijo, sufijo] = pregunta.plantillaConContexto.split(MARCADOR_CONTEXTO);
+/**
+ * Compara `textoNormalizado` contra una plantilla que puede traer un
+ * marcador (de contexto o de oficio) por prefijo/sufijo, en vez de por
+ * igualdad exacta: el marcador se reemplaza por un valor variable (la
+ * respuesta de AP-02 recortada, o la palabra del oficio) antes de llegar
+ * aquí, así que la plantilla original ya no es un match exacto.
+ */
+function coincidePorMarcador(plantilla: string, marcador: string, textoNormalizado: string): boolean {
+  const [prefijo, sufijo] = plantilla.split(marcador);
   const prefijoNormalizado = normalizarTexto(prefijo);
   const sufijoNormalizado = normalizarTexto(sufijo);
 
@@ -230,6 +330,21 @@ function coincideConTexto(pregunta: PreguntaDeApertura, textoNormalizado: string
     textoNormalizado.startsWith(prefijoNormalizado) &&
     textoNormalizado.endsWith(sufijoNormalizado)
   );
+}
+
+function coincideConTexto(pregunta: PreguntaDeApertura, textoNormalizado: string): boolean {
+  if (textoNormalizado === normalizarTexto(pregunta.pregunta)) return true;
+
+  if (
+    pregunta.pregunta.includes(MARCADOR_OFICIO) &&
+    coincidePorMarcador(pregunta.pregunta, MARCADOR_OFICIO, textoNormalizado)
+  ) {
+    return true;
+  }
+
+  if (!pregunta.plantillaConContexto) return false;
+
+  return coincidePorMarcador(pregunta.plantillaConContexto, MARCADOR_CONTEXTO, textoNormalizado);
 }
 
 /**
@@ -245,8 +360,12 @@ export function encontrarPreguntaPorTexto(texto: string): PreguntaDeApertura | n
 }
 
 export function seleccionarPreguntaDeApertura(graph: ProjectGraph): PreguntaDeApertura | null {
+  // Paso 0: descartar lo que no aplica por arquetipo (spec 4.3) — por
+  // ejemplo AP-05 para una disciplina sin locación.
   // Paso 1: descartar lo respondido — lo que ya se sabe no se pregunta.
-  const sinResponder = BLOQUE_DE_APERTURA.filter((pregunta) => !estaPreguntaRespondida(pregunta, graph));
+  const sinResponder = BLOQUE_DE_APERTURA.filter(
+    (pregunta) => aplicaPreguntaDeApertura(pregunta, graph) && !estaPreguntaRespondida(pregunta, graph)
+  );
 
   // Paso 2: descartar lo que todavía no se puede preguntar — sin sus
   // prerrequisitos respondidos, la pregunta no es respondible.
@@ -265,5 +384,5 @@ export function seleccionarPreguntaDeApertura(graph: ProjectGraph): PreguntaDeAp
   const elegida = ordenadas[0] ?? null;
   if (!elegida) return null;
 
-  return { ...elegida, pregunta: contextualizar(elegida, graph) };
+  return { ...elegida, pregunta: sustituirOficio(contextualizar(elegida, graph), graph) };
 }

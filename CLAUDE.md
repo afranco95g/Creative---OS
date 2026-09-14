@@ -56,11 +56,39 @@ Instrucción explícita del dueño del proyecto — se conservan a propósito au
 
 Ver `.claude/agents/constructor.md`, `.claude/agents/auditor.md`, `.claude/agents/revisor.md`. Topología: `spec → constructor → auditor → revisor arbitra → constructor corrige → auditor vuelve a verificar`, hasta que el auditor reporte limpio. Los hallazgos viajan siempre con archivo+línea+escenario concreto, nunca resumidos.
 
-El orquestador de este ciclo es `/construir <ruta-a-la-spec>` (`.claude/commands/construir.md`) — corre el ciclo completo sin que haya que invocar cada agente a mano, hasta reporte limpio o un máximo de 3 vueltas.
+El orquestador es `/construir <ruta-a-la-spec>` (`.claude/commands/construir.md`).
 
-**Ningún trabajo de código arranca sin una spec en `specs/`.** Si llega una instrucción sin spec, lo primero es escribir la spec (plantilla en `specs/_plantilla.md`) y hacerla aprobar — no escribir código directamente. Una instrucción sin spec no es un atajo, es trabajo pendiente de especificar.
+### Dos caminos, elegidos por riesgo
 
-**Línea base verificada (2026-09-10):** `npm run typecheck` pasa limpio y los 7 tests de `npm test` pasan (`Knowledge Query Builder`, `Kicks interpretation`, `Dobla y devora classification`, `Project Knowledge V2`, `Executive Engine V2.3`, `Executive Engine V2.4 Financial Authority`, `MUSCO runtime integration`). Cualquier trabajo nuevo parte de ahí: si algo se rompe, lo rompimos nosotros — no es un fallo preexistente que se pueda ignorar.
+El ciclo de tres agentes existe para **arbitrar desacuerdos**. Cuando no hay desacuerdo posible, es puro costo.
+
+| Si el cambio toca... | Camino | Plantilla |
+|---|---|---|
+| Plata · puntajes que el usuario ve · datos personales · tipos nuevos o más de 4 archivos | **Completo**: constructor → auditor, y revisor **solo si hay desacuerdo** | `specs/_plantilla.md` |
+| Nada de lo anterior | **Rápido**: un solo agente | `specs/_plantilla-corta.md` |
+
+En caso de duda, completo. **El revisor no es un paso fijo: es el árbitro.**
+
+**Tope: 2 vueltas.** Si a la segunda el auditor sigue reportando hallazgos REAL, el ciclo se detiene y lo que quede se escribe como spec nueva. Una tercera vuelta sobre el mismo contexto casi siempre produce un parche que compensa el error en vez de quitarlo — ya pasó una vez.
+
+**La spec es proporcional al cambio.** Una spec de 300 líneas para un cambio de 40 hace que cada agente lea 300 líneas en cada vuelta.
+
+### Reglas de verificación que no se negocian en ningún camino
+
+- **La salida de `npm test` va literal al reporte, no resumida.** "10 suites OK" no es una verificación. Ya hubo un reporte que dijo "9 suites OK" con una suite en rojo, y se construyeron dos entregas encima de ese verde falso.
+- **Un test no se reescribe para que pase.** Si un test fija un comportamiento que la spec decidió cambiar, se reescribe para verificar el nuevo — nunca se revierte código de producción para complacerlo.
+- **Montaje sí, asertos no.** Se puede cambiar el *montaje* de un escenario para que represente un flujo real; **no** se puede debilitar, borrar ni retargetear un aserto existente. Si un aserto no pasa cambiando solo el montaje, se detiene y se reporta.
+- **Los criterios de aceptación nombran ubicaciones, no cuentan coincidencias de texto.** "Esta función no llama a esta otra" es verificable; "este grep da 0 resultados" es frágil, porque una función puede usarse para dos cosas distintas y legítimas.
+
+### Trampa conocida: el título placeholder
+
+`createInitialProjectGraph()` devuelve un **título placeholder**, y hay lógica que decide qué pregunta sale primero según si el título es placeholder o real. Cualquier fixture de test construido con esa función depende implícitamente de eso. Tres archivos de test dependían de ello sin declararlo. Toda spec que cambie la precedencia de preguntas debe listar esos tests en su sección de archivos **desde el principio**.
+
+**Ningún trabajo de código arranca sin una spec en `specs/`.** Si llega una instrucción sin spec, lo primero es escribir la spec y hacerla aprobar — no escribir código directamente. Una instrucción sin spec no es un atajo, es trabajo pendiente de especificar.
+
+**Línea base verificada (2026-09-11):** `npm run typecheck` limpio y **10 suites** de `npm test` en verde: `Knowledge Query Builder`, `Kicks interpretation`, `Dobla y devora classification`, `Project Knowledge V2`, `Executive Engine V2.3`, `Executive Engine V2.4 Financial Authority`, `MUSCO runtime integration`, `Project seed extraction`, `Opening block`, `Answer routing`. Cualquier trabajo nuevo parte de ahí: si algo se rompe, lo rompimos nosotros.
+
+**Cómo se actualiza esta línea base:** solo contra la salida literal de `npm test`, pegada en el reporte de la entrega que la movió. No contra el resumen de un agente.
 
 **Advertencia sobre la suite de tests — cualquier agente que toque los motores debe heredar esto:** los tests `kicksInterpretation`, `doblaYDevoraClassification` y `muscoRuntimeIntegration` corresponden a tres proyectos reales específicos a los que se les cosieron los motores a mano. Pasan PORQUE el hardcodeo sigue ahí — por ejemplo `engines/turnInterpretationEngine.ts` tiene `if (/zapato|calzado/)` y una pregunta fija sobre "COP 80.000", y `kicksInterpretation.test.js` verifica justamente esa rama. Esa suite hoy protege lo que hay que desmontar. Cuando un trabajo generalice esos motores, esos tests DEBEN romperse y deben reescribirse para verificar el comportamiento general, con esos tres proyectos como ejemplos entre varios — no como el único caso. Romperlos en ese contexto es señal de progreso, no de regresión, siempre que la spec que autoriza el trabajo lo haya anticipado explícitamente en su sección "tests que van a romperse a propósito".
 

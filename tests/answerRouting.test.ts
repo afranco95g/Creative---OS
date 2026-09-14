@@ -1,7 +1,7 @@
 import { createId, createInitialProjectGraph, now } from '../core/projectEngine';
 import { createProjectControllerState, processProjectMessage } from '../core/projectController';
 import type { ConversationMessage, ProjectGraph, ProjectModuleId } from '../types/project';
-import { BLOQUE_DE_APERTURA, seleccionarPreguntaDeApertura } from '../engines/openingBlockEngine';
+import { encontrarPreguntaPorTexto, seleccionarPreguntaDeApertura } from '../engines/openingBlockEngine';
 
 function assert(condition: boolean, message: string) {
   if (!condition) throw new Error(message);
@@ -17,8 +17,6 @@ function modulosCambiados(
     return a.content !== d.content || a.score !== d.score || a.updatedAt !== d.updatedAt;
   });
 }
-
-const preguntaAp02 = BLOQUE_DE_APERTURA.find((pregunta) => pregunta.codigo === 'AP-02')!;
 
 // ---------------------------------------------------------------------------
 // a) El caso que hoy falla: una respuesta a AP-02 que no matchea la lista de
@@ -42,8 +40,13 @@ const preguntaAp02 = BLOQUE_DE_APERTURA.find((pregunta) => pregunta.codigo === '
     createProjectControllerState({ ...createInitialProjectGraph(), title: 'Ruido Blanco' }),
     'Este proyecto se llama Culebreo.'
   );
+  // Spec redaccion-de-la-apertura.md, 4.5 (enmienda del 2026-09-11): AP-02
+  // trae el marcador `[oficio]` sin resolver en `BLOQUE_DE_APERTURA`, así que
+  // ya no es una igualdad literal contra el texto entregado (que ya vino
+  // sustituido). Se reconoce por código con la misma función que usa
+  // `projectController` en producción.
   assert(
-    t1.response.nextQuestion === preguntaAp02.pregunta,
+    encontrarPreguntaPorTexto(t1.response.nextQuestion ?? '')?.codigo === 'AP-02',
     `Después de T1 la pregunta pendiente debe ser AP-02, fue: "${t1.response.nextQuestion}"`
   );
 

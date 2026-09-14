@@ -83,3 +83,30 @@ bloque duplicaría un texto que ya está escrito en otro lado.
 - La redacción de las siete preguntas (va en su propia entrega).
 - `getQuestionIntent` y su consulta al bloque.
 - Las 10 intenciones que `isQuestionAlreadyAnswered` todavía no cubre.
+
+---
+
+# APÉNDICE — Enmiendas autorizadas durante el ciclo (2026-09-11)
+
+**La sección 3 decía "ningún test se modifica" y era incompleta.** Quedan dentro
+de la lista de archivos modificados:
+
+- `tests/openingBlock.test.ts` — título real (`'Ruido Blanco'`) en el helper
+  compartido de los escenarios 8-10, más el escenario 11 (título real → AP-01,
+  criterio 5.5) y el 12 (título placeholder → pregunta del nombre).
+- `tests/answerRouting.test.ts` — título real solo en el seed del escenario (a).
+
+En ambos: **montaje sí, asertos no.** Ningún aserto existente se movió.
+
+## La causa era una, no tres
+
+`createInitialProjectGraph()` (`core/projectEngine.ts:68`) devuelve título
+placeholder por defecto, y esta entrega hizo que ese placeholder decida qué
+pregunta sale primero. Todo fixture construido con esa función que no fijara
+título quedaba dependiendo implícitamente de la precedencia vieja.
+`muscoRuntimeIntegration.test.ts` ya fijaba título real y por eso no se vio
+afectado — era el único que declaraba esa dependencia.
+
+**Lección para la próxima spec que cambie precedencia de preguntas:** los tests
+que dependen del orden van en la sección 3 desde el principio, no como enmienda a
+mitad del ciclo. Quedó escrito en `CLAUDE.md`.

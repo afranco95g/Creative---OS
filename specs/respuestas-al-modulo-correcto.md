@@ -240,3 +240,63 @@ porcentaje de preparación deja de subir por texto que cayó en un módulo al az
 que el número se vuelve defendible — hoy incluye ruido que nadie puede rastrear.
 
 Plata: no se toca. `budgetSignalProcessor` no aparece en la lista de archivos.
+
+---
+
+# APÉNDICE — Enmiendas autorizadas durante el ciclo (2026-09-11)
+
+Las tres salieron de contradicciones reales que el constructor detectó y reportó
+en vez de resolver por su cuenta. **El texto de las secciones 5.1, 7 y 8.3 de
+arriba quedó desactualizado; manda este apéndice.**
+
+## Enmienda 1 — a la sección 5.1: dos situaciones, no un mismo `null`
+
+`moduloDeLaPreguntaHecha` colapsaba dos casos distintos, y solo uno justifica
+apagar el fallback. La firma final es:
+
+```ts
+function resultadoDePreguntaHecha(messages: ConversationMessage[]): {
+  huboPregunta: boolean;
+  modulo: ProjectModuleId | null;
+}
+```
+
+| Caso | Patch de respaldo | Fallback de `recommendedModule` |
+|---|---|---|
+| `huboPregunta: false` | no se aplica | **no corre** |
+| `huboPregunta: true`, `modulo` presente | al módulo de la pregunta | **no corre** (evita copia doble) |
+| `huboPregunta: true`, `modulo: null` | no se aplica | **sí corre**, como antes |
+
+El tercer caso es el que la sección 5.4 original habría destruido: la frase de
+cierre de `getNextBestQuestion` tiene intención `'other'` y no mapea a ningún
+módulo, pero el usuario **sí** está respondiendo. Apagar el fallback ahí tiraría
+esa respuesta.
+
+## Enmienda 2 — a la sección 8.3: un call site, no un conteo de texto
+
+La redacción original ("sin resultados") no contemplaba un segundo uso legítimo de
+`getWeakModules`, en `buildProducerResponse`, para el campo `gaps` — sin relación
+con el ruteo. **No se borró**: está fuera de la lista de la sección 3, y dejar
+`gaps: []` haría que la función devuelva un valor falso para cualquier llamador
+futuro. Redacción definitiva:
+
+> En `engines/conversationEngine.ts`, `getWeakModules` debe tener exactamente
+> **un call site**, dentro de `buildProducerResponse`. El `import` no cuenta como
+> uso. El bloque final de `extractProjectPatchesFromMessage` no debe llamarlo ni
+> calcular su módulo destino de ninguna otra forma.
+
+**Deuda anotada, no resuelta aquí:** `buildProducerResponse` calcula `gaps` y ese
+valor siempre se descarta, porque `core/projectController.ts` lo sobrescribe con
+`buildGapList(nextGraph)`. Es trabajo muerto.
+
+## Enmienda 3 — a la sección 7: sí se rompen tests, y por qué
+
+La sección 7 decía "Ninguno" y estaba equivocada. Los escenarios 8, 9 y 10 de
+`openingBlock.test.ts` **fijaban un accidente**: el contenido de T1 caía en
+`identity` porque el patch de respaldo elegía el módulo más débil, e `identity` es
+el primero en el orden de inserción de `createInitialProjectGraph()`. Nunca fue
+conducta correcta; era una coincidencia que el test convirtió en contrato.
+
+Autorizado: **cambiar el montaje, nunca los asertos.** El escenario 10 excedió eso
+—retargeteó asertos de `purpose`/AP-03 a `problem`/AP-04 cuando el montaje mínimo
+alcanzaba— y el auditor lo pescó. Se revirtió.

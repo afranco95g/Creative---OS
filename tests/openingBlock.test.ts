@@ -2,13 +2,16 @@ import { createId, createInitialProjectGraph, now } from '../core/projectEngine'
 import { createProjectControllerState, processProjectMessage } from '../core/projectController';
 import type { ProjectControllerState } from '../core/projectController';
 import type { ConversationMessage, ProjectGraph, ProjectModuleId } from '../types/project';
+import type { ProjectType } from '../types/projectKnowledge';
 import {
   BLOQUE_DE_APERTURA,
+  encontrarPreguntaPorTexto,
+  palabraDelOficio,
   seleccionarPreguntaDeApertura,
   SIN_RESPUESTA_POR_AHORA,
 } from '../engines/openingBlockEngine';
 import type { PreguntaDeApertura } from '../engines/openingBlockEngine';
-import { getNextBestQuestion } from '../engines/questionEngine';
+import { getNextBestQuestion, getQuestionIntent } from '../engines/questionEngine';
 
 /**
  * Spec no-se-sin-colateral.md, sección 7 (enmendada): los escenarios 8, 9 y
@@ -61,6 +64,22 @@ function conContenido(
     modules: {
       ...graph.modules,
       [moduloId]: { ...graph.modules[moduloId], content, score: 60 },
+    },
+  };
+}
+
+/**
+ * Spec redaccion-de-la-apertura.md, 4.2 y 4.3: siembra `primaryType` en el
+ * grafo, sin tocar ningún módulo. `graph.knowledge` siempre existe en un
+ * grafo creado con `createInitialProjectGraph` (ver `createInitialProjectKnowledgeState`
+ * en core/projectEngine.ts), así que el `!` es seguro aquí.
+ */
+function conPrimaryType(graph: ProjectGraph, primaryType: ProjectType): ProjectGraph {
+  return {
+    ...graph,
+    knowledge: {
+      ...graph.knowledge!,
+      projectType: { ...graph.knowledge!.projectType, primaryType },
     },
   };
 }
@@ -160,9 +179,14 @@ const t1 = processProjectMessage(
   estadoConPreguntaDeAperturaPreguntada(preguntaAp01),
   'Es un EP de música electrónica que estoy grabando.'
 );
-const preguntaAp02 = BLOQUE_DE_APERTURA.find((pregunta) => pregunta.codigo === 'AP-02')!;
+// AP-02 trae el marcador `[oficio]` (spec redaccion-de-la-apertura.md, 4.1):
+// el texto que de verdad se entrega ya lo tiene sustituido por la palabra
+// del oficio ("proyecto" aquí, porque este grafo no tiene `primaryType`), así
+// que ya no es una igualdad literal contra el texto base. Se reconoce por
+// código con la misma función que usa `projectController` en producción
+// (spec 5.3), no por texto exacto.
 assert(
-  t1.response.nextQuestion === preguntaAp02.pregunta,
+  encontrarPreguntaPorTexto(t1.response.nextQuestion ?? '')?.codigo === 'AP-02',
   `Después de T1 la siguiente pregunta debe ser AP-02, fue: "${t1.response.nextQuestion}"`
 );
 
@@ -241,17 +265,18 @@ const t1Diez = processProjectMessage(
   estadoConPreguntaDeAperturaPreguntada(preguntaAp01),
   'Es un EP de música electrónica que estoy grabando.'
 );
+// AP-02 y AP-03 traen el marcador `[oficio]`: se reconoce por código, no por
+// texto exacto (mismo motivo que el escenario 8).
 assert(
-  t1Diez.response.nextQuestion === preguntaAp02.pregunta,
+  encontrarPreguntaPorTexto(t1Diez.response.nextQuestion ?? '')?.codigo === 'AP-02',
   `Después de T1 la pregunta pendiente debe ser AP-02, fue: "${t1Diez.response.nextQuestion}"`
 );
 
 const t2Diez = processProjectMessage(t1Diez.state, 'no sé');
 
-const preguntaAp03 = BLOQUE_DE_APERTURA.find((pregunta) => pregunta.codigo === 'AP-03')!;
 const preguntaPendienteAntesDeT3 = t2Diez.response.nextQuestion;
 assert(
-  preguntaPendienteAntesDeT3 === preguntaAp03.pregunta,
+  encontrarPreguntaPorTexto(preguntaPendienteAntesDeT3 ?? '')?.codigo === 'AP-03',
   `Después de T2 (el "no sé" que responde AP-02) la pregunta pendiente debe ser AP-03, fue: "${preguntaPendienteAntesDeT3}"`
 );
 
@@ -322,6 +347,80 @@ assert(
 assert(
   preguntaConTituloPlaceholder !== preguntaAp01.pregunta,
   'Con título placeholder, getNextBestQuestion no debe devolver AP-01'
+);
+
+// Escenario 13: spec redaccion-de-la-apertura.md, 5, caso "sin disciplina".
+// Con `primaryType` vacío, `[oficio]` degrada a la palabra neutra `proyecto`
+// y AP-02 se entrega igual (4.2).
+const sinDisciplina = conContenido(createInitialProjectGraph(), 'identity', 'Un EP de música electrónica.');
+const seleccionSinDisciplina = seleccionarPreguntaDeApertura(sinDisciplina);
+assert(seleccionSinDisciplina?.codigo === 'AP-02', 'Sin disciplina debe devolver AP-02');
+assert(
+  seleccionSinDisciplina?.pregunta === '¿Para quién está pensado tu proyecto?',
+  `Sin disciplina, AP-02 debe ser "¿Para quién está pensado tu proyecto?", fue: "${seleccionSinDisciplina?.pregunta}"`
+);
+
+// Escenario 14: spec redaccion-de-la-apertura.md, 5, caso "con disciplina".
+// `primaryType` presente → AP-02 trae la palabra del oficio y no la palabra
+// neutra `proyecto`. `identity` queda satisfecha por el propio `primaryType`
+// (estaPreguntaRespondida, 5.4.4), sin necesidad de contenido en el módulo.
+const conDisciplina = conPrimaryType(createInitialProjectGraph(), 'event');
+const seleccionConDisciplina = seleccionarPreguntaDeApertura(conDisciplina);
+const oficioEvento = palabraDelOficio(conDisciplina);
+assert(seleccionConDisciplina?.codigo === 'AP-02', 'Con disciplina debe devolver AP-02');
+assert(
+  Boolean(seleccionConDisciplina?.pregunta.includes(oficioEvento)),
+  `Con disciplina, AP-02 debe contener la palabra del oficio ("${oficioEvento}"), fue: "${seleccionConDisciplina?.pregunta}"`
+);
+assert(
+  !seleccionConDisciplina?.pregunta.includes('proyecto'),
+  `Con disciplina, AP-02 no debe contener la palabra "proyecto", fue: "${seleccionConDisciplina?.pregunta}"`
+);
+
+// Escenario 15: spec redaccion-de-la-apertura.md, 5, caso "AP-05 con obra sin
+// lugar" (4.3). `product` no está en la familia con locación -- a diferencia
+// de `artistic_project` (que ahora sí entra, porque cubre rodaje y montaje;
+// hallazgo del auditor arbitrado como REAL) `product` no tiene ningún
+// candidato de "rodaje/montaje/residencia" que lo justifique, así que sigue
+// siendo un ejemplo válido de disco/libro/poemario sin locación: AP-05 nunca
+// debe devolverse, ni de paso (debe saltarse a AP-06) ni al final (el bloque
+// debe agotarse sin quedarse colgado esperándola).
+let obraSinLugarParcial = createInitialProjectGraph();
+obraSinLugarParcial = conPrimaryType(obraSinLugarParcial, 'product');
+obraSinLugarParcial = conContenido(obraSinLugarParcial, 'community', 'gente que escucha el disco');
+obraSinLugarParcial = conContenido(obraSinLugarParcial, 'purpose', 'Quiero contar una historia.');
+obraSinLugarParcial = conContenido(obraSinLugarParcial, 'problem', 'No hay discos que hablen de esto.');
+const seleccionObraSinLugarParcial = seleccionarPreguntaDeApertura(obraSinLugarParcial);
+assert(
+  seleccionObraSinLugarParcial?.codigo === 'AP-06',
+  `Con una disciplina sin locación, AP-05 debe saltarse y AP-06 debe ser la siguiente pregunta, fue: "${seleccionObraSinLugarParcial?.codigo}"`
+);
+
+let obraSinLugarCompleto = obraSinLugarParcial;
+obraSinLugarCompleto = conContenido(obraSinLugarCompleto, 'activities', 'Ya grabamos tres canciones.');
+obraSinLugarCompleto = conContenido(obraSinLugarCompleto, 'opportunities', 'Una convocatoria del Ministerio.');
+assert(
+  seleccionarPreguntaDeApertura(obraSinLugarCompleto) === null,
+  'Con una disciplina sin locación, el bloque debe agotarse (null) en vez de quedarse esperando AP-05'
+);
+
+// Escenario 16: spec redaccion-de-la-apertura.md, 4.5 (enmienda del
+// 2026-09-11). `encontrarPreguntaPorTexto` (vía `getQuestionIntent`) debe
+// reconocer AP-02/AP-03/AP-05 aunque el marcador `[oficio]` ya haya sido
+// sustituido por cualquier palabra -- no solo por `proyecto`, el valor por
+// defecto que usan los demás escenarios de este archivo. Es el mismo
+// mecanismo que ya reconoce la versión contextualizada de AP-04.
+assert(
+  getQuestionIntent('¿Para quién está pensado tu taller?') === 'clarify_audience',
+  'getQuestionIntent debe reconocer AP-02 con el oficio sustituido por "taller"'
+);
+assert(
+  getQuestionIntent('¿Qué te hizo querer hacer tu taller?') === 'clarify_purpose',
+  'getQuestionIntent debe reconocer AP-03 con el oficio sustituido por "taller"'
+);
+assert(
+  getQuestionIntent('¿Tienes locación para tu concierto?') === 'clarify_location',
+  'getQuestionIntent debe reconocer AP-05 con el oficio sustituido por "concierto"'
 );
 
 console.log('Opening block: OK');
