@@ -170,3 +170,4 @@ on public.project_folder_entries
 to authenticated;
 
 commit;
+

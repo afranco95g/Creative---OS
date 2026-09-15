@@ -13,6 +13,8 @@ import {
 
 import { ProjectToolsPanel } from '@/components/ProjectToolsPanel';
 
+import { LogPanel } from '@/components/LogPanel';
+
 import {
   ProducerChat,
 } from '@/components/ProducerChat';
@@ -301,7 +303,7 @@ export default function ProjectPage() {
 
           {activeView ===
             'log' && (
-            <LivingLog
+            <LogPanel
               graph={graph}
             />
           )}
@@ -681,91 +683,6 @@ function EmptyReviewState({
     <p className="mt-6 rounded-2xl border border-dashed border-borde p-5 text-sm leading-relaxed text-texto-largo">
       {text}
     </p>
-  );
-}
-
-function LivingLog({
-  graph,
-}: {
-  graph: ProjectGraph;
-}) {
-  const events =
-    graph.eventLog;
-
-  return (
-    <section className="mx-auto max-w-5xl space-y-10">
-      <header>
-        <p className="text-sm uppercase tracking-[0.25em] text-texto-principal">
-          Bitácora Viva
-        </p>
-
-        <h2 className="mt-3 text-5xl font-semibold tracking-tight">
-          Historia del proyecto
-        </h2>
-
-        <p className="mt-4 max-w-3xl text-lg leading-relaxed text-texto-largo">
-          Aquí queda registrado cómo la conversación
-          modifica módulos, genera decisiones y fortalece
-          la estructura del proyecto.
-        </p>
-      </header>
-
-      {events.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-borde bg-superficie-elevada p-10">
-          <h3 className="text-2xl font-semibold">
-            Todavía no hay movimientos
-          </h3>
-
-          <p className="mt-3 max-w-2xl text-texto-largo">
-            Conversa con el Productor Ejecutivo para
-            comenzar a construir la bitácora.
-          </p>
-        </div>
-      ) : (
-        <div className="relative space-y-5 pl-9 before:absolute before:bottom-0 before:left-3 before:top-0 before:w-px before:bg-acento/40">
-          {events.map((event) => (
-            <article
-              key={event.id}
-              className="relative rounded-3xl border border-borde bg-superficie-elevada p-6 before:absolute before:-left-[31px] before:top-7 before:h-4 before:w-4 before:rounded-full before:bg-rojo-base"
-            >
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.16em] text-texto-largo">
-                    {event.type.replaceAll(
-                      '_',
-                      ' '
-                    )}
-                  </p>
-
-                  <h3 className="mt-2 text-xl font-semibold">
-                    {event.title}
-                  </h3>
-                </div>
-
-                <time className="text-xs text-texto-largo">
-                  {new Date(
-                    event.createdAt
-                  ).toLocaleString(
-                    'es-CO'
-                  )}
-                </time>
-              </div>
-
-              <p className="mt-4 text-sm leading-relaxed text-texto-largo">
-                {event.description}
-              </p>
-            </article>
-          ))}
-        </div>
-      )}
-
-      <Link
-        href="/studio"
-        className="inline-flex text-sm font-semibold text-texto-principal"
-      >
-        ← Volver al Executive Workspace
-      </Link>
-    </section>
   );
 }
 

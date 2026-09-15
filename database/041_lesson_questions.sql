@@ -179,3 +179,4 @@ on public.lesson_questions
 to authenticated;
 
 commit;
+

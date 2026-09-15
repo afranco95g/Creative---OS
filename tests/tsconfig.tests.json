@@ -22,6 +22,9 @@
     "muscoRuntimeIntegration.test.ts",
     "projectSeedExtraction.test.ts",
     "openingBlock.test.ts",
-    "answerRouting.test.ts"
+    "answerRouting.test.ts",
+    "cashFlow.test.ts",
+    "preparednessEngine.test.ts",
+    "projectDependencyEngine.test.ts"
   ]
 }

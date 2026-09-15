@@ -121,3 +121,27 @@ export async function getCourseById(id: string): Promise<Course | null> {
 
   return data ? mapCourseRow(data as unknown as CourseRow) : null;
 }
+
+export interface CourseModuleWithLessonCount {
+  id: string;
+  title: string;
+  position: number;
+  lessonCount: number;
+}
+
+export async function getModulesForCourse(courseId: string): Promise<CourseModuleWithLessonCount[]> {
+  const { data: modulesData } = await supabase
+    .from('course_modules')
+    .select('id, title, position, course_lessons(id)')
+    .eq('course_id', courseId)
+    .order('position', { ascending: true });
+
+  if (!modulesData) return [];
+
+  return modulesData.map((m: any) => ({
+    id: m.id,
+    title: m.title,
+    position: m.position,
+    lessonCount: Array.isArray(m.course_lessons) ? m.course_lessons.length : 0,
+  }));
+}

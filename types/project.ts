@@ -298,6 +298,47 @@ export interface ProjectBudgetLine {
   source: 'manual' | 'creative-os';
 }
 
+// Lado de ingresos del flujo de caja (spec 5.4). `Fuente` es opcional: un
+// ingreso sin `fuenteId` es un ingreso suelto y se trata como parte de la
+// bolsa implícita `propio`.
+export type CondicionDeIngreso =
+  | 'sin_condicion'
+  | 'anticipo'
+  | 'contra_acta_de_inicio'
+  | 'contra_entrega'
+  | 'contra_informe_aprobado'
+  | 'contra_ejecucion_total'
+  | 'contra_legalizacion';
+
+export type TipoDeFuente =
+  | 'propio'
+  | 'venta'
+  | 'cliente'
+  | 'patrocinio'
+  | 'convocatoria_publica'
+  | 'convocatoria_privada'
+  | 'otro';
+
+export interface Ingreso {
+  id: ID;
+  concepto: string;
+  montoCop: number;
+  condicion: CondicionDeIngreso;
+  fechaDisparador: string;
+  latenciaDias: number;
+  fuenteId: ID | null;
+}
+
+export interface Fuente {
+  id: ID;
+  nombre: string;
+  tipo: TipoDeFuente;
+  restringida: boolean;
+  categoriasElegibles: string[];
+  aporteMinimoInicioCop: number | null;
+  fechaInicioEjecucion: string | null;
+}
+
 export type ScheduleItemStatus = 'planned' | 'in_progress' | 'done' | 'blocked';
 
 export interface ProjectScheduleItem {
@@ -312,6 +353,42 @@ export interface ProjectScheduleItem {
   documentIds: string[];
   tasks: string[];
   milestone: boolean;
+  activityId: ID | null;
+}
+
+// Motor de dependencias objetivo -> actividad -> presupuesto -> cronograma
+// (specs/motor-de-dependencias-objetivo-actividad.md). Listas estructuradas
+// nuevas y paralelas a los módulos de texto libre specificObjectives /
+// activities: no los reemplazan ni los parsean.
+export interface ProjectObjective {
+  id: ID;
+  title: string;
+  description: string;
+  createdAt: string;
+}
+
+export interface ProjectActivity {
+  id: ID;
+  objectiveId: ID | null;
+  title: string;
+  description: string;
+  createdAt: string;
+}
+
+// El vínculo actividad <-> línea de presupuesto vive exclusivamente aquí,
+// nunca como campo dentro de ProjectBudgetLine (contrato bloqueado en
+// specs/flujo-de-caja-con-condiciones.md, sección 6).
+export interface ProjectActivityBudgetLink {
+  id: ID;
+  activityId: ID;
+  budgetLineId: ID;
+}
+
+export interface DependencyFinding {
+  id: ID;
+  type: 'orphan_budget_link' | 'orphan_schedule_item' | 'activity_without_link';
+  message: string;
+  relatedId: ID;
 }
 
 export interface GrantWorkspace {
@@ -327,6 +404,19 @@ export interface GrantWorkspace {
   answers: Record<string, string>;
 }
 
+export type PreparednessArea = 'legal' | 'mercadeo';
+
+export type PreparednessStatus = 'pendiente' | 'en_proceso' | 'listo';
+
+export interface PreparednessChecklistItem {
+  id: ID;
+  area: PreparednessArea;
+  title: string;
+  description: string;
+  status: PreparednessStatus;
+  note: string;
+}
+
 export interface ProjectTools {
   budgetLines: ProjectBudgetLine[];
   scheduleItems: ProjectScheduleItem[];
@@ -334,4 +424,10 @@ export interface ProjectTools {
   pendingQuestions?: PendingQuestion[];
   proposedFinancialSignals?: FinancialSignal[];
   activeArea?: ProjectModuleId | null;
+  ingresos?: Ingreso[];
+  fuentes?: Fuente[];
+  preparedness?: PreparednessChecklistItem[];
+  objectives?: ProjectObjective[];
+  activities?: ProjectActivity[];
+  activityBudgetLinks?: ProjectActivityBudgetLink[];
 }

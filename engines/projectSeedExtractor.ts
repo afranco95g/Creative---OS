@@ -50,7 +50,27 @@ function extraerEntreComillas(texto: string): { valor: string; razon: string } |
   return { valor, razon: match[0] };
 }
 
-const DISPARADORES_NOMBRE = ['que se llama', 'se llama', 'lo llamo', 'lo llamé', 'titulado'];
+const DISPARADORES_NOMBRE = [
+  'que se llama',
+  'se llama',
+  'se llamará',
+  'se llamara',
+  'se va a llamar',
+  'lo vamos a llamar',
+  'lo llamaremos',
+  'lo llamo',
+  'lo llamé',
+  'quiero llamarlo',
+  'quiero llamarla',
+  'titulado',
+  'llamado',
+  'llamada',
+  'de nombre',
+  'bajo el nombre',
+  'con el nombre',
+  'el nombre es',
+  'el nombre del proyecto es',
+];
 
 function extraerPorDisparador(texto: string): { valor: string; razon: string } | null {
   const patron = new RegExp(`(?:${DISPARADORES_NOMBRE.map(escaparRegex).join('|')})\\s+([^,.;:\\n]+)`, 'i');

@@ -1,4 +1,5 @@
 import { createId, createInitialProjectConsistencyState, now } from '../core/projectEngine';
+import { totalDeLinea } from '../core/budgetMath';
 import type { ProjectBudgetLine, ProjectGraph, ProjectModuleId } from '../types/project';
 import type { ConsistencyIssue, ConsistencyIssueStatus, ConsistencyIssueType, ConsistencyResult } from '../types/projectConsistency';
 import type { ProjectKnowledgeEntity, TimelineKnowledgeValue } from '../types/projectKnowledge';
@@ -7,7 +8,7 @@ import { getActiveKnowledge, getConfirmedKnowledge } from './projectKnowledgeEng
 const norm=(value:string)=>value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
 const record=(entity:ProjectKnowledgeEntity)=>typeof entity.value==='object'&&!Array.isArray(entity.value)?entity.value as Record<string,unknown>:{};
 const numeric=(value:unknown)=>typeof value==='number'&&Number.isFinite(value)?value:null;
-const total=(line:ProjectBudgetLine)=>{const subtotal=line.quantity*line.unitValue;return subtotal+subtotal*line.vatRate/100-subtotal*line.withholdingRate/100+line.otherTaxes;};
+const total=(line:ProjectBudgetLine)=>totalDeLinea(line);
 const comparablePeriod=(left:unknown,right:string)=>{if(typeof left!=='string'||!left.trim()||!right.trim())return false;const a=norm(left),b=norm(right);return a===b||(a.startsWith('month')&&/mes|month/.test(b))||(a.startsWith('mes')&&/mes|month/.test(b));};
 const fingerprint=(type:ConsistencyIssueType,ids:string[],expected?:string|number,actual?:string|number)=>[type,...ids.slice().sort(),expected??'',actual??''].join('|');
 

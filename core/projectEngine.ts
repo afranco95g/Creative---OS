@@ -8,6 +8,7 @@ import {
   ProjectStage,
 } from '../types/project';
 import type { ProjectKnowledgeState } from '../types/projectKnowledge';
+import { seedPreparednessChecklist } from '../engines/preparednessEngine';
 
 export function createId() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -81,6 +82,12 @@ export function createInitialProjectGraph(): ProjectGraph {
     tools: {
       budgetLines: [],
       scheduleItems: [],
+      ingresos: [],
+      fuentes: [],
+      preparedness: seedPreparednessChecklist(),
+      objectives: [],
+      activities: [],
+      activityBudgetLinks: [],
       grant: {
         opportunityId: '',
         opportunityName: '',

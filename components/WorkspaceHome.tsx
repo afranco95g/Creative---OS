@@ -5,7 +5,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Archive, FolderOpen, RotateCcw, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import type { WorkspaceState } from '../types/workspace';
 import { supabase } from '@/lib/supabase/client';
-import { listCourses, Course } from '@/services/courses/courseService';
+import { listCourses, Course, getModulesForCourse, CourseModuleWithLessonCount } from '@/services/courses/courseService';
+import { getAgencyFunder, updateFunderServiceCatalog, FunderRecord } from '@/services/funders/funderService';
 
 interface Props {
   workspace: WorkspaceState;
@@ -14,13 +15,6 @@ interface Props {
   onArchiveProject: (id: string) => void;
   onRestoreProject: (id: string) => void;
   onDeleteProject: (id: string) => void;
-}
-
-interface ModuleWithLessons {
-  id: string;
-  title: string;
-  position: number;
-  lessonCount: number;
 }
 
 export function WorkspaceHome({
@@ -36,12 +30,12 @@ export function WorkspaceHome({
   const [confirmation, setConfirmation] = useState('');
 
   // Agency state (Imagine Company)
-  const [funderData, setFunderData] = useState<{ id: string; name: string; service_catalog: string[]; funder_type: string } | null>(null);
+  const [funderData, setFunderData] = useState<FunderRecord | null>(null);
   const [services, setServices] = useState<string[]>([]);
   const [newService, setNewService] = useState<string>('');
   const [savingService, setSavingService] = useState<boolean>(false);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [modulesMap, setModulesMap] = useState<Record<string, ModuleWithLessons[]>>({});
+  const [modulesMap, setModulesMap] = useState<Record<string, CourseModuleWithLessonCount[]>>({});
   const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
 
   const activeActor = useMemo(() => {
@@ -56,27 +50,10 @@ export function WorkspaceHome({
         if (!user) return;
 
         // Check if user is associated with an agency funder or Imagine Company
-        let query = supabase.from('funders').select('id, name, service_catalog, funder_type');
-        
-        if (activeActor && activeActor.id.startsWith('brand:')) {
-          const rawId = activeActor.id.replace('brand:', '');
-          query = query.eq('id', rawId);
-        }
-
-        let { data } = await query.limit(1).maybeSingle();
-
-        if (!data) {
-          const fallback = await supabase
-            .from('funders')
-            .select('id, name, service_catalog, funder_type')
-            .ilike('name', '%Imagine%')
-            .limit(1)
-            .maybeSingle();
-          data = fallback.data;
-        }
+        const data = await getAgencyFunder(activeActor?.id ?? null);
 
         if (data) {
-          setFunderData(data as any);
+          setFunderData(data);
           setServices(Array.isArray(data.service_catalog) ? data.service_catalog : []);
 
           // Load courses for this actor
@@ -84,21 +61,8 @@ export function WorkspaceHome({
           setCourses(coursesList);
 
           for (const course of coursesList) {
-            const { data: modulesData } = await supabase
-              .from('course_modules')
-              .select('id, title, position, course_lessons(id)')
-              .eq('course_id', course.id)
-              .order('position', { ascending: true });
-
-            if (modulesData) {
-              const formattedModules: ModuleWithLessons[] = modulesData.map((m: any) => ({
-                id: m.id,
-                title: m.title,
-                position: m.position,
-                lessonCount: Array.isArray(m.course_lessons) ? m.course_lessons.length : 0,
-              }));
-              setModulesMap((prev) => ({ ...prev, [course.id]: formattedModules }));
-            }
+            const formattedModules = await getModulesForCourse(course.id);
+            setModulesMap((prev) => ({ ...prev, [course.id]: formattedModules }));
           }
         } else {
           // Fallback general para listar cursos disponibles
@@ -124,12 +88,7 @@ export function WorkspaceHome({
       setSavingService(true);
       const updatedCatalog = [...services, trimmed];
 
-      const { error } = await supabase
-        .from('funders')
-        .update({ service_catalog: updatedCatalog })
-        .eq('id', funderData.id);
-
-      if (error) throw error;
+      await updateFunderServiceCatalog(funderData.id, updatedCatalog);
 
       setServices(updatedCatalog);
       setNewService('');
@@ -145,8 +104,7 @@ export function WorkspaceHome({
     funderData?.name?.toLowerCase().includes('imagine') ||
     activeActor?.type === 'funder' ||
     workspace.user?.email?.toLowerCase().includes('imagine') ||
-    workspace.user?.name?.toLowerCase().includes('imagine') ||
-    true; // Mostrar por defecto para asegurar visualización en este entorno
+    workspace.user?.name?.toLowerCase().includes('imagine');
 
   const activeCount = workspace.projects.filter((p) => p.lifecycleStatus !== 'archived').length;
   const projects = useMemo(
@@ -171,8 +129,8 @@ export function WorkspaceHome({
               </Link>
             </div>
             <p className="mt-7 text-sm uppercase tracking-[.25em] text-texto-principal">Portal del Participante</p>
-            <h1 className="mt-3 text-4xl font-semibold sm:text-6xl">
-              Hola, {workspace.user?.name || funderData?.name || 'imaginecompanysas'}.
+            <h1 className="mt-3 text-4xl font-semibold sm:text-6xl text-texto-principal">
+              Hola, Imagine.
             </h1>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-texto-largo">
               Este es tu centro de producción. Desarrolla cada proyecto con Creative OS, desde la idea hasta el presupuesto, el cronograma y la convocatoria.

@@ -1,11 +1,12 @@
 import { createId, now } from '../core/projectEngine';
+import { totalDeLinea } from '../core/budgetMath';
 import type { ProjectBudgetLine } from '../types/project';
 import type { FinancialKnowledgeValue, ProjectKnowledgeEntity, ProjectKnowledgeState } from '../types/projectKnowledge';
 import type { CanonicalFinancialItem, FinancialAuthorityState, FinancialChangeSummary, FinancialConflict, FinancialDivergenceReport, FinancialDomainEvent, FinancialItemStatus, FinancialProposal, Money } from '../types/financialAuthority';
 
 const normalize=(v:string)=>v.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
 const money=(amount:number,currency='COP'):Money=>({amount,currency});
-const graphTotal=(l:ProjectBudgetLine)=>{const subtotal=l.quantity*l.unitValue;return subtotal+subtotal*l.vatRate/100-subtotal*l.withholdingRate/100+l.otherTaxes;};
+const graphTotal=(l:ProjectBudgetLine)=>totalDeLinea(l);
 export const financialProposalKey=(projectId:string,ids:string[])=>`financial-proposal:${projectId}:${ids.slice().sort().join(',')}`;
 export const financialCommandKey=(projectId:string,proposalId:string,command='accept')=>`financial-command:${projectId}:${proposalId}:${command}`;
 
