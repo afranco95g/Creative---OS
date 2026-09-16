@@ -35,6 +35,8 @@ function LoginContent() {
       ? requestedRedirect
       : '/studio';
 
+  const wasPasswordReset = searchParams.get('reset') === '1';
+
   const [
     email,
     setEmail,
@@ -125,6 +127,13 @@ function LoginContent() {
             organizaciones y conexiones dentro de El Culebreo.
           </p>
 
+          {wasPasswordReset ? (
+            <div className="mt-6 border border-borde bg-superficie-elevada px-4 py-3 text-sm leading-relaxed text-texto-largo">
+              Tu contraseña fue actualizada. Ingresa con tu contraseña
+              nueva.
+            </div>
+          ) : null}
+
           <form
             onSubmit={
               handleLogin
@@ -178,6 +187,13 @@ function LoginContent() {
                 className="w-full border border-borde bg-superficie px-5 py-4 text-texto-largo outline-none transition placeholder:text-texto-largo/60 focus:border-acento"
               />
             </div>
+
+            <Link
+              href="/olvide-password"
+              className="inline-flex text-sm font-semibold transition hover:text-texto-principal"
+            >
+              ¿Olvidaste tu contraseña?
+            </Link>
 
             {errorMessage ? (
               <div className="border border-rojo-base bg-rojo-base px-4 py-3 text-sm leading-relaxed text-hueso">
