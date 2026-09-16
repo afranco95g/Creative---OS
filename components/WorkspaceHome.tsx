@@ -130,7 +130,7 @@ export function WorkspaceHome({
             </div>
             <p className="mt-7 text-sm uppercase tracking-[.25em] text-texto-principal">Portal del Participante</p>
             <h1 className="mt-3 text-4xl font-semibold sm:text-6xl text-texto-principal">
-              Hola, Imagine.
+              Hola, {workspace.user?.name ?? 'de nuevo'}.
             </h1>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-texto-largo">
               Este es tu centro de producción. Desarrolla cada proyecto con Creative OS, desde la idea hasta el presupuesto, el cronograma y la convocatoria.
