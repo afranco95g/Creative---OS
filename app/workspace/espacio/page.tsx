@@ -1,18 +1,25 @@
 import { redirect } from 'next/navigation';
 
 import { AdminSectionHeader } from '@/components/admin/AdminSectionHeader';
-import { SpaceCaptureManager } from '@/components/admin/SpaceCaptureManager';
+import { SpaceCaptureManager } from '@/components/spaces/SpaceCaptureManager';
 import { createClient } from '@/lib/supabase/server';
-import { canAccessWorkspace } from '@/services/auth/workspace';
+import { canAccessSpaceTools } from '@/services/spaces/spaceAccessService';
 
-export default async function SpacesAdminPage() {
-  const access = await canAccessWorkspace();
+const RENTABLE_SPACE_CATEGORIES = [
+  'audiovisual_production_space',
+  'events_space',
+  'coworking_space',
+  'equipment_rental',
+];
+
+export default async function SpaceWorkspacePage() {
+  const access = await canAccessSpaceTools();
 
   if (!access.authenticated) {
-    redirect('/login?redirect=/admin/espacios');
+    redirect('/login?redirect=/workspace/espacio');
   }
 
-  if (!access.capabilities?.canManageEcosystem) {
+  if (!access.canAccess) {
     redirect('/acceso-denegado');
   }
 
@@ -21,14 +28,15 @@ export default async function SpacesAdminPage() {
   const { data: spaces } = await db
     .from('spaces')
     .select('id, name, status')
+    .overlaps('service_categories', RENTABLE_SPACE_CATEGORIES)
     .order('name', { ascending: true });
 
   return (
     <main className="min-h-screen bg-superficie text-texto-largo">
       <AdminSectionHeader
-        eyebrow="Espacios"
+        eyebrow="Mi espacio"
         title="Salones, inventario y galería"
-        description="Crea salones dentro de un espacio del ecosistema, clasifica su inventario y sube las fotos y video que lo componen."
+        description="Crea salones dentro de tu espacio, clasifica su inventario y sube las fotos y video que lo componen."
       />
 
       <section className="mx-auto max-w-7xl px-5 py-10 md:px-8">
