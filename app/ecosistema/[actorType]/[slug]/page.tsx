@@ -285,7 +285,7 @@ export default async function PublicActorPage({
                 content.offersTitle
               }
               values={
-                actor.offers
+                actor.offers.map(formatOfferLabel)
               }
               emptyText="Sin información pública."
             />
@@ -386,6 +386,16 @@ function ProjectCard({
       </div>
     </Link>
   );
+}
+
+// Humaniza claves snake_case del vocabulario cerrado de habilidades
+// (people.skills / PERSON_SKILLS) para mostrarlas en el perfil público —
+// mismo criterio que formatLabel() en app/ecosistema/page.tsx para los
+// labels de espacios.
+function formatOfferLabel(value: string): string {
+  return value
+    .replaceAll('_', ' ')
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 function InformationCard({
