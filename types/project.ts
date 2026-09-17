@@ -430,4 +430,5 @@ export interface ProjectTools {
   objectives?: ProjectObjective[];
   activities?: ProjectActivity[];
   activityBudgetLinks?: ProjectActivityBudgetLink[];
+  needs?: string[];
 }

@@ -8,13 +8,15 @@ import { analizarFlujo, describirExposicion } from '@/engines/cashFlowEngine';
 import type { AnalisisDeFlujo, FlujoDeCaja, VistaFlujo } from '@/engines/cashFlowEngine';
 import { seedPreparednessChecklist, getPreparednessSummary } from '@/engines/preparednessEngine';
 import { createId, now } from '@/core/projectEngine';
-import type { GrantWorkspace, Ingreso, PreparednessArea, PreparednessChecklistItem, PreparednessStatus, ProjectActivity, ProjectBudgetLine, ProjectGraph, ProjectObjective, ProjectScheduleItem } from '@/types/project';
+import { checkDependencyConsistency } from '@/engines/projectDependencyEngine';
+import { SERVICE_CATEGORIES } from '@/services/ecosystem/serviceCategories';
+import type { DependencyFinding, GrantWorkspace, Ingreso, PreparednessArea, PreparednessChecklistItem, PreparednessStatus, ProjectActivity, ProjectBudgetLine, ProjectGraph, ProjectObjective, ProjectScheduleItem } from '@/types/project';
 
-type ToolId = 'documents' | 'budget' | 'schedule' | 'grant' | 'preparation' | 'dependencies';
+type ToolId = 'documents' | 'budget' | 'schedule' | 'grant' | 'preparation' | 'dependencies' | 'needs';
 
 export function ProjectToolsPanel({ graph, onChange }: { graph: ProjectGraph; onChange: (graph: ProjectGraph) => void }) {
   const [active, setActive] = useState<ToolId>('documents');
-  const tabs: Array<[ToolId, string]> = [['documents', 'One Pager · Propuesta · Pitch'], ['budget', 'Presupuesto vivo'], ['schedule', 'Cronograma'], ['grant', 'Convocatorias'], ['preparation', 'Preparación'], ['dependencies', 'Objetivos y actividades']];
+  const tabs: Array<[ToolId, string]> = [['documents', 'One Pager · Propuesta · Pitch'], ['budget', 'Presupuesto vivo'], ['schedule', 'Cronograma'], ['grant', 'Convocatorias'], ['preparation', 'Preparación'], ['dependencies', 'Objetivos y actividades'], ['needs', 'Necesidades']];
   return <section className="mx-auto max-w-7xl space-y-7">
     <header><p className="text-sm uppercase tracking-[.25em] text-texto-principal">Herramientas del proyecto</p><h1 className="mt-3 text-4xl font-semibold">Sistemas vivos, una sola fuente de verdad</h1><p className="mt-3 max-w-3xl text-texto-largo">Cada herramienta reutiliza el grafo del proyecto. Los cambios estructurados quedan disponibles para las demás vistas y solo se exportan cuando lo solicitas.</p></header>
     <nav className="flex flex-wrap gap-2">{tabs.map(([id, label]) => <button key={id} onClick={() => setActive(id)} className={`rounded-full px-4 py-2 text-sm ${active === id ? 'bg-rojo-base font-bold text-hueso' : 'border border-borde/15 text-texto-largo'}`}>{label}</button>)}</nav>
@@ -24,6 +26,17 @@ export function ProjectToolsPanel({ graph, onChange }: { graph: ProjectGraph; on
     {active === 'grant' ? <GrantAssistant graph={graph} onChange={onChange} /> : null}
     {active === 'preparation' ? <PreparednessChecklist graph={graph} onChange={onChange} /> : null}
     {active === 'dependencies' ? <ObjectivesAndActivities graph={graph} onChange={onChange} /> : null}
+    {active === 'needs' ? <ProjectNeeds graph={graph} onChange={onChange} /> : null}
+  </section>;
+}
+
+function ProjectNeeds({ graph, onChange }: { graph: ProjectGraph; onChange: (g: ProjectGraph) => void }) {
+  const needs = graph.tools.needs ?? [];
+  const toggle = (key: string) => setTools(graph, onChange, { needs: needs.includes(key) ? needs.filter((value) => value !== key) : [...needs, key] });
+  return <section className="space-y-3">
+    <h2 className="text-xl font-semibold text-texto-principal">¿Qué necesita este proyecto?</h2>
+    <p className="max-w-3xl text-sm leading-6 text-texto-largo">Selecciona todo lo que aplique — es el mismo vocabulario que usan los aliados del ecosistema para declarar lo que ofrecen.</p>
+    <div className="flex flex-wrap gap-2">{SERVICE_CATEGORIES.map(([id, label]) => { const active = needs.includes(id); return <button key={id} type="button" onClick={() => toggle(id)} className={`rounded-full border px-4 py-2 text-sm ${active ? 'border-acento bg-rojo-base font-semibold text-hueso' : 'border-borde/15 text-texto-largo'}`}>{label}</button>; })}</div>
   </section>;
 }
 
@@ -203,7 +216,10 @@ function ObjectivesAndActivities({ graph, onChange }: { graph: ProjectGraph; onC
   };
   const unlinkScheduleItem = (scheduleItemId: string) => setTools(graph, onChange, { scheduleItems: scheduleItems.map((item) => item.id === scheduleItemId ? { ...item, activityId: null } : item) });
 
+  const findings = useMemo(() => checkDependencyConsistency(graph.tools), [graph.tools]);
+
   return <div className="space-y-6">
+    {findings.length ? <ConsistencyFindings findings={findings} onUnlinkBudgetLine={unlinkBudgetLine} onUnlinkScheduleItem={unlinkScheduleItem}/> : null}
     <section className="space-y-3">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-texto-principal">Objetivos</h2>
@@ -262,6 +278,16 @@ function ObjectivesAndActivities({ graph, onChange }: { graph: ProjectGraph; onC
       })}</div>
     </section>
   </div>;
+}
+function ConsistencyFindings({ findings, onUnlinkBudgetLine, onUnlinkScheduleItem }: { findings: DependencyFinding[]; onUnlinkBudgetLine: (linkId: string) => void; onUnlinkScheduleItem: (scheduleItemId: string) => void }) {
+  return <section className="space-y-3">
+    <h2 className="text-xl font-semibold text-texto-principal">Consistencia</h2>
+    <div className="space-y-3">{findings.map((finding) => <article key={finding.id} className="flex items-start justify-between gap-4 rounded-2xl border border-acento bg-superficie-elevada p-5">
+      <p className="text-sm leading-6 text-texto-largo">{finding.message}</p>
+      {finding.type === 'orphan_budget_link' ? <button onClick={() => onUnlinkBudgetLine(finding.relatedId)} className="shrink-0 rounded-full border border-borde/15 px-4 py-2 text-sm font-semibold text-texto-principal transition hover:border-acento">Quitar vínculo</button> : null}
+      {finding.type === 'orphan_schedule_item' ? <button onClick={() => onUnlinkScheduleItem(finding.relatedId)} className="shrink-0 rounded-full border border-borde/15 px-4 py-2 text-sm font-semibold text-texto-principal transition hover:border-acento">Quitar vínculo</button> : null}
+    </article>)}</div>
+  </section>;
 }
 function blankObjective(): ProjectObjective { return { id: createId(), title: '', description: '', createdAt: now() }; }
 function blankActivity(): ProjectActivity { return { id: createId(), objectiveId: null, title: '', description: '', createdAt: now() }; }

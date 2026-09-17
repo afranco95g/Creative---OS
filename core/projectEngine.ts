@@ -88,6 +88,7 @@ export function createInitialProjectGraph(): ProjectGraph {
       objectives: [],
       activities: [],
       activityBudgetLinks: [],
+      needs: [],
       grant: {
         opportunityId: '',
         opportunityName: '',
