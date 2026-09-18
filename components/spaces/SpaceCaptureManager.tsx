@@ -20,7 +20,9 @@ interface SpaceOption {
 
 export function SpaceCaptureManager({ initialSpaces }: { initialSpaces: SpaceOption[] }) {
   const [spaces] = useState(initialSpaces);
-  const [selectedSpaceId, setSelectedSpaceId] = useState(initialSpaces[0]?.id ?? '');
+  const [selectedSpaceId, setSelectedSpaceId] = useState(
+    initialSpaces.length === 1 ? (initialSpaces[0]?.id ?? '') : ''
+  );
   const [rooms, setRooms] = useState<SpaceRoom[]>([]);
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [loadingRooms, setLoadingRooms] = useState(false);
@@ -121,6 +123,11 @@ export function SpaceCaptureManager({ initialSpaces }: { initialSpaces: SpaceOpt
           }}
           className="w-full border border-borde/15 bg-superficie-elevada px-4 py-3 text-texto-largo outline-none focus:border-acento"
         >
+          {selectedSpaceId === '' ? (
+            <option value="" disabled>
+              Selecciona un espacio
+            </option>
+          ) : null}
           {spaces.map((space) => (
             <option key={space.id} value={space.id}>
               {space.name} ({space.status})
@@ -161,7 +168,11 @@ export function SpaceCaptureManager({ initialSpaces }: { initialSpaces: SpaceOpt
               ))}
 
               {!rooms.length && !loadingRooms ? (
-                <li className="text-sm text-texto-largo">Todavía no hay salones en este espacio.</li>
+                <li className="text-sm text-texto-largo">
+                  {selectedSpaceId === ''
+                    ? 'Selecciona un espacio para ver sus salones.'
+                    : 'Todavía no hay salones en este espacio.'}
+                </li>
               ) : null}
             </ul>
           </div>
