@@ -29,6 +29,7 @@ export interface CloudProjectSummary {
   title: string;
   description: string;
   category: string;
+  nature: string | null;
   stage: string;
   progress: number;
   workflowStatus: ProjectWorkflowStatus;
@@ -64,6 +65,7 @@ interface CloudProjectRow {
   title: string;
   description: string;
   category: string;
+  nature: string | null;
   stage: string;
   progress: number;
   graph: ProjectGraph;
@@ -137,6 +139,7 @@ export async function loadMyCloudProjects(
         'title',
         'description',
         'category',
+        'nature',
         'stage',
         'progress',
         'graph',
@@ -184,7 +187,7 @@ export async function loadFullCloudProject(projectId: string): Promise<CloudWork
   const { data, error } = await getDatabaseClient()
     .from('projects')
     .select([
-      'id','owner_id','actor_id','actor_type','title','description','category','stage','progress',
+      'id','owner_id','actor_id','actor_type','title','description','category','nature','stage','progress',
       'graph','messages','workflow_status','eligibility_note','editorial_note',
       'eligibility_requested_at','eligibility_reviewed_at','submitted_to_media_at',
       'editorial_reviewed_at','published_at','client_updated_at','updated_at','created_at',
@@ -267,6 +270,7 @@ export async function syncLocalProjectsToCloud(
       title: project.title,
       description: project.description,
       category: project.category,
+      nature: project.nature ?? null,
       stage: project.graph.stage,
       progress: getProjectProgress(project.graph),
       graph: project.graph,
@@ -337,6 +341,7 @@ export function cloudProjectToWorkspaceProject(
     category: isProjectCategory(project.category)
       ? project.category
       : 'other',
+    nature: isProjectNature(project.nature) ? project.nature : null,
     lifecycleStatus: project.workflowStatus === 'archived' ? 'archived' : 'active',
     archivedAt: project.workflowStatus === 'archived' ? project.remoteUpdatedAt : null,
     graph: project.graph,
@@ -489,6 +494,7 @@ function mapCloudProjectSummary(
     title: row.title,
     description: row.description,
     category: row.category,
+    nature: row.nature,
     stage: row.stage,
     progress: row.progress,
     workflowStatus: row.workflow_status,
@@ -518,6 +524,7 @@ function mapEditorialReviewProject(
     title: row.title,
     description: row.description,
     category: row.category,
+    nature: null,
     stage: row.stage,
     progress: row.progress,
     workflowStatus: row.workflow_status,
@@ -532,6 +539,13 @@ function mapEditorialReviewProject(
     remoteUpdatedAt: row.updated_at,
     createdAt: row.created_at,
   };
+}
+
+function isProjectNature(
+  nature: string | null
+): nature is WorkspaceProject['nature'] {
+  if (nature === null) return true;
+  return ['live_event', 'talk', 'workshop', 'product'].includes(nature);
 }
 
 function isProjectCategory(

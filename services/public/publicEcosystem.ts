@@ -366,6 +366,7 @@ export interface PublicPortfolioItem {
   title: string;
   description: string | null;
   mediaUrls: string[];
+  mediaType: 'image' | 'video' | 'audio' | 'document';
 }
 
 interface PublicPortfolioItemRow {
@@ -373,6 +374,7 @@ interface PublicPortfolioItemRow {
   title: string;
   description: string | null;
   media_urls: string[];
+  media_type: 'image' | 'video' | 'audio' | 'document';
 }
 
 function mapPublicPortfolioItem(row: PublicPortfolioItemRow): PublicPortfolioItem {
@@ -381,6 +383,7 @@ function mapPublicPortfolioItem(row: PublicPortfolioItemRow): PublicPortfolioIte
     title: row.title,
     description: row.description,
     mediaUrls: row.media_urls ?? [],
+    mediaType: row.media_type ?? 'image',
   };
 }
 
@@ -410,7 +413,7 @@ export async function getPublicPortfolioGalleryAll(
 
   const { data, error } = await supabase
     .from('portfolio_items')
-    .select('id, title, description, media_urls')
+    .select('id, title, description, media_urls, media_type')
     .eq('actor_type', actorType)
     .eq('actor_id', actorId)
     .eq('status', 'published')

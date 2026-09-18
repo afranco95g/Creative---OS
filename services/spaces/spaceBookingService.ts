@@ -8,6 +8,7 @@ export interface SpaceBookingRequest {
   id: string;
   roomId: string;
   renterProfileId: string;
+  projectId: string | null;
   eventType: string;
   startsAt: string;
   endsAt: string;
@@ -23,6 +24,7 @@ interface SpaceBookingRequestRow {
   id: string;
   room_id: string;
   renter_profile_id: string;
+  project_id: string | null;
   event_type: string;
   starts_at: string;
   ends_at: string;
@@ -35,13 +37,14 @@ interface SpaceBookingRequestRow {
 }
 
 const BOOKING_REQUEST_COLUMNS =
-  'id, room_id, renter_profile_id, event_type, starts_at, ends_at, special_requests, extra_staff_requested, status, payment_status, created_at, updated_at';
+  'id, room_id, renter_profile_id, project_id, event_type, starts_at, ends_at, special_requests, extra_staff_requested, status, payment_status, created_at, updated_at';
 
 function mapBookingRow(row: SpaceBookingRequestRow): SpaceBookingRequest {
   return {
     id: row.id,
     roomId: row.room_id,
     renterProfileId: row.renter_profile_id,
+    projectId: row.project_id,
     eventType: row.event_type,
     startsAt: row.starts_at,
     endsAt: row.ends_at,
@@ -56,6 +59,7 @@ function mapBookingRow(row: SpaceBookingRequestRow): SpaceBookingRequest {
 
 const createBookingRequestSchema = z.object({
   roomId: z.string().uuid(),
+  projectId: z.string().uuid().optional(),
   eventType: z.string().trim().min(1, 'Indica el tipo de evento.'),
   startsAt: z.string().datetime(),
   endsAt: z.string().datetime(),
@@ -102,6 +106,7 @@ export async function createBookingRequest(
     .insert({
       room_id: parsed.roomId,
       renter_profile_id: user.id,
+      project_id: parsed.projectId ?? null,
       event_type: parsed.eventType,
       starts_at: parsed.startsAt,
       ends_at: parsed.endsAt,

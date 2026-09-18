@@ -6,6 +6,7 @@ import { buildAreaNarrative } from '../engines/executiveNarrativeEngine';
 import { EcosystemSignalConsent } from './projects/EcosystemSignalConsent';
 import { BudgetSuggestion } from './projects/BudgetSuggestion';
 import { ProjectReanalysis } from './projects/ProjectReanalysis';
+import { VacancyManager } from './projects/vacancies/VacancyManager';
 
 interface ProjectDashboardProps {
   graph: ProjectGraph;
@@ -106,6 +107,7 @@ export function ProjectDashboard({ graph, projectId, onChange }: ProjectDashboar
         })}
       </div>
 
+      <VacancyManager projectId={projectId} />
       <EcosystemSignalConsent projectId={projectId} />
       {onChange ? <ProjectReanalysis graph={graph} onChange={onChange} /> : null}
       <BudgetSuggestion projectId={projectId} budgetContent={graph.modules.budget.content} />

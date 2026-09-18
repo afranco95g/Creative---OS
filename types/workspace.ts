@@ -162,6 +162,20 @@ export interface WorkspaceProject {
     | 'business'
     | 'other';
 
+  /**
+   * Naturaleza operativa elegida en el Paso 1 del wizard de creación
+   * (qué se va a producir), independiente de `category` (en qué
+   * sección editorial se publica). Null en proyectos creados antes de
+   * esta columna o por otras vías (ej. la conversación directa).
+   * Ver migración 057 y specs/wizard-creacion-proyectos-hibrido.md.
+   */
+  nature:
+    | 'live_event'
+    | 'talk'
+    | 'workshop'
+    | 'product'
+    | null;
+
   lifecycleStatus: 'active' | 'archived';
   archivedAt: string | null;
 

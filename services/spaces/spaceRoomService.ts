@@ -163,3 +163,134 @@ export async function updateRoom(roomId: string, input: UpdateSpaceRoomInput): P
 
   return mapRoomRow(data as SpaceRoomRow);
 }
+
+// ============================================================
+// Buscador para el Paso 2 del wizard de creación de proyectos
+// (specs/wizard-creacion-proyectos-hibrido.md). Reutiliza space_rooms
+// y spaces tal como existen — no agrega tablas ni campos nuevos, solo
+// una consulta de lectura pública sobre lo que ya se muestra en el
+// ecosistema (salones y espacios publicados).
+// ============================================================
+
+export interface WizardSpaceSearchFilters {
+  minCapacity?: number;
+  city?: string;
+  equipmentCategories?: string[];
+}
+
+export interface WizardSpaceSearchResult {
+  roomId: string;
+  roomName: string;
+  roomSlug: string;
+  capacity: number | null;
+  possibleUses: string[];
+  spaceId: string;
+  spaceName: string;
+  spaceSlug: string;
+  city: string | null;
+  coverPhotoUrl: string | null;
+}
+
+interface WizardSpaceSearchRow {
+  id: string;
+  name: string;
+  slug: string;
+  capacity: number | null;
+  possible_uses: string[];
+  space_id: string;
+  spaces: {
+    name: string;
+    slug: string;
+    city: string | null;
+  } | null;
+}
+
+const SPACE_MEDIA_BUCKET_FOR_SEARCH = 'space-media';
+
+/**
+ * Salones publicados, de cualquier espacio publicado, para el
+ * buscador del Paso 2 del wizard. Sin sesión requerida — misma
+ * visibilidad que la galería pública de espacios.
+ */
+export async function searchPublishedRoomsForWizard(
+  filters: WizardSpaceSearchFilters
+): Promise<WizardSpaceSearchResult[]> {
+  let roomIdsFilter: string[] | null = null;
+
+  if (filters.equipmentCategories && filters.equipmentCategories.length > 0) {
+    const { data: inventoryRows, error: inventoryError } = await supabase
+      .from('space_room_inventory')
+      .select('room_id')
+      .in('category_key', filters.equipmentCategories);
+
+    if (inventoryError) throw inventoryError;
+
+    roomIdsFilter = Array.from(
+      new Set((inventoryRows ?? []).map((row) => row.room_id as string))
+    );
+
+    if (roomIdsFilter.length === 0) {
+      return [];
+    }
+  }
+
+  let query = supabase
+    .from('space_rooms')
+    .select(
+      'id, name, slug, capacity, possible_uses, space_id, spaces!inner(name, slug, city, status)'
+    )
+    .eq('status', 'published')
+    .eq('spaces.status', 'published')
+    .order('name', { ascending: true });
+
+  if (filters.minCapacity) {
+    query = query.gte('capacity', filters.minCapacity);
+  }
+
+  if (filters.city) {
+    query = query.ilike('spaces.city', `%${filters.city}%`);
+  }
+
+  if (roomIdsFilter) {
+    query = query.in('id', roomIdsFilter);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+
+  const rows = (data ?? []) as unknown as WizardSpaceSearchRow[];
+  const roomIds = rows.map((row) => row.id);
+
+  const coverPhotoByRoomId = new Map<string, string>();
+  if (roomIds.length > 0) {
+    const { data: mediaRows, error: mediaError } = await supabase
+      .from('space_media')
+      .select('room_id, storage_path, display_order')
+      .eq('media_type', 'photo')
+      .in('room_id', roomIds)
+      .order('display_order', { ascending: true });
+
+    if (mediaError) throw mediaError;
+
+    for (const row of mediaRows ?? []) {
+      if (coverPhotoByRoomId.has(row.room_id)) continue;
+      const { data: publicUrlData } = supabase.storage
+        .from(SPACE_MEDIA_BUCKET_FOR_SEARCH)
+        .getPublicUrl(row.storage_path);
+      coverPhotoByRoomId.set(row.room_id, publicUrlData.publicUrl);
+    }
+  }
+
+  return rows.map((row) => ({
+    roomId: row.id,
+    roomName: row.name,
+    roomSlug: row.slug,
+    capacity: row.capacity,
+    possibleUses: row.possible_uses,
+    spaceId: row.space_id,
+    spaceName: row.spaces?.name ?? '',
+    spaceSlug: row.spaces?.slug ?? '',
+    city: row.spaces?.city ?? null,
+    coverPhotoUrl: coverPhotoByRoomId.get(row.id) ?? null,
+  }));
+}

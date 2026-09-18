@@ -1,5 +1,9 @@
 import Link from 'next/link';
 
+import { AudioShowcase } from '@/components/profiles/showcase/AudioShowcase';
+import { DocumentShowcase } from '@/components/profiles/showcase/DocumentShowcase';
+import { RoleShowcaseBlock } from '@/components/profiles/showcase/RoleShowcaseBlock';
+
 import {
   notFound,
 } from 'next/navigation';
@@ -244,6 +248,15 @@ export default async function PublicActorPage({
                       </span>
                     )
                   )}
+                </div>
+              ) : null}
+
+              {actor.actorType === 'person' ? (
+                <div className="mt-7">
+                  <RoleShowcaseBlock
+                    roles={actor.labels}
+                    publishedProjectCount={projects.length}
+                  />
                 </div>
               ) : null}
             </div>
@@ -566,8 +579,16 @@ function PortfolioCard({
 }: {
   item: PublicPortfolioItem;
 }) {
+  if (item.mediaType === 'audio') {
+    return <AudioShowcase item={item} />;
+  }
+
+  if (item.mediaType === 'document') {
+    return <DocumentShowcase item={item} />;
+  }
+
   const coverUrl = item.mediaUrls[0] ?? null;
-  const isVideo = coverUrl ? /\.(mp4|mov)$/i.test(coverUrl) : false;
+  const isVideo = item.mediaType === 'video';
 
   return (
     <div className="overflow-hidden border border-borde bg-superficie-elevada">

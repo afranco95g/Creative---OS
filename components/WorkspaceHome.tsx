@@ -9,6 +9,7 @@ import { listCourses, Course, getModulesForCourse, CourseModuleWithLessonCount }
 import { getAgencyFunder, updateFunderServiceCatalog, FunderRecord } from '@/services/funders/funderService';
 import { PortfolioManager } from '@/components/PortfolioManager';
 import type { PortfolioActorType } from '@/services/ecosystem/portfolioService';
+import { InvitationInbox } from '@/components/projects/vacancies/InvitationInbox';
 
 interface Props {
   workspace: WorkspaceState;
@@ -313,6 +314,10 @@ export function WorkspaceHome({
             actorType={parsePortfolioActor(activeActor.id)!.actorType}
             actorId={parsePortfolioActor(activeActor.id)!.actorId}
           />
+        )}
+
+        {activeActor && parsePortfolioActor(activeActor.id)?.actorType === 'person' && (
+          <InvitationInbox />
         )}
 
         <section>

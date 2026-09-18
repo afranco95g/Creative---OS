@@ -407,7 +407,9 @@ class WorkspaceStore {
     category:
       WorkspaceProject['category'],
     contextId?:
-      WorkspaceContextId
+      WorkspaceContextId,
+    nature?:
+      WorkspaceProject['nature']
   ): WorkspaceProject {
     if (!this.activeUserId) {
       throw new Error(
@@ -455,6 +457,9 @@ class WorkspaceStore {
       description,
 
       category,
+
+      nature:
+        nature ?? null,
 
       lifecycleStatus: 'active',
 

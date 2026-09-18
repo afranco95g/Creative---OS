@@ -322,6 +322,14 @@ function migrateProject(
       candidate.category ??
       'other',
 
+    nature:
+      candidate.nature === 'live_event' ||
+      candidate.nature === 'talk' ||
+      candidate.nature === 'workshop' ||
+      candidate.nature === 'product'
+        ? candidate.nature
+        : null,
+
     lifecycleStatus:
       candidate.lifecycleStatus === 'archived'
         ? 'archived'
