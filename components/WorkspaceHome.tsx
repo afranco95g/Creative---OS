@@ -7,6 +7,8 @@ import type { WorkspaceState } from '../types/workspace';
 import { supabase } from '@/lib/supabase/client';
 import { listCourses, Course, getModulesForCourse, CourseModuleWithLessonCount } from '@/services/courses/courseService';
 import { getAgencyFunder, updateFunderServiceCatalog, FunderRecord } from '@/services/funders/funderService';
+import { PortfolioManager } from '@/components/PortfolioManager';
+import type { PortfolioActorType } from '@/services/ecosystem/portfolioService';
 
 interface Props {
   workspace: WorkspaceState;
@@ -15,6 +17,13 @@ interface Props {
   onArchiveProject: (id: string) => void;
   onRestoreProject: (id: string) => void;
   onDeleteProject: (id: string) => void;
+}
+
+function parsePortfolioActor(actorId: string): { actorType: PortfolioActorType; actorId: string } | null {
+  if (actorId.startsWith('space:')) return { actorType: 'space', actorId: actorId.replace('space:', '') };
+  if (actorId.startsWith('person:')) return { actorType: 'person', actorId: actorId.replace('person:', '') };
+  if (actorId.startsWith('brand:')) return { actorType: 'funder', actorId: actorId.replace('brand:', '') };
+  return null;
 }
 
 export function WorkspaceHome({
@@ -99,12 +108,7 @@ export function WorkspaceHome({
     }
   };
 
-  const isAgency =
-    funderData?.funder_type === 'agency' ||
-    funderData?.name?.toLowerCase().includes('imagine') ||
-    activeActor?.type === 'funder' ||
-    workspace.user?.email?.toLowerCase().includes('imagine') ||
-    workspace.user?.name?.toLowerCase().includes('imagine');
+  const isAgency = funderData?.funder_type === 'agency';
 
   const activeCount = workspace.projects.filter((p) => p.lifecycleStatus !== 'archived').length;
   const projects = useMemo(
@@ -124,9 +128,11 @@ export function WorkspaceHome({
               <Link href="/mi-ecosistema" className="rounded-full border border-borde/15 px-4 py-2 text-xs text-texto-largo hover:border-borde hover:text-hueso transition">
                 Mi Ecosistema
               </Link>
-              <Link href="/cursos/music-business" className="rounded-full bg-rojo-base/15 border border-rojo-base/40 px-4 py-2 text-xs font-bold text-texto-principal hover:bg-rojo-base hover:text-hueso transition">
-                🎓 Aula Virtual Music Business →
-              </Link>
+              {isAgency ? (
+                <Link href="/cursos/music-business" className="rounded-full bg-rojo-base/15 border border-rojo-base/40 px-4 py-2 text-xs font-bold text-texto-principal hover:bg-rojo-base hover:text-hueso transition">
+                  🎓 Aula Virtual Music Business →
+                </Link>
+              ) : null}
             </div>
             <p className="mt-7 text-sm uppercase tracking-[.25em] text-texto-principal">Portal del Participante</p>
             <h1 className="mt-3 text-4xl font-semibold sm:text-6xl text-texto-principal">
@@ -137,12 +143,14 @@ export function WorkspaceHome({
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <Link
-              href="/cursos/music-business"
-              className="rounded-full border border-rojo-base bg-rojo-base/10 px-6 py-3 font-bold text-texto-principal hover:bg-rojo-base hover:text-hueso transition"
-            >
-              Ver Curso Music Business
-            </Link>
+            {isAgency ? (
+              <Link
+                href="/cursos/music-business"
+                className="rounded-full border border-rojo-base bg-rojo-base/10 px-6 py-3 font-bold text-texto-principal hover:bg-rojo-base hover:text-hueso transition"
+              >
+                Ver Curso Music Business
+              </Link>
+            ) : null}
             <button onClick={onCreateProject} className="rounded-full bg-rojo-base px-6 py-3 font-bold text-hueso hover:bg-rojo-base/90 transition">
               Crear nuevo proyecto
             </button>
@@ -298,6 +306,13 @@ export function WorkspaceHome({
               )}
             </div>
           </section>
+        )}
+
+        {activeActor && parsePortfolioActor(activeActor.id) && (
+          <PortfolioManager
+            actorType={parsePortfolioActor(activeActor.id)!.actorType}
+            actorId={parsePortfolioActor(activeActor.id)!.actorId}
+          />
         )}
 
         <section>

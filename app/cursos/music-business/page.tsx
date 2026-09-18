@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MusicBusinessCoursePlatform } from '@/components/courses/MusicBusinessCoursePlatform';
+import { MusicBusinessAccessGate } from '@/components/courses/MusicBusinessAccessGate';
 
 export const metadata = {
   title: 'Programa Music Business | Imagine Company & Creative OS',
@@ -45,8 +45,8 @@ export default function MusicBusinessCoursePage() {
           </div>
         </div>
 
-        {/* Music Business Platform Component */}
-        <MusicBusinessCoursePlatform />
+        {/* Vitrina pública si no hay acceso, plataforma completa si sí lo hay */}
+        <MusicBusinessAccessGate />
       </div>
     </main>
   );

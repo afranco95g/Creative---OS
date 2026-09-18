@@ -384,6 +384,17 @@ export interface ProjectActivityBudgetLink {
   budgetLineId: ID;
 }
 
+// Mismo patrón que ProjectActivityBudgetLink: el vínculo línea de
+// presupuesto <-> fuente vive exclusivamente aquí, nunca como campo dentro
+// de ProjectBudgetLine (mismo candado de specs/flujo-de-caja-con-condiciones.md,
+// sección 6 — "ProjectBudgetLine no se modifica. Ni un campo."). Ver
+// specs/atribucion-egreso-a-fuente.md. A lo sumo un vínculo por línea.
+export interface ProjectBudgetLineFuenteLink {
+  id: ID;
+  budgetLineId: ID;
+  fuenteId: ID;
+}
+
 export interface DependencyFinding {
   id: ID;
   type: 'orphan_budget_link' | 'orphan_schedule_item' | 'activity_without_link';
@@ -426,6 +437,7 @@ export interface ProjectTools {
   activeArea?: ProjectModuleId | null;
   ingresos?: Ingreso[];
   fuentes?: Fuente[];
+  fuenteLinks?: ProjectBudgetLineFuenteLink[];
   preparedness?: PreparednessChecklistItem[];
   objectives?: ProjectObjective[];
   activities?: ProjectActivity[];

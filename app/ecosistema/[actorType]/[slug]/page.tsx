@@ -9,9 +9,20 @@ import {
 } from '../../../../components/public/SiteHeader';
 
 import {
+  buildQuoteEmailHref,
+  buildQuoteWhatsappHref,
+  getPublicPortfolioGallery,
+  getPublicQuoteContactInfo,
   getPublishedActorProjects,
   getPublishedEcosystemActor,
 } from '../../../../services/public/publicEcosystem';
+
+import type {
+  PublicPortfolioItem,
+  PublicQuoteContactInfo,
+} from '../../../../services/public/publicEcosystem';
+
+import { SERVICE_CATEGORIES } from '../../../../services/ecosystem/serviceCategories';
 
 import type {
   PublicActorProject,
@@ -116,6 +127,18 @@ export default async function PublicActorPage({
       actor.actorId
     );
 
+  const [portfolioItems, quoteContact] =
+    await Promise.all([
+      getPublicPortfolioGallery(
+        actor.actorType,
+        actor.actorId
+      ),
+      getPublicQuoteContactInfo(
+        actor.actorType,
+        actor.actorId
+      ),
+    ]);
+
   const content =
     actorTypeContent[
       actor.actorType
@@ -164,10 +187,10 @@ export default async function PublicActorPage({
 
           <div className="mt-12 grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
             <div>
-              {actor.imageUrl ? (
+              {actor.logoUrl || actor.imageUrl ? (
                 <img
                   src={
-                    actor.imageUrl
+                    actor.logoUrl || actor.imageUrl || undefined
                   }
                   alt={actor.name}
                   className="aspect-square w-full max-w-[220px] border border-borde object-cover"
@@ -228,6 +251,26 @@ export default async function PublicActorPage({
         </div>
       </section>
 
+      {actor.actorType === 'space' && actor.heroImageUrl ? (
+        <section className="border-b border-borde px-6 py-16 sm:px-8 lg:px-12">
+          <div className="relative mx-auto aspect-[16/9] max-w-7xl overflow-hidden lg:aspect-[21/9]">
+            <img
+              src={actor.heroImageUrl}
+              alt={`Edificio de ${actor.name}`}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+
+            {actor.heroInfo ? (
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 sm:p-10">
+                <p className="max-w-2xl whitespace-pre-line text-sm leading-7 text-hueso sm:text-base sm:leading-8">
+                  {actor.heroInfo}
+                </p>
+              </div>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
       <section className="px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,760px)_320px] lg:justify-between">
           <div>
@@ -277,15 +320,42 @@ export default async function PublicActorPage({
                 </div>
               )}
             </section>
+
+            {portfolioItems.length > 0 ? (
+              <section className="mt-16 border-t border-borde pt-12">
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-texto-principal">
+                  Portafolio
+                </p>
+
+                <h2 className="mt-5 text-4xl font-bold tracking-[-0.04em]">
+                  Trabajo destacado
+                </h2>
+
+                <div className="mt-8 grid gap-5 md:grid-cols-3">
+                  {portfolioItems.map((item) => (
+                    <PortfolioCard key={item.id} item={item} />
+                  ))}
+                </div>
+
+                <Link
+                  href={`/ecosistema/${routeActorType}/${slug}/portafolio`}
+                  className="mt-6 inline-flex text-sm font-bold text-texto-principal transition hover:opacity-70"
+                >
+                  Ver galería completa →
+                </Link>
+              </section>
+            ) : null}
           </div>
 
           <aside className="space-y-5">
+            <QuoteContactCard contact={quoteContact} actorName={actor.name} />
+
             <InformationCard
               title={
                 content.offersTitle
               }
               values={
-                actor.offers.map(formatOfferLabel)
+                formatOffers(actor.actorType, actor.offers)
               }
               emptyText="Sin información pública."
             />
@@ -398,6 +468,21 @@ function formatOfferLabel(value: string): string {
     .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
+// Los espacios publican `service_categories` (vocabulario cerrado, el
+// mismo que usa el motor de emparejamiento de Fase 3) en vez de la
+// columna `offers` de texto libre que se usaba antes (ver migración 052)
+// -- se humaniza con la etiqueta oficial de SERVICE_CATEGORIES en vez del
+// formateo genérico. Funders (modalidades de apoyo) y personas
+// (habilidades) siguen usando el formateo genérico existente.
+function formatOffers(actorType: PublicActorType, offers: string[]): string[] {
+  if (actorType !== 'space') {
+    return offers.map(formatOfferLabel);
+  }
+
+  const labelByKey = new Map<string, string>(SERVICE_CATEGORIES);
+  return offers.map((key) => labelByKey.get(key) ?? formatOfferLabel(key));
+}
+
 function InformationCard({
   title,
   values,
@@ -474,4 +559,84 @@ function formatLabel(
       (character) =>
         character.toUpperCase()
     );
+}
+
+function PortfolioCard({
+  item,
+}: {
+  item: PublicPortfolioItem;
+}) {
+  const coverUrl = item.mediaUrls[0] ?? null;
+  const isVideo = coverUrl ? /\.(mp4|mov)$/i.test(coverUrl) : false;
+
+  return (
+    <div className="overflow-hidden border border-borde bg-superficie-elevada">
+      {coverUrl ? (
+        isVideo ? (
+          <video
+            src={coverUrl}
+            className="aspect-square w-full border-b border-borde object-cover"
+            muted
+            playsInline
+          />
+        ) : (
+          <img
+            src={coverUrl}
+            alt={item.title}
+            className="aspect-square w-full border-b border-borde object-cover"
+          />
+        )
+      ) : (
+        <div className="aspect-square border-b border-borde bg-superficie" />
+      )}
+
+      <div className="p-4">
+        <p className="text-sm font-bold">{item.title}</p>
+        {item.description ? (
+          <p className="mt-2 line-clamp-2 text-xs leading-5 text-texto-largo">{item.description}</p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function QuoteContactCard({
+  contact,
+  actorName,
+}: {
+  contact: PublicQuoteContactInfo | null;
+  actorName: string;
+}) {
+  if (!contact || (!contact.emailEnabled && !contact.whatsappEnabled)) {
+    return null;
+  }
+
+  return (
+    <div className="border border-borde bg-superficie-elevada p-6">
+      <p className="text-xs font-bold uppercase tracking-[0.18em] text-texto-largo">Contacto</p>
+      <h3 className="mt-4 text-xl font-bold">Solicitar cotización</h3>
+
+      <div className="mt-5 flex flex-col gap-3">
+        {contact.emailEnabled && contact.email ? (
+          <a
+            href={buildQuoteEmailHref(contact.email, actorName)}
+            className="inline-flex justify-center border border-borde px-5 py-3 text-sm font-bold text-texto-principal transition hover:bg-superficie"
+          >
+            Escribir por correo
+          </a>
+        ) : null}
+
+        {contact.whatsappEnabled && contact.whatsappNumber ? (
+          <a
+            href={buildQuoteWhatsappHref(contact.whatsappNumber, actorName)}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex justify-center border border-borde px-5 py-3 text-sm font-bold text-texto-principal transition hover:bg-superficie"
+          >
+            Escribir por WhatsApp
+          </a>
+        ) : null}
+      </div>
+    </div>
+  );
 }

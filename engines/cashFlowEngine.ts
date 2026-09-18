@@ -4,7 +4,7 @@
 // Todo lo que necesita entra por parámetro (ver spec 6 y 9).
 
 import { totalDeLinea } from '../core/budgetMath';
-import type { Fuente, ID, Ingreso, ProjectBudgetLine } from '../types/project';
+import type { Fuente, ID, Ingreso, ProjectBudgetLine, ProjectBudgetLineFuenteLink } from '../types/project';
 
 export type VistaFlujo = 'comprometido' | 'aprobado' | 'completo';
 
@@ -14,6 +14,11 @@ export interface FlujoDeCaja {
   fuentes: Fuente[];
   saldoPropioInicialCop: number;
   toleranciaCop: number;
+  // Opcional — ver specs/atribucion-egreso-a-fuente.md. Ausente o vacío se
+  // comporta EXACTAMENTE igual que antes de esta entrega: todo egreso va a
+  // la bolsa "propio", ninguna fuente resta egresos. A lo sumo un vínculo
+  // por budgetLineId (el primero gana si hay duplicados).
+  fuenteLinks?: ProjectBudgetLineFuenteLink[];
 }
 
 export interface Exposicion {
@@ -42,6 +47,12 @@ export interface AnalisisDeFlujo {
   porBolsa: Record<ID | 'propio', { saldoMinimoCop: number; fecha: string | null }>;
   hayBloqueoPorRestriccion: boolean;
   gastosNoElegibles: { lineaId: ID; categoria: string; fuenteId: ID }[];
+  // Distinto de gastosNoElegibles (heurístico, solo se calcula si ya hay
+  // bloqueo). Este es exacto: viene de un vínculo real línea->fuente
+  // (fuenteLinks), así que se reporta siempre que ese vínculo apunte a una
+  // fuente restringida cuya categoría elegible no incluye la de la línea —
+  // ver specs/atribucion-egreso-a-fuente.md.
+  gastosAtribuidosNoElegibles: { lineaId: ID; categoria: string; fuenteId: ID }[];
   alertasAporteMinimo: { fuenteId: ID; faltanteCop: number; antesDe: string }[];
   claridad: ClaridadDelPresupuesto;
 }
@@ -305,6 +316,30 @@ function calcularGastosNoElegibles(lineas: ProjectBudgetLine[], fuentes: Fuente[
 }
 
 // ---------------------------------------------------------------------------
+// Atribución exacta (no heurística) — ver specs/atribucion-egreso-a-fuente.md.
+// A diferencia de calcularGastosNoElegibles (candidatos, solo tras un
+// bloqueo detectado), esto solo mira vínculos línea->fuente reales
+// declarados en fuenteLinks: si existen, ya no hay ninguna causalidad que
+// inferir, así que se reporta siempre que la fuente sea restringida y la
+// categoría de la línea no esté entre sus categoriasElegibles.
+// ---------------------------------------------------------------------------
+
+function calcularGastosAtribuidosNoElegibles(lineas: ProjectBudgetLine[], fuentes: Fuente[], fuenteIdPorLinea: Map<ID, ID>): { lineaId: ID; categoria: string; fuenteId: ID }[] {
+  const fuentesPorId = new Map(fuentes.map((fuente) => [fuente.id, fuente]));
+  const resultado: { lineaId: ID; categoria: string; fuenteId: ID }[] = [];
+  for (const linea of lineas) {
+    const fuenteId = fuenteIdPorLinea.get(linea.id);
+    if (fuenteId === undefined) continue;
+    const fuente = fuentesPorId.get(fuenteId);
+    if (!fuente || !fuente.restringida || fuente.categoriasElegibles.length === 0) continue;
+    if (!fuente.categoriasElegibles.includes(linea.category)) {
+      resultado.push({ lineaId: linea.id, categoria: linea.category, fuenteId: fuente.id });
+    }
+  }
+  return resultado;
+}
+
+// ---------------------------------------------------------------------------
 // 5.9 — Aporte Mínimo de Inicio. "Disponible antes de la fecha" es el saldo
 // agregado de la curva de la vista, evaluado justo antes de
 // `fechaInicioEjecucion` (con los eventos posteriores a esa fecha excluidos).
@@ -376,14 +411,26 @@ export function analizarFlujo(flujo: FlujoDeCaja, vista: VistaFlujo = 'aprobado'
 
   const ingresosSinFuente = flujo.ingresos.filter((ingreso) => ingreso.fuenteId === null);
   const eventosIngresosPropio = eventosDeIngresos(ingresosSinFuente);
-  const curvaPropio = construirCurva([...eventosIngresosPropio, ...eventosEgresos], flujo.saldoPropioInicialCop);
+
+  // Mapa línea -> fuente, a lo sumo un vínculo por línea (el primero gana
+  // si hubiera duplicados). Ver specs/atribucion-egreso-a-fuente.md.
+  const fuenteLinks = flujo.fuenteLinks ?? [];
+  const fuenteIdPorLinea = new Map<ID, ID>();
+  for (const link of fuenteLinks) {
+    if (!fuenteIdPorLinea.has(link.budgetLineId)) fuenteIdPorLinea.set(link.budgetLineId, link.fuenteId);
+  }
+
+  const lineasSinFuenteAtribuida = lineasVista.filter((linea) => !fuenteIdPorLinea.has(linea.id));
+  const eventosEgresosPropio = eventosDeEgresos(lineasSinFuenteAtribuida);
+  const curvaPropio = construirCurva([...eventosIngresosPropio, ...eventosEgresosPropio], flujo.saldoPropioInicialCop);
 
   const porBolsa: Record<ID | 'propio', { saldoMinimoCop: number; fecha: string | null }> = {
     propio: saldoMinimoDeCurva(curvaPropio, flujo.saldoPropioInicialCop),
   };
   for (const fuente of flujo.fuentes) {
     const ingresosDeFuente = flujo.ingresos.filter((ingreso) => ingreso.fuenteId === fuente.id);
-    const curvaFuente = construirCurva(eventosDeIngresos(ingresosDeFuente), 0);
+    const lineasDeFuente = lineasVista.filter((linea) => fuenteIdPorLinea.get(linea.id) === fuente.id);
+    const curvaFuente = construirCurva([...eventosDeIngresos(ingresosDeFuente), ...eventosDeEgresos(lineasDeFuente)], 0);
     porBolsa[fuente.id] = saldoMinimoDeCurva(curvaFuente, 0);
   }
 
@@ -392,6 +439,7 @@ export function analizarFlujo(flujo: FlujoDeCaja, vista: VistaFlujo = 'aprobado'
   const gastosNoElegibles = hayBloqueoPorRestriccion
     ? calcularGastosNoElegibles(lineasVista, flujo.fuentes, flujo.ingresos)
     : [];
+  const gastosAtribuidosNoElegibles = calcularGastosAtribuidosNoElegibles(lineasVista, flujo.fuentes, fuenteIdPorLinea);
   const alertasAporteMinimo = calcularAlertasAporteMinimo(flujo.fuentes, curva, flujo.saldoPropioInicialCop);
 
   return {
@@ -401,6 +449,7 @@ export function analizarFlujo(flujo: FlujoDeCaja, vista: VistaFlujo = 'aprobado'
     porBolsa,
     hayBloqueoPorRestriccion,
     gastosNoElegibles,
+    gastosAtribuidosNoElegibles,
     alertasAporteMinimo,
     claridad: calcularClaridad(flujo),
   };

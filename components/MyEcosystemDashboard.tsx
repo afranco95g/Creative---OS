@@ -782,7 +782,7 @@ function PersonPlatform({
   );
 }
 
-const PERSON_ROLES = [['artist','Artista'],['producer','Productor/a'],['manager','Gestor/a'],['designer','Diseñador/a'],['journalist','Periodista'],['photographer','Fotógrafo/a'],['videographer','Realizador/a audiovisual'],['educator','Educador/a'],['volunteer','Voluntario/a'],['organization_member','Miembro de organización']] as const;
+const PERSON_ROLES = [['artist','Artista'],['producer','Productor/a'],['manager','Gestor/a'],['cultural_manager','Gestor/a cultural'],['designer','Diseñador/a'],['journalist','Periodista'],['photographer','Fotógrafo/a'],['videographer','Realizador/a audiovisual'],['curator','Curador/a'],['researcher','Investigador/a'],['educator','Educador/a'],['volunteer','Voluntario/a'],['space_manager','Gestor/a de espacio'],['funder_representative','Representante de financiador'],['brand_representative','Representante de marca'],['organization_member','Miembro de organización']] as const;
 
 function PersonProfileEditor({person,onClose,onSaved}:{person:MyEcosystemPerson;onClose:()=>void;onSaved:(person:MyEcosystemPerson)=>void}){
   const [form,setForm]=useState<PersonProfileInput>({fullName:person.fullName,headline:person.headline??'',biography:person.biography??'',avatarUrl:person.avatarUrl??'',city:person.city??'',department:person.department??'',country:person.country??'Colombia',roles:person.roles,skills:person.skills,interests:person.interests,websiteUrl:person.websiteUrl??'',instagramUrl:person.instagramUrl??'',youtubeUrl:person.youtubeUrl??'',linkedinUrl:person.linkedinUrl??'',publicEmail:person.publicEmail??''});

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { analizarFlujo, describirExposicion } from '../engines/cashFlowEngine';
 import type { FlujoDeCaja } from '../engines/cashFlowEngine';
-import type { Fuente, Ingreso, ProjectBudgetLine } from '../types/project';
+import type { Fuente, Ingreso, ProjectBudgetLine, ProjectBudgetLineFuenteLink } from '../types/project';
 
 let contadorId = 0;
 const nextId = (prefix: string) => `${prefix}-${++contadorId}`;
@@ -249,6 +249,65 @@ function flujo(overrides: Partial<FlujoDeCaja> = {}): FlujoDeCaja {
     'No se detecta una ventana en la que el proyecto necesite plata propia.',
     'j · describirExposicion fija el texto exacto para el caso sin exposición'
   );
+}
+
+
+// ---------------------------------------------------------------------------
+// k) Atribución de egreso a fuente (specs/atribucion-egreso-a-fuente.md) —
+//    sin fuenteLinks, el comportamiento es idéntico al de antes de esta
+//    entrega (mismo caso que el test (a), reconstruido con la misma forma
+//    para dejar explícito que fuenteLinks ausente no cambia nada).
+// ---------------------------------------------------------------------------
+{
+  const restringida = fuente({ restringida: true, categoriasElegibles: ['equipo_tecnico'] });
+  const arriendo = linea({ category: 'arriendo', unitValue: 2000000, status: 'approved', estimatedDate: '2026-01-10' });
+  const ingresoRestringido = ingreso({ montoCop: 2000000, fechaDisparador: '2026-01-01', fuenteId: restringida.id });
+
+  const f = flujo({ lineas: [arriendo], ingresos: [ingresoRestringido], fuentes: [restringida] });
+  const analisis = analizarFlujo(f);
+
+  assert.equal(analisis.porBolsa.propio.saldoMinimoCop, -2000000, 'k · sin fuenteLinks, el egreso sigue cayendo íntegro sobre la bolsa propio');
+  assert.equal(analisis.porBolsa[restringida.id].saldoMinimoCop, 0, 'k · sin fuenteLinks, la bolsa de la fuente no resta ningún egreso: el saldo mínimo se queda en el punto de partida (0), nunca baja, igual que antes de esta entrega');
+  assert.deepEqual(analisis.gastosAtribuidosNoElegibles, [], 'k · sin vínculo real, no hay nada que reportar como atribuido');
+}
+
+// ---------------------------------------------------------------------------
+// l) Con fuenteLinks: el egreso vinculado deja de pesar sobre "propio" y
+//    empieza a pesar sobre la bolsa de su fuente.
+// ---------------------------------------------------------------------------
+{
+  const libre = fuente({ restringida: false });
+  const arriendo = linea({ category: 'arriendo', unitValue: 2000000, status: 'approved', estimatedDate: '2026-01-10' });
+  const otraLinea = linea({ category: 'honorarios', unitValue: 500000, status: 'approved', estimatedDate: '2026-01-12' });
+  const ingresoLibre = ingreso({ montoCop: 2000000, fechaDisparador: '2026-01-01', fuenteId: libre.id });
+  const link: ProjectBudgetLineFuenteLink = { id: 'link-1', budgetLineId: arriendo.id, fuenteId: libre.id };
+
+  const f = flujo({ lineas: [arriendo, otraLinea], ingresos: [ingresoLibre], fuentes: [libre], fuenteLinks: [link] });
+  const analisis = analizarFlujo(f);
+
+  assert.equal(analisis.porBolsa.propio.saldoMinimoCop, -500000, 'l · propio ya solo carga la línea sin vínculo (honorarios)');
+  assert.equal(analisis.porBolsa[libre.id].saldoMinimoCop, 0, 'l · la fuente absorbe su propio egreso vinculado (2.000.000 ingreso - 2.000.000 egreso)');
+}
+
+// ---------------------------------------------------------------------------
+// m) gastosAtribuidosNoElegibles: se reporta un vínculo real a una fuente
+//    restringida cuya categoría no es elegible, sin necesidad de que haya
+//    bloqueo de saldo general.
+// ---------------------------------------------------------------------------
+{
+  const restringida = fuente({ restringida: true, categoriasElegibles: ['equipo_tecnico'] });
+  const arriendo = linea({ category: 'arriendo', unitValue: 1000000, status: 'approved', estimatedDate: '2026-01-10' });
+  const ingresoAbundante = ingreso({ montoCop: 5000000, fechaDisparador: '2026-01-01', fuenteId: restringida.id });
+  const link: ProjectBudgetLineFuenteLink = { id: 'link-2', budgetLineId: arriendo.id, fuenteId: restringida.id };
+
+  const f = flujo({ lineas: [arriendo], ingresos: [ingresoAbundante], fuentes: [restringida], fuenteLinks: [link] });
+  const analisis = analizarFlujo(f);
+
+  assert.equal(analisis.hayBloqueoPorRestriccion, false, 'm · no hay bloqueo de saldo (la fuente tiene de sobra)');
+  assert.deepEqual(analisis.gastosNoElegibles, [], 'm · el heurístico post-bloqueo sigue vacío, sin cambios de comportamiento');
+  assert.equal(analisis.gastosAtribuidosNoElegibles.length, 1, 'm · pero la atribución exacta sí lo detecta, aunque no haya bloqueo');
+  assert.equal(analisis.gastosAtribuidosNoElegibles[0].lineaId, arriendo.id, 'm · identifica la línea exacta');
+  assert.equal(analisis.gastosAtribuidosNoElegibles[0].fuenteId, restringida.id, 'm · identifica la fuente exacta');
 }
 
 console.log('Cash flow engine: OK');

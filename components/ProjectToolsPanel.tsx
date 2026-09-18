@@ -9,8 +9,12 @@ import type { AnalisisDeFlujo, FlujoDeCaja, VistaFlujo } from '@/engines/cashFlo
 import { seedPreparednessChecklist, getPreparednessSummary } from '@/engines/preparednessEngine';
 import { createId, now } from '@/core/projectEngine';
 import { checkDependencyConsistency } from '@/engines/projectDependencyEngine';
+import { matchAlliesToNeeds } from '@/engines/alliesMatchingEngine';
+import type { AllyMatch } from '@/engines/alliesMatchingEngine';
 import { SERVICE_CATEGORIES } from '@/services/ecosystem/serviceCategories';
-import type { DependencyFinding, GrantWorkspace, Ingreso, PreparednessArea, PreparednessChecklistItem, PreparednessStatus, ProjectActivity, ProjectBudgetLine, ProjectGraph, ProjectObjective, ProjectScheduleItem } from '@/types/project';
+import { listMatchableAllies } from '@/services/ecosystem/alliesDirectory';
+import { getPublicActorHref } from '@/services/public/publicEcosystem';
+import type { DependencyFinding, Fuente, GrantWorkspace, Ingreso, PreparednessArea, PreparednessChecklistItem, PreparednessStatus, ProjectActivity, ProjectBudgetLine, ProjectBudgetLineFuenteLink, ProjectGraph, ProjectObjective, ProjectScheduleItem, TipoDeFuente } from '@/types/project';
 
 type ToolId = 'documents' | 'budget' | 'schedule' | 'grant' | 'preparation' | 'dependencies' | 'needs';
 
@@ -37,7 +41,49 @@ function ProjectNeeds({ graph, onChange }: { graph: ProjectGraph; onChange: (g: 
     <h2 className="text-xl font-semibold text-texto-principal">¿Qué necesita este proyecto?</h2>
     <p className="max-w-3xl text-sm leading-6 text-texto-largo">Selecciona todo lo que aplique — es el mismo vocabulario que usan los aliados del ecosistema para declarar lo que ofrecen.</p>
     <div className="flex flex-wrap gap-2">{SERVICE_CATEGORIES.map(([id, label]) => { const active = needs.includes(id); return <button key={id} type="button" onClick={() => toggle(id)} className={`rounded-full border px-4 py-2 text-sm ${active ? 'border-acento bg-rojo-base font-semibold text-hueso' : 'border-borde/15 text-texto-largo'}`}>{label}</button>; })}</div>
+    <SuggestedAllies needs={needs} />
   </section>;
+}
+
+function SuggestedAllies({ needs }: { needs: string[] }) {
+  const [allies, setAllies] = useState<Awaited<ReturnType<typeof listMatchableAllies>>>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (needs.length === 0) return;
+    let cancelled = false;
+    setLoading(true);
+    setError('');
+    listMatchableAllies()
+      .then((data) => { if (!cancelled) setAllies(data); })
+      .catch((cause) => { if (!cancelled) setError(cause instanceof Error ? cause.message : 'No fue posible cargar los aliados.'); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [needs.length]);
+
+  const labelsById = useMemo(() => Object.fromEntries(SERVICE_CATEGORIES) as Record<string, string>, []);
+  const matches: AllyMatch[] = useMemo(() => matchAlliesToNeeds(needs, allies), [needs, allies]);
+
+  if (needs.length === 0) {
+    return <p className="mt-6 max-w-3xl text-sm leading-6 text-texto-largo">Declara al menos una necesidad para ver qué aliados del ecosistema pueden cubrirla.</p>;
+  }
+
+  return <div className="mt-6 space-y-3">
+    <h3 className="text-lg font-semibold text-texto-principal">Aliados sugeridos</h3>
+    {loading ? <p className="text-sm text-texto-largo">Buscando aliados...</p> : null}
+    {error ? <p className="text-sm text-rojo-base">{error}</p> : null}
+    {!loading && !error && matches.length === 0 ? <p className="text-sm text-texto-largo">Ningún aliado publicado cubre hoy estas necesidades.</p> : null}
+    <div className="grid gap-3 sm:grid-cols-2">
+      {matches.map((match) => (
+        <a key={`${match.actorType}:${match.actorId}`} href={getPublicActorHref(match)} target="_blank" rel="noreferrer" className="rounded-2xl border border-borde/15 p-4 transition hover:border-acento">
+          <p className="font-semibold text-texto-principal">{match.name}</p>
+          <p className="mt-1 text-xs uppercase tracking-[.16em] text-texto-largo">{match.actorType === 'space' ? 'Espacio' : 'Financiador/aliado'}</p>
+          <p className="mt-2 text-sm text-texto-largo">{match.matchedCategories.map((id) => labelsById[id] ?? id).join(' · ')}</p>
+        </a>
+      ))}
+    </div>
+  </div>;
 }
 
 function ExecutiveDocuments({ graph }: { graph: ProjectGraph }) {
@@ -59,11 +105,13 @@ function documentBodyOverflow(){return window.document.body.style.overflow}
 
 const VISTAS_FLUJO: VistaFlujo[] = ['comprometido', 'aprobado', 'completo'];
 const ETIQUETAS_VISTA_FLUJO: Record<VistaFlujo, string> = { comprometido: 'Comprometido', aprobado: 'Aprobado', completo: 'Completo' };
+const TIPOS_DE_FUENTE: Array<[TipoDeFuente, string]> = [['propio', 'Recursos propios'], ['venta', 'Venta'], ['cliente', 'Cliente'], ['patrocinio', 'Patrocinio'], ['convocatoria_publica', 'Convocatoria pública'], ['convocatoria_privada', 'Convocatoria privada'], ['otro', 'Otro']];
 
 function LivingBudget({ graph, onChange }: { graph: ProjectGraph; onChange: (g: ProjectGraph) => void }) {
   const lines = graph.tools.budgetLines;
   const ingresos = graph.tools.ingresos ?? [];
   const fuentes = graph.tools.fuentes ?? [];
+  const fuenteLinks = graph.tools.fuenteLinks ?? [];
   const [filter, setFilter] = useState('all');
   const [collapsed, setCollapsed] = useState<string[]>([]);
   const suggestions = useMemo(() => inferBudgetSuggestions(graph, lines), [graph, lines]);
@@ -76,9 +124,16 @@ function LivingBudget({ graph, onChange }: { graph: ProjectGraph; onChange: (g: 
     lineas: lines,
     ingresos,
     fuentes,
+    fuenteLinks,
     saldoPropioInicialCop: 0,
     toleranciaCop: 0,
-  }), [lines, ingresos, fuentes]);
+  }), [lines, ingresos, fuentes, fuenteLinks]);
+  const fuenteIdPorLinea = useMemo(() => Object.fromEntries(fuenteLinks.map((link) => [link.budgetLineId, link.fuenteId])), [fuenteLinks]);
+  const asignarFuente = (budgetLineId: string, fuenteId: string) => {
+    const sinVinculoPrevio = fuenteLinks.filter((link) => link.budgetLineId !== budgetLineId);
+    const nuevo = fuenteId ? [...sinVinculoPrevio, { id: createId(), budgetLineId, fuenteId } as ProjectBudgetLineFuenteLink] : sinVinculoPrevio;
+    setTools(graph, onChange, { fuenteLinks: nuevo });
+  };
   const analisisPorVista = useMemo(() => {
     const resultado = {} as Record<VistaFlujo, AnalisisDeFlujo>;
     for (const vista of VISTAS_FLUJO) resultado[vista] = analizarFlujo(flujo, vista);
@@ -89,10 +144,47 @@ function LivingBudget({ graph, onChange }: { graph: ProjectGraph; onChange: (g: 
   const add = (concept = 'Nueva línea', category = 'General', source: ProjectBudgetLine['source'] = 'manual') => setTools(graph, onChange, { budgetLines: [...lines, blankBudgetLine(concept, category, source)] });
   return <div className="space-y-5">
     {suggestions.length ? <section className="rounded-3xl border border-acento/30 bg-superficie p-5"><div className="flex items-center gap-2 text-texto-principal"><Sparkles size={18}/><strong>Creative OS detectó posibles gastos</strong></div><div className="mt-4 flex flex-wrap gap-2">{suggestions.map((s) => <button key={s.concept} onClick={() => add(s.concept, s.category, 'creative-os')} className="rounded-full border border-acento/30 px-4 py-2 text-sm">+ {s.concept}</button>)}</div></section> : null}
+    <FuentesManager graph={graph} onChange={onChange} categories={categories} />
     <div className="flex flex-wrap items-center justify-between gap-3"><div className="flex gap-2"><button onClick={() => add()} className="inline-flex items-center gap-2 rounded-full bg-rojo-base px-4 py-2 font-bold text-hueso"><Plus size={16}/> Línea</button><select value={filter} onChange={(e) => setFilter(e.target.value)} className="rounded-full border border-borde/15 bg-superficie px-4 py-2 text-sm"><option value="all">Todos los estados</option><option value="proposed">Propuesto</option><option value="approved">Aprobado</option><option value="committed">Comprometido</option><option value="paid">Pagado</option></select></div><button onClick={() => exportBudgetCsv(graph)} className="inline-flex items-center gap-2 rounded-full border border-borde/15 px-4 py-2 text-sm"><Download size={16}/> CSV</button></div>
-    <div className="overflow-x-auto rounded-2xl border border-borde/10"><table className="w-full min-w-[1050px] text-left text-sm"><thead className="bg-superficie text-xs uppercase text-texto-largo"><tr><th className="p-3">Concepto</th><th>Cantidad</th><th>Unidad</th><th>Valor unitario</th><th>Subtotal</th><th>IVA</th><th>Retenciones</th><th>Total</th><th>Estado</th><th>Responsable</th><th></th></tr></thead><tbody>{categories.map((category) => { const group = visible.filter((l) => l.category === category); if (!group.length) return null; const isCollapsed = collapsed.includes(category); return [<tr key={`${category}-head`} className="border-t border-borde/10 bg-superficie-elevada"><td colSpan={11} className="p-3"><button onClick={() => setCollapsed(isCollapsed ? collapsed.filter((c) => c !== category) : [...collapsed, category])} className="inline-flex items-center gap-2 font-semibold">{isCollapsed ? <ChevronRight size={16}/> : <ChevronDown size={16}/>} {category} · {money(group.reduce((n,l) => n + total(l),0))}</button></td></tr>, ...(!isCollapsed ? group.map((line) => <tr key={line.id} className="border-t border-borde/10"><td className="p-2"><input value={line.concept} onChange={(e) => update(line.id,{concept:e.target.value})} className="w-48 bg-transparent p-2"/></td><td><Num value={line.quantity} onChange={(quantity)=>update(line.id,{quantity})}/></td><td><input value={line.unit} onChange={(e)=>update(line.id,{unit:e.target.value})} className="w-24 bg-transparent p-2"/></td><td><Num value={line.unitValue} onChange={(unitValue)=>update(line.id,{unitValue})}/></td><td>{money(line.quantity*line.unitValue)}</td><td><Num value={line.vatRate} onChange={(vatRate)=>update(line.id,{vatRate})}/></td><td><Num value={line.withholdingRate} onChange={(withholdingRate)=>update(line.id,{withholdingRate})}/></td><td className="font-semibold text-texto-principal">{money(total(line))}</td><td><select value={line.status} onChange={(e)=>update(line.id,{status:e.target.value as ProjectBudgetLine['status']})} className="bg-superficie p-2"><option value="proposed">Propuesto</option><option value="approved">Aprobado</option><option value="committed">Comprometido</option><option value="paid">Pagado</option></select></td><td><input value={line.responsible} onChange={(e)=>update(line.id,{responsible:e.target.value})} placeholder="Sin asignar" className="w-32 bg-transparent p-2"/></td><td><button onClick={()=>setTools(graph,onChange,{budgetLines:lines.filter((l)=>l.id!==line.id)})}><Trash2 size={15}/></button></td></tr>) : [])]; })}</tbody></table></div>
+    <div className="overflow-x-auto rounded-2xl border border-borde/10"><table className="w-full min-w-[1050px] text-left text-sm"><thead className="bg-superficie text-xs uppercase text-texto-largo"><tr><th className="p-3">Concepto</th><th>Cantidad</th><th>Unidad</th><th>Valor unitario</th><th>Subtotal</th><th>IVA</th><th>Retenciones</th><th>Total</th><th>Estado</th><th>Responsable</th><th>Fuente</th><th></th></tr></thead><tbody>{categories.map((category) => { const group = visible.filter((l) => l.category === category); if (!group.length) return null; const isCollapsed = collapsed.includes(category); return [<tr key={`${category}-head`} className="border-t border-borde/10 bg-superficie-elevada"><td colSpan={12} className="p-3"><button onClick={() => setCollapsed(isCollapsed ? collapsed.filter((c) => c !== category) : [...collapsed, category])} className="inline-flex items-center gap-2 font-semibold">{isCollapsed ? <ChevronRight size={16}/> : <ChevronDown size={16}/>} {category} · {money(group.reduce((n,l) => n + total(l),0))}</button></td></tr>, ...(!isCollapsed ? group.map((line) => <tr key={line.id} className="border-t border-borde/10"><td className="p-2"><input value={line.concept} onChange={(e) => update(line.id,{concept:e.target.value})} className="w-48 bg-transparent p-2"/></td><td><Num value={line.quantity} onChange={(quantity)=>update(line.id,{quantity})}/></td><td><input value={line.unit} onChange={(e)=>update(line.id,{unit:e.target.value})} className="w-24 bg-transparent p-2"/></td><td><Num value={line.unitValue} onChange={(unitValue)=>update(line.id,{unitValue})}/></td><td>{money(line.quantity*line.unitValue)}</td><td><Num value={line.vatRate} onChange={(vatRate)=>update(line.id,{vatRate})}/></td><td><Num value={line.withholdingRate} onChange={(withholdingRate)=>update(line.id,{withholdingRate})}/></td><td className="font-semibold text-texto-principal">{money(total(line))}</td><td><select value={line.status} onChange={(e)=>update(line.id,{status:e.target.value as ProjectBudgetLine['status']})} className="bg-superficie p-2"><option value="proposed">Propuesto</option><option value="approved">Aprobado</option><option value="committed">Comprometido</option><option value="paid">Pagado</option></select></td><td><input value={line.responsible} onChange={(e)=>update(line.id,{responsible:e.target.value})} placeholder="Sin asignar" className="w-32 bg-transparent p-2"/></td><td><select value={fuenteIdPorLinea[line.id] ?? ''} onChange={(e)=>asignarFuente(line.id, e.target.value)} className="bg-superficie p-2 text-xs"><option value="">Sin fuente asignada</option>{fuentes.map((f)=><option key={f.id} value={f.id}>{f.nombre}</option>)}</select></td><td><button onClick={()=>setTools(graph,onChange,{budgetLines:lines.filter((l)=>l.id!==line.id)})}><Trash2 size={15}/></button></td></tr>) : [])]; })}</tbody></table></div>
     <CashFlowSummary ingresos={ingresos} analisisPorVista={analisisPorVista} saldoInicial={flujo.saldoPropioInicialCop} />
   </div>;
+}
+
+function FuentesManager({ graph, onChange, categories }: { graph: ProjectGraph; onChange: (g: ProjectGraph) => void; categories: string[] }) {
+  const fuentes = graph.tools.fuentes ?? [];
+  const update = (id: string, patch: Partial<Fuente>) => setTools(graph, onChange, { fuentes: fuentes.map((f) => f.id === id ? { ...f, ...patch } : f) });
+  const add = () => setTools(graph, onChange, { fuentes: [...fuentes, blankFuente()] });
+  const remove = (id: string) => setTools(graph, onChange, { fuentes: fuentes.filter((f) => f.id !== id) });
+  const toggleCategoria = (fuente: Fuente, categoria: string) => {
+    const activa = fuente.categoriasElegibles.includes(categoria);
+    update(fuente.id, { categoriasElegibles: activa ? fuente.categoriasElegibles.filter((c) => c !== categoria) : [...fuente.categoriasElegibles, categoria] });
+  };
+  return <section className="space-y-4 rounded-3xl border border-borde/10 bg-superficie-elevada p-6">
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h2 className="text-xl font-semibold text-texto-principal">Fuentes de financiación</h2>
+        <p className="mt-1 max-w-2xl text-sm leading-6 text-texto-largo">Crea las fuentes (propio, cliente, convocatoria, patrocinio...) para poder asignarles egresos e ingresos y ver el flujo de caja real por fuente.</p>
+      </div>
+      <button onClick={add} className="inline-flex items-center gap-2 rounded-full bg-rojo-base px-4 py-2 font-bold text-hueso"><Plus size={16}/> Fuente</button>
+    </div>
+    {fuentes.length === 0 ? <p className="text-sm text-texto-largo">Todavía no hay fuentes registradas. Mientras no exista ninguna, los egresos e ingresos se tratan como parte de la bolsa propia, sin restricciones.</p> : null}
+    <div className="space-y-4">{fuentes.map((fuente) => <article key={fuente.id} className="space-y-3 rounded-2xl border border-borde/10 p-4">
+      <div className="grid gap-3 sm:grid-cols-[1fr_200px_auto] sm:items-center">
+        <input value={fuente.nombre} onChange={(e) => update(fuente.id, { nombre: e.target.value })} placeholder="Nombre de la fuente" className="bg-superficie p-2" />
+        <select value={fuente.tipo} onChange={(e) => update(fuente.id, { tipo: e.target.value as TipoDeFuente })} className="bg-superficie p-2 text-sm">{TIPOS_DE_FUENTE.map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select>
+        <button onClick={() => remove(fuente.id)} className="justify-self-end text-texto-largo hover:text-texto-principal"><Trash2 size={15}/></button>
+      </div>
+      <label className="flex items-center gap-2 text-sm text-texto-largo"><input type="checkbox" checked={fuente.restringida} onChange={(e) => update(fuente.id, { restringida: e.target.checked, categoriasElegibles: e.target.checked ? fuente.categoriasElegibles : [] })} /> Restringida (solo puede cubrir ciertas categorías del presupuesto)</label>
+      {fuente.restringida ? <div className="flex flex-wrap gap-2">
+        {categories.length === 0 ? <p className="text-xs text-texto-largo">Agrega líneas de presupuesto para poder elegir sus categorías aquí.</p> : categories.map((categoria) => { const activa = fuente.categoriasElegibles.includes(categoria); return <button key={categoria} type="button" onClick={() => toggleCategoria(fuente, categoria)} className={`rounded-full border px-3 py-1 text-xs ${activa ? 'border-acento bg-rojo-base font-semibold text-hueso' : 'border-borde/15 text-texto-largo'}`}>{categoria}</button>; })}
+      </div> : null}
+      <div className="grid gap-3 sm:grid-cols-2">
+        <label className="text-xs text-texto-largo">Aporte mínimo para iniciar ejecución (opcional)<Num value={fuente.aporteMinimoInicioCop ?? 0} onChange={(n) => update(fuente.id, { aporteMinimoInicioCop: n || null })} /></label>
+        <label className="text-xs text-texto-largo">Fecha de inicio de ejecución (opcional)<input type="date" value={fuente.fechaInicioEjecucion ?? ''} onChange={(e) => update(fuente.id, { fechaInicioEjecucion: e.target.value || null })} className="mt-1 w-full bg-superficie p-2" /></label>
+      </div>
+    </article>)}</div>
+  </section>;
 }
 
 function CashFlowSummary({ ingresos, analisisPorVista, saldoInicial }: { ingresos: Ingreso[]; analisisPorVista: Record<VistaFlujo, AnalisisDeFlujo>; saldoInicial: number }) {
@@ -126,6 +218,7 @@ function CashFlowSummary({ ingresos, analisisPorVista, saldoInicial }: { ingreso
       <p className="mt-2 text-xs italic leading-5 text-texto-largo">Calculado asumiendo que no tienes saldo propio disponible al inicio del proyecto.</p>
     </div>
     {analisis.hayBloqueoPorRestriccion ? <div className="rounded-2xl border border-borde bg-rojo-base p-4 text-hueso"><p className="text-xs uppercase tracking-[.16em]">Bloqueo por restricción de fuente</p><p className="mt-2 text-sm leading-6">El presupuesto se ve financiado en total, pero la plata propia se queda en negativo porque las fuentes restringidas no pueden cubrir esos gastos.</p></div> : null}
+    {analisis.gastosAtribuidosNoElegibles.length ? <div className="rounded-2xl border border-borde bg-rojo-base p-4 text-hueso"><p className="text-xs uppercase tracking-[.16em]">Egresos asignados a una fuente que no los cubre</p><p className="mt-2 text-sm leading-6">Estas líneas están vinculadas a una fuente restringida cuyas categorías elegibles no incluyen la categoría de la línea:</p><ul className="mt-3 space-y-1 text-sm">{analisis.gastosAtribuidosNoElegibles.map((g) => <li key={`${g.lineaId}-${g.fuenteId}`}>· Línea de categoría &quot;{g.categoria}&quot;</li>)}</ul></div> : null}
   </section>;
 }
 
@@ -294,6 +387,7 @@ function blankActivity(): ProjectActivity { return { id: createId(), objectiveId
 
 function setTools(graph:ProjectGraph,onChange:(g:ProjectGraph)=>void,patch:Partial<ProjectGraph['tools']>) { const tools={...graph.tools,...patch}; const budgetText=tools.budgetLines.length?`Presupuesto vivo: ${tools.budgetLines.length} líneas por ${money(tools.budgetLines.reduce((n,l)=>n+total(l),0))}.`:graph.modules.budget.content; const timelineText=tools.scheduleItems.length?tools.scheduleItems.map((i)=>`${i.name}: ${i.startsAt} a ${i.endsAt}`).join('\n'):graph.modules.timeline.content; onChange({...graph,tools,modules:{...graph.modules,budget:{...graph.modules.budget,content:budgetText,updatedAt:now()},timeline:{...graph.modules.timeline,content:timelineText,updatedAt:now()}},updatedAt:now()}); }
 function blankBudgetLine(concept:string,category:string,source:ProjectBudgetLine['source']):ProjectBudgetLine{return{id:createId(),category,concept,quantity:1,unit:'unidad',unitValue:0,vatRate:0,withholdingRate:0,otherTaxes:0,status:'proposed',responsible:'',provider:'',estimatedDate:'',actualDate:'',source};}
+function blankFuente():Fuente{return{id:createId(),nombre:'Nueva fuente',tipo:'propio',restringida:false,categoriasElegibles:[],aporteMinimoInicioCop:null,fechaInicioEjecucion:null};}
 function total(l:ProjectBudgetLine){const subtotal=l.quantity*l.unitValue;return subtotal+subtotal*l.vatRate/100-subtotal*l.withholdingRate/100+l.otherTaxes;}
 function money(n:number){return new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(n);}
 function Num({value,onChange}:{value:number;onChange:(n:number)=>void}){return <input type="number" value={value} onChange={(e)=>onChange(Number(e.target.value)||0)} className="w-24 bg-transparent p-2"/>;}
