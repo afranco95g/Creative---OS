@@ -3,7 +3,6 @@
 import { Plus, Power } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 
-import { supabase } from '@/lib/supabase/client';
 
 interface TaxRule {
   id: string;
@@ -35,17 +34,18 @@ export function TaxRulesManager({ initialRules }: { initialRules: TaxRule[] }) {
 
   async function createRule(event: FormEvent) {
     event.preventDefault();
-    const versions = rules.filter((rule) => rule.rule_code === form.ruleCode).map((rule) => rule.version);
-    const payload = { rule_code: form.ruleCode.trim(), version: Math.max(0, ...versions) + 1, name: form.name.trim(), jurisdiction: form.jurisdiction.trim(), operation_type: form.operationType.trim(), tax_name: form.taxName.trim(), rate: form.rate === '' ? null : Number(form.rate) / 100, treatment: form.treatment, starts_on: form.startsOn, official_source: form.source.trim(), official_source_url: form.sourceUrl.trim(), legal_reference: form.reference.trim(), interpretation: form.interpretation.trim(), source_checked_on: new Date().toISOString().slice(0, 10), status: 'draft', requires_professional_review: true };
-    const { data, error } = await supabase.from('tax_rules').insert(payload).select('*').single();
-    setMessage(error ? error.message : 'Regla creada como borrador; todavía no participa en cálculos.');
+    const payload = { rule_code: form.ruleCode.trim(), name: form.name.trim(), jurisdiction: form.jurisdiction.trim(), operation_type: form.operationType.trim(), tax_name: form.taxName.trim(), rate: form.rate === '' ? null : Number(form.rate), treatment: form.treatment, starts_on: form.startsOn, official_source: form.source.trim(), official_source_url: form.sourceUrl.trim(), legal_reference: form.reference.trim(), interpretation: form.interpretation.trim() };
+    const res = await fetch('/api/admin/tax-rules', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const { data, error } = await res.json();
+    setMessage(error ? error : 'Regla creada como borrador; todavía no participa en cálculos.');
     if (!error && data) { setRules((current) => [data as TaxRule, ...current]); setForm(blank); setOpen(false); }
   }
 
   async function toggle(rule: TaxRule) {
     const status = rule.status === 'active' ? 'inactive' : 'active';
-    const { data, error } = await supabase.from('tax_rules').update({ status, approved_at: status === 'active' ? new Date().toISOString() : null }).eq('id', rule.id).select('*').single();
-    setMessage(error ? error.message : `Regla ${status === 'active' ? 'activada' : 'desactivada'} con registro de auditoría.`);
+    const res = await fetch('/api/admin/tax-rules', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: rule.id, status }) });
+    const { data, error } = await res.json();
+    setMessage(error ? error : `Regla ${status === 'active' ? 'activada' : 'desactivada'} con registro de auditoría.`);
     if (!error && data) setRules((current) => current.map((item) => item.id === rule.id ? data as TaxRule : item));
   }
 

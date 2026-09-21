@@ -31,22 +31,20 @@ export function TicketingManager({ initialExperiences, initialTickets, products,
     event.preventDefault();
     if (exceeds && !form.exception) { setMessage('El componente de producto supera la política. Ajusta el valor o registra una excepción.'); return; }
     const capacity = Number(form.capacity);
-    const payload = { experience_id: form.experienceId, name: form.name, ticket_kind: form.kind, capacity, available_units: capacity, base_activity_price: Number(form.base || 0), product_component: Number(form.product || 0), culture_margin: Number(form.margin || 0), operating_cost: Number(form.operation || 0), gateway_fee: Number(form.gateway || 0), estimated_taxes: Number(form.taxes || 0), discount: Number(form.discount || 0), policy_exception: form.exception, exception_reason: form.exception ? form.reason : null };
-    const { data, error } = await supabase.from('ticket_types').insert(payload).select('*').single();
-    if (error) { setMessage(error.message); return; }
-    if (form.productId && data) {
-      const product = products.find((item) => item.id === form.productId);
-      const link = await supabase.from('ticket_type_products').insert({ ticket_type_id: data.id, product_id: form.productId, units_per_ticket: Number(form.units), unit_cost: Number(product?.wholesale_price || 0), unit_ticket_value: Number(form.product || 0) });
-      if (link.error) setMessage(`Ticket creado, pero el producto no se asoció: ${link.error.message}`);
-      else setMessage('Tipo de ticket y producto asociados.');
-    } else setMessage('Tipo de ticket creado.');
-    setTickets((current) => [data as TicketRow, ...current]); setForm(initial); setOpen(false);
+    const product = form.productId ? products.find((item) => item.id === form.productId) : null;
+    const payload = { experience_id: form.experienceId, name: form.name, ticket_kind: form.kind, capacity, base_activity_price: Number(form.base || 0), product_component: Number(form.product || 0), culture_margin: Number(form.margin || 0), operating_cost: Number(form.operation || 0), gateway_fee: Number(form.gateway || 0), estimated_taxes: Number(form.taxes || 0), discount: Number(form.discount || 0), policy_exception: form.exception, exception_reason: form.exception ? form.reason : null, product: product ? { product_id: product.id, units_per_ticket: Number(form.units), unit_cost: Number(product.wholesale_price || 0), unit_ticket_value: Number(form.product || 0) } : null };
+    const res = await fetch('/api/admin/ticketing', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const { data, error } = await res.json();
+    if (error) { setMessage(error); return; }
+    setMessage(data.productLinkError ? `Ticket creado, pero el producto no se asoció: ${data.productLinkError}` : (product ? 'Tipo de ticket y producto asociados.' : 'Tipo de ticket creado.'));
+    setTickets((current) => [data.ticket as TicketRow, ...current]); setForm(initial); setOpen(false);
   }
 
   async function toggle(ticket: TicketRow) {
     const status = ticket.status === 'active' ? 'paused' : 'active';
-    const { data, error } = await supabase.from('ticket_types').update({ status }).eq('id', ticket.id).select('*').single();
-    setMessage(error ? error.message : `Ticket ${status === 'active' ? 'activado' : 'pausado'}.`);
+    const res = await fetch('/api/admin/ticketing', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: ticket.id, status }) });
+    const { data, error } = await res.json();
+    setMessage(error ? error : `Ticket ${status === 'active' ? 'activado' : 'pausado'}.`);
     if (data) setTickets((current) => current.map((item) => item.id === ticket.id ? data as TicketRow : item));
   }
 

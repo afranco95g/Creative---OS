@@ -40,6 +40,11 @@ export async function updateSession(request: NextRequest) {
     '/studio',
     '/workspace',
     '/mi-ecosistema',
+    '/gestion-financiacion',
+    '/gestion-agenda',
+    '/revision-actores',
+    '/revision-ecosistema',
+    '/revision-editorial',
   ];
   const isProtectedRoute = protectedPrefixes.some((prefix) =>
     request.nextUrl.pathname.startsWith(prefix)
